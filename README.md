@@ -13,7 +13,7 @@ https://raw.githubusercontent.com/arthur97172/QuantumultX/main/Iconset/xx.png
 
 感谢
 
-[@[fiiir(https://github.com/blackmatrix7)](https://github.com/blackmatrix7)
+[@fiiir(https://github.com/blackmatrix7)](https://github.com/blackmatrix7)
 
 [@Tartarus2014 @zjcfynn @chenyiping1995 @vhdj](https://github.com/Centralmatrix3)
 
