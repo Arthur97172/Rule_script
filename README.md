@@ -12,7 +12,7 @@ https://raw.githubusercontent.com/arthur97172/QuantumultX/main/Cicon/xx.png
 https://raw.githubusercontent.com/arthur97172/QuantumultX/main/Iconset/xx.png
 
 
-### 请不要用Beta配置包!!!个人测试用，可能存在bug。
+### 请不要用Beta配置包!!! 个人测试用，可能存在bug。
 https://raw.githubusercontent.com/arthur97172/QuantumultX/main/subscription_Beta.conf
 
 
