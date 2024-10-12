@@ -42,4 +42,6 @@ https://raw.githubusercontent.com/arthur97172/QuantumultX/main/subscription_Beta
 
 [@KOP-XIAO](https://github.com/KOP-XIAO)
 
+[@chavyleung](https://github.com/chavyleung)
+
 提供规则数据源。
