@@ -36,10 +36,10 @@ https://raw.githubusercontent.com/arthur97172/QuantumultX/main/subscription_Beta
 
 ## 贴别感谢
 
-[@fiiir(https://github.com/blackmatrix7)](https://github.com/blackmatrix7)
+[@blackmatrix7)](https://github.com/blackmatrix7)
 
-[@Tartarus2014 @zjcfynn @chenyiping1995 @vhdj](https://github.com/Centralmatrix3)
+[@Centralmatrix3](https://github.com/Centralmatrix3)
 
-[@KOP-XIAO]https://github.com/KOP-XIAO](https://github.com/KOP-XIAO)
+[@KOP-XIAO](https://github.com/KOP-XIAO)
 
 提供规则数据源。
