@@ -40,4 +40,6 @@ https://raw.githubusercontent.com/arthur97172/QuantumultX/main/subscription_Beta
 
 [@Tartarus2014 @zjcfynn @chenyiping1995 @vhdj](https://github.com/Centralmatrix3)
 
+[https://github.com/KOP-XIAO](https://github.com/KOP-XIAO)
+
 提供规则数据源。
