@@ -36,7 +36,7 @@ https://raw.githubusercontent.com/arthur97172/QuantumultX/main/subscription_Beta
 
 ## 贴别感谢
 
-[@blackmatrix7)](https://github.com/blackmatrix7)
+[@blackmatrix7](https://github.com/blackmatrix7)
 
 [@Centralmatrix3](https://github.com/Centralmatrix3)
 
