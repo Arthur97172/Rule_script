@@ -1,5 +1,9 @@
 # 我们并不生产规则，我们只是开源规则的搬运工。
 
+## 简介
+
+QuantumultX 懒人配置文件
+
 ## QuantumultX 懒人配置
 https://raw.githubusercontent.com/arthur97172/QuantumultX/main/QuantumultX/subscription.conf
 
