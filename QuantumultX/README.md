@@ -5,10 +5,10 @@
 QuantumultX 懒人配置文件
 
 ## QuantumultX 懒人配置
-https://raw.githubusercontent.com/arthur97172/QuantumultX/main/QuantumultX/subscription.conf
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/QuantumultX/subscription.conf
 
 ### 请不要用Beta配置包!!! 个人测试用，可能存在bug。
-https://raw.githubusercontent.com/arthur97172/QuantumultX/main/QuantumultX/subscription_Beta.conf
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/QuantumultX/subscription_Beta.conf
 
 
 ## 特别声明
