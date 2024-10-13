@@ -3,17 +3,6 @@
 ## QuantumultX 懒人配置
 https://raw.githubusercontent.com/arthur97172/QuantumultX/main/subscription.conf
 
-## 国家图标位置 (替换下面链接中的xx为你所选择的图标名称)
-
-https://raw.githubusercontent.com/arthur97172/QuantumultX/main/Cicon/xx.png
-
-## 应用图标位置 (替换下面链接中的xx为你所选择的图标名称)
-
-https://raw.githubusercontent.com/arthur97172/QuantumultX/main/Iconset/xx.png
-
-
-
-
 ### 请不要用Beta配置包!!! 个人测试用，可能存在bug。
 https://raw.githubusercontent.com/arthur97172/QuantumultX/main/subscription_Beta.conf
 
