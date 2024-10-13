@@ -15,7 +15,7 @@ Kitsunebi的配置规则文件
 - Apple 服务加速
 - 海外流媒体（部分）及大陆流媒体面向港澳台限定（部分）服务指定节点
 - 
-https://raw.githubusercontent.com/arthur97172/Kitsunebi/main/Basic.conf
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/Kitsunebi/Basic.conf
 
 ### 专业版
 
@@ -27,7 +27,7 @@ https://raw.githubusercontent.com/arthur97172/Kitsunebi/main/Basic.conf
   ⚠️ 网页广告请使用 Safari 内容拦截器如 [ADGuard](https://apps.apple.com/app/apple-store/id1047223162) 或集成去广告功能的浏览器
 - TikTok 解锁
 
-https://raw.githubusercontent.com/arthur97172/Kitsunebi/main/Pro.conf
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/Kitsunebi/Pro.conf
 
 ### 回国版
 
@@ -35,7 +35,7 @@ https://raw.githubusercontent.com/arthur97172/Kitsunebi/main/Pro.conf
 - 拦截应用广告
   ⚠️ 网页广告请使用 Safari 内容拦截器如 [ADGuard](https://itunes.apple.com/app/apple-store/id1047223162?mt=8) 或集成去广告功能的浏览器
 
-https://raw.githubusercontent.com/arthur97172/Kitsunebi/main/BacktoCN.conf
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/Kitsunebi/BacktoCN.conf
 
 ## 特别声明
 1，本项目内所有资源文件，禁止任何公众号、自媒体进行任何形式的转载、发布。
