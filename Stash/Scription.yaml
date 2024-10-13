@@ -20,7 +20,7 @@ proxies:
     udp: true
 proxy-groups:
   - name: 默认节点
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Proxy.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Proxy.png
     type: select
     proxies:
       - 自动选择
@@ -34,7 +34,7 @@ proxy-groups:
       - 其它地区
       - 全部节点
   - name: OpenAI
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/ChatGPT.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/OpenAI_1.png
     type: select
     proxies:
       - TW 台湾
@@ -43,7 +43,7 @@ proxy-groups:
       - US 美国
       - SG 新加坡
   - name: Google
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Google_Search.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Google_Search.png
     type: select
     proxies:
       - 默认节点
@@ -57,7 +57,7 @@ proxy-groups:
       - 全部节点
       - 自动选择
       - 直连
-  - icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Twitter.png
+  - icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Twitter.png
     name: Twitter
     proxies:
       - 默认节点
@@ -73,7 +73,7 @@ proxy-groups:
       - 直连
     type: select
   - name: YouTube
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/YouTube.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/YouTube.png
     type: select
     proxies:
       - 默认节点
@@ -88,7 +88,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: NETFLIX
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Netflix.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Netflix.png
     type: select
     proxies:
       - 默认节点
@@ -103,7 +103,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: Disney+
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Disney+.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Disney+.png
     type: select
     proxies:
       - 默认节点
@@ -118,7 +118,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: Telegram
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Telegram.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Telegram.png
     type: select
     proxies:
       - 默认节点
@@ -133,7 +133,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: Spotify
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Spotify.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Spotify.png
     type: select
     proxies:
       - 默认节点
@@ -148,7 +148,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: TikTok
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/TikTok.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/TikTok.png
     type: select
     proxies:
       - 默认节点
@@ -163,7 +163,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: Steam
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Steam.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Steam.png
     type: select
     proxies:
       - 默认节点
@@ -178,7 +178,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: Apple
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Apple.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Apple.png
     type: select
     proxies:
       - 默认节点
@@ -193,7 +193,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: Microsoft
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Microsoft.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Microsoft.png
     type: select
     proxies:
       - 默认节点
@@ -223,7 +223,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: 巴哈姆特
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Bahamut.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Bahamut.png
     type: select
     proxies:
       - 默认节点
@@ -238,7 +238,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: 国内网站
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/StreamingCN.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/StreamingCN.png
     type: select
     proxies:
       - 直连
@@ -316,11 +316,6 @@ proxy-groups:
     tolerance: 50
     lazy: true
     filter: "(?i)(新加坡|坡|狮城|🇸🇬|sg|singapore)"
-  #  - name: TK 土耳其
-  #    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Turkey.png
-  #    type: select
-  #    include-all: true
-  #    filter: "土耳其|🇹🇷|TK|(?i)turkey"
   - name: 其它地区
     icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/World_Map.png
     type: url-test
