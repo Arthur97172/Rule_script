@@ -44,24 +44,6 @@ https://raw.githubusercontent.com/arthur97172/Kitsunebi/main/Pro.conf
 https://raw.githubusercontent.com/arthur97172/Kitsunebi/main/BacktoCN.conf
 #### 导入配置教程
 
-
-
-## 说明
-
-### DNS 设置
-
-**如果经常使用的网络没有 DNS 劫持问题，则配置为使用系统 DNS 并追加公共 DNS，如：**
-
-```
-119.29.29.29,223.5.5.5,system
-```
-
-**如果经常使用的网络存在 DNS 劫持问题，则配置为仅使用公共 DNS，如：**
-
-```
-119.29.29.29,223.5.5.5
-```
-
 ## 许可
 
 [MIT License](https://github.com/ConnersHua/Profiles/raw/master/LICENSE)
