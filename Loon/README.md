@@ -9,3 +9,5 @@
 点击底栏【配置】，拉到最下方其他，点击【高级设置】，找到【GEOIP】并点击，进入后选择【使用自定义数据库】，粘贴下方两个链接之一，点击自动更新策略，选择【每隔7天更新】。
 
 链接 1：[GitHub 直连链接](https://github.com/Hackl0us/GeoIP2-CN/raw/release/Country.mmdb) | 链接 2：[CDN 加速链接](https://fastly.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/Country.mmdb)
+
+![avatar](https://github.com/Arthur97172/ImmortalWrt-x86-auto-build/blob/main/001.jpg)
