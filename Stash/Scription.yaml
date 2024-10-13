@@ -208,7 +208,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: 哔哩东南亚
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/bilibili_3.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/bilibili.png
     type: select
     proxies:
       - 默认节点
@@ -253,7 +253,7 @@ proxy-groups:
       - 全部节点
       - 自动选择
   - name: 其他外网
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Streaming!CN.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Streaming!CN.png
     type: select
     proxies:
       - 默认节点
@@ -269,7 +269,7 @@ proxy-groups:
       - 直连
   # 基于地区分组
   - name: HK 香港
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Hong_Kong.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/HK.png
     type: url-test
     include-all: true
     interval: 120
@@ -277,7 +277,7 @@ proxy-groups:
     lazy: true
     filter: "(?i)(澳门|🇲🇴|港|🇭🇰|hk|hong)"
   - name: TW 台湾
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Taiwan.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/TW.png
     type: url-test
     include-all: true
     interval: 120
@@ -285,7 +285,7 @@ proxy-groups:
     lazy: true
     filter: "(?i)(台|🇹🇼|湾|tw|taiwan)"
   - name: JP 日本
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Japan.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/JP.png
     type: url-test
     include-all: true
     interval: 120
@@ -293,7 +293,7 @@ proxy-groups:
     lazy: true
     filter: "(?i)(日|🇯🇵|东京|大阪|jp|japan)"
   - name: KR 韩国
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Korea.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/KR.png
     type: url-test
     include-all: true
     interval: 120
@@ -301,7 +301,7 @@ proxy-groups:
     lazy: true
     filter: "(?i)(韩|🇰🇷|kr|korea)"
   - name: US 美国
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/United_States.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/US.png
     type: url-test
     include-all: true
     interval: 120
@@ -309,7 +309,7 @@ proxy-groups:
     lazy: true
     filter: "(?i)(美|🇺🇲|us|states|america)"
   - name: SG 新加坡
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Singapore.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/SG.png
     type: url-test
     include-all: true
     interval: 120
@@ -317,7 +317,7 @@ proxy-groups:
     lazy: true
     filter: "(?i)(新加坡|坡|狮城|🇸🇬|sg|singapore)"
   - name: 其它地区
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/World_Map.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/World_Map.png
     type: url-test
     include-all: true
     interval: 120
@@ -325,7 +325,7 @@ proxy-groups:
     lazy: true
     filter: "(?i)^(?!.*(?:🇭🇰|🇹🇼|🇯🇵|🇰🇷|🇺🇸|🇸🇬|🇨🇳|港|hk|hong|台|tw|taiwan|日本|jp|japan|韩|kr|korea|美|us|states|新加坡|sg|singapore|防失联|入门无)).*"
   - name: 自动选择
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Auto.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Auto.png
     type: url-test
     include-all: true
     interval: 120
@@ -333,7 +333,7 @@ proxy-groups:
     lazy: true
     filter: "(?i)^(?!.*(?:防失联|入门无)).*"
   - name: 全部节点
-    icon: https://fastly.jsdelivr.net/gh/Koolson/Qure/IconSet/Color/Global.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
     type: select
     include-all: true
     filter: "(?i)^(?!.*(?:防失联|入门无)).*"
