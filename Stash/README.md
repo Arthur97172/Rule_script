@@ -1,14 +1,13 @@
-我们并不生产规则，我们只是开源规则的搬运工。
-简介
-QuantumultX 懒人配置文件
+# 我们并不生产规则，我们只是开源规则的搬运工。
 
-QuantumultX 懒人配置
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/QuantumultX/subscription.conf
+## 简介
+Stash 配置列表
 
-请不要用Beta配置包!!! 个人测试用，可能存在bug。
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/QuantumultX/subscription_Beta.conf
+### Stash 懒人配置
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/Stash/subscription.conf
 
-特别声明
+
+## 特别声明
 1，本项目内所有资源文件，禁止任何公众号、自媒体进行任何形式的转载、发布。
 
 2，编写本项目主要目的为学习和研究ES6，无法保证项目内容的合法性、准确性、完整性和有效性。
