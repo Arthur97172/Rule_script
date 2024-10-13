@@ -344,6 +344,7 @@ rules:
   - RULE-SET,biliintl,哔哩东南亚
   - RULE-SET,bahamut,巴哈姆特
   - RULE-SET,youtube,YouTube
+  - RULE-SET,Twitter,Twitter
   - RULE-SET,netflix,NETFLIX
   - RULE-SET,spotify,Spotify
   - RULE-SET,disney,Disney+
