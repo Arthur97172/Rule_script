@@ -10,4 +10,4 @@
 
 链接 1：[GitHub 直连链接](https://github.com/Hackl0us/GeoIP2-CN/raw/release/Country.mmdb) | 链接 2：[CDN 加速链接](https://fastly.jsdelivr.net/gh/Hackl0us/GeoIP2-CN@release/Country.mmdb)
 
-![avatar](https://github.com/Arthur97172/ImmortalWrt-x86-auto-build/blob/main/001.jpg)
+![avatar](https://github.com/Arthur97172/Rule_script/blob/main/Loon/Loon01.png)
