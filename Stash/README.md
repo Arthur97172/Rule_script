@@ -4,9 +4,16 @@
 Stash 配置列表
 
 ### Stash 懒人配置
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/Stash/subscription.conf
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/Stash/subscription.yaml
 
-
+#### 根据自己需要删除/更改subscription.yaml内的Provider名称及url订阅信息
+  Provider-1:
+    interval: 600
+    url: http://sub.store/download/Provider-1?target=Stash
+  Provider-2:
+    interval: 600
+    url: http://sub.store/download/Provider-2?target=Stash
+    
 ## 特别声明
 1，本项目内所有资源文件，禁止任何公众号、自媒体进行任何形式的转载、发布。
 
