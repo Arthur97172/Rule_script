@@ -340,7 +340,8 @@ proxy-groups:
 rules:
   - SCRIPT,quic,REJECT
   - RULE-SET,category-ai-chat-!cn,OpenAI
-  - RULE-SET,telegram,Telegram
+  - RULE-SET,Telegram,Telegram
+   - RULE-SET,OpenAI,OpenAI
   - RULE-SET,biliintl,哔哩东南亚
   - RULE-SET,bahamut,巴哈姆特
   - RULE-SET,youtube,YouTube
@@ -461,7 +462,11 @@ rule-providers:
     interval: 864000
     url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/twitter.list
     format: text
-  openai:
+  Telegram:
+    behavior: "domain"
+    interval: 864000
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/telegram.list 
+  OpenAI:
     behavior: domain
     format: text
     interval: 86400
