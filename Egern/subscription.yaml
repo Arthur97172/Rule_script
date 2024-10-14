@@ -1,221 +1,206 @@
-# > 配置下载𝐔𝐑𝐋： https://raw.githubusercontent.com/arthur97172/Rule_script/main/Egern/subscription.yaml
-
+dns:
+  bootstrap:
+  - 8.8.8.8
+  - https://1.12.12.12/dns-query
 policy_groups:
 - external:
     name: 所有节点
     type: select
     urls:
-    - https://www.v2ny.one/api/v1/client/subscribe?token=137f3ae5248ac71fcb7c26ae4f7f33
+    - http://192.168.5.118:3001/WoTdstKqMClBIsH4KxUR/download/FTQ?target=Surge
+    - http://192.168.5.118:3001/WoTdstKqMClBIsH4KxUR/download/Feiji?target=Surge
+    filter: ^((?!防失联|入门无).)*$
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
+    hidden: true
 - select:
-    name: 苹果服务
+    name: Apple
     policies:
-    - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
     - 其他节点
-    flatten: true
+    - DIRECT
+    flatten: false
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Apple.png
 - select:
-    name: OpenAI
+    name: ChatGPT
     policies:
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
-    flatten: true
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/OpenAI.png    
+    flatten: false
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/OpenAI.png
 - select:
     name: Google
     policies:
-    - DIRECT    
-    - 国际代理
+    - 自动选择
     - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
     - 其他节点
-    flatten: true
+    flatten: false
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Google_Search.png
 - select:
     name: Microsoft
     policies:
-    - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
-    - 其他节点 
-    flatten: true
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Microsoft.png
-- select:
-    name: Disney+
-    policies: 
-    - DIRECT
-    - 国际代理
-    - 香港节点
-    - 美国节点
-    - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
     - 其他节点
-    flatten: true
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Disney+.png
+    - DIRECT
+    flatten: false
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Microsoft.png
 - select:
     name: Netflix
     policies:
-    - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
     - 其他节点
-    flatten: true
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Netflix.png    
+    flatten: false
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Netflix.png
+- select:
+    name: Disney
+    policies:
+    - 自动选择
+    - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
+    - 美国节点
+    - 新加坡节点
+    - 其他节点
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Disney+_1.png
 - select:
     name: Spotify
     policies:
-    - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
     - 其他节点
-    flatten: true
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Spotify.png    
+    flatten: false
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Spotify.png
 - select:
     name: Telegram
     policies:
-    - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
-    - 其他节点  
-    flatten: true
+    - 其他节点
+    flatten: false
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Telegram.png
 - select:
     name: Twitter
     policies:
-    - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
-    - 其他节点  
-    flatten: true
+    - 其他节点
+    flatten: false
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Twitter.png
 - select:
     name: YouTube
     policies:
-    - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
+    - 台湾节点
+    - 日本节点
+    - 韩国节点
     - 美国节点
     - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
-    - 其他节点    
-    flatten: true
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/YouTube.png
-- select:
-    name: GitHub
-    policies:
-    - DIRECT
-    - 国际代理
-    - 香港节点
-    - 美国节点
-    - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
     - 其他节点
-    flatten: true
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/GitHub.png
-- fallback
+    flatten: false
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/YouTube.png
+- auto_test:
     name: 香港节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇭🇰)|(香港)|(港)|(HK)|(Hong)
+    filter: 🇭🇰|香港|港|HK|Hong
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/HK.png
-- fallback:
+- auto_test:
     name: 美国节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇺🇸)|(美国)|(美)tates)|(US)
+    filter: 🇺🇸|美国|美|States|US
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/US.png
-- fallback:
+- auto_test:
     name: 台湾节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇹🇼)|(台湾)|(台)|(TW)|(Tai)
+    filter: 🇹🇼|台湾|台|TW|Tai
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/TW.png
-- fallback:
+- auto_test:
     name: 日本节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇯🇵)|(日)|(日本)|(JP)|(Japan)
+    filter: 🇯🇵|日|日本|JP
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/JP.png
- - fallback:
+- auto_test:
     name: 韩国节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇰🇷)|(韩)|(韩国)|(KR)|(Korea)
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/KR.png   
-- fallback:
+    filter: 🇰🇷|韩国|韩|KR|Korea
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/KR.png
+- auto_test:
     name: 新加坡节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇸🇬)|(新)|(新加坡)|(SG)|(狮城)|(Singapore)
+    filter: 🇸🇬|新|新加坡|SG
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/SG.png
-- fallback:
+- auto_test:
     name: 其他节点
     policies:
     - 所有节点
     flatten: true
-    filter: ^((?!🇭🇰|港|HK|Hong|🇹🇼|台|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇺🇸|美|US|States|American|Music|防失联|入门无).)*$
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/World_Map.png
-- select:
-    name: 国际代理
+    filter: ^((?!🇭🇰|港|香港|HK|Hong|🇹🇼|台|台湾|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇺🇸|美|US|States|American|Music|🇰🇷|韩国|韩|KR|Korea|防失联|入门无).)*$
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/World_Map.png
+- auto_test:
+    name: 自动选择
     policies:
     - 香港节点
-    - 美国节点
-    - 新加坡节点
     - 台湾节点
     - 韩国节点
     - 日本节点
+    - 美国节点
+    - 新加坡节点
     - 其他节点
+    flatten: false
+    filter: ^((?!防失联|入门无).)*$
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Auto.png
 rules:
 - domain_regex:
@@ -226,13 +211,13 @@ rules:
     policy: REJECT
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list
-    policy: 苹果服务
+    policy: Apple
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple_Domain.list
-    policy: 苹果服务
+    policy: Apple
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/OpenAI/OpenAI.list
-    policy: OpenAI    
+    policy: ChatGPT
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Google/Google.list
     policy: Google
@@ -240,11 +225,11 @@ rules:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Microsoft/Microsoft.list
     policy: Microsoft
 - rule_set:
-    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Disney/Disney.list
-    policy: Disney+    
+    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/PayPal/PayPal.list
+    policy: Netflix
 - rule_set:
-    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Netflix/Netflix.list
-    policy: Netflix  
+    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Disney/Disney.list
+    policy: Disney
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Spotify/Spotify.list
     policy: Spotify
@@ -253,13 +238,10 @@ rules:
     policy: Telegram
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Twitter/Twitter.list
-    policy: Twitter   
+    policy: Twitter
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/YouTube/YouTube.list
     policy: YouTube
-- rule_set:
-    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GitHub/GitHub.list
-    policy: GitHub
 - domain:
     match: ifconfig.me
     policy: DIRECT
@@ -288,10 +270,10 @@ rules:
     match: 224.0.0.0/24
     policy: DIRECT
 - default:
-    policy: 国际代理
+    policy: 自动选择
 mitm:
   enabled: true
-  ca_p12: egern.p12
+  ca_p12: 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
   ca_passphrase: egern
 modules:
 - name: BoxJs
@@ -301,16 +283,16 @@ modules:
   url: https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/modules/script-hub.surge.sgmodule
   enabled: true
 - name: Sub-Store
-  url: https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/config/Egern.yaml  
+  url: https://raw.githubusercontent.com/sub-store-org/Sub-Store/master/config/Egern.yaml
   enabled: true
-- name: 'Spotify'
+- name: Spotify
   url: https://raw.githubusercontent.com/app2smile/rules/master/module/spotify.module
   enabled: true
 - name: ''
   url: https://raw.githubusercontent.com/Maasea/sgmodule/master/YouTube.Enhance.sgmodule
   enabled: true
-- name: '高德地图去广告'
+- name: 高德地图去广告
   url: https://raw.githubusercontent.com/Repcz/Tool/X/Surge/Module/NoAds/Amap.sgmodule
   enabled: true
-- name: '滴滴出行去广告'
+- name: 滴滴出行去广告
   url: https://raw.githubusercontent.com/Repcz/Tool/X/Surge/Module/NoAds/Didichuxing.sgmodule
