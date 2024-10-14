@@ -7,10 +7,10 @@ https://raw.githubusercontent.com/arthur97172/Rule_script/main/Stash/subscriptio
 #### 根据自己需要删除/更改subscription.yaml内的Provider名称及url订阅信息
   Provider-1:
     interval: 600
-    url: xxxProvider-1
+    url: xxxProvider-1你的订阅地址
   Provider-2:
     interval: 600
-    url: xxxProvider-2
+    url: xxxProvider-2你的订阅地址
     
 ## 特别声明
 1，本项目内所有资源文件，禁止任何公众号、自媒体进行任何形式的转载、发布。
