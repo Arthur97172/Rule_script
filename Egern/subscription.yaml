@@ -214,14 +214,9 @@ policy_groups:
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/World_Map.png
 - select:
     name: 自动选择
+    type: url-test
     policies:
-    - 香港节点
-    - 美国节点
-    - 新加坡节点
-    - 台湾节点
-    - 韩国节点
-    - 日本节点
-    - 其他节点
+    - 所有节点
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Auto.png
 rules:
 - domain_regex:
