@@ -11,7 +11,7 @@ policy_groups:
     name: 苹果服务
     policies:
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -35,7 +35,7 @@ policy_groups:
     name: Google
     policies:
     - DIRECT    
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -49,7 +49,7 @@ policy_groups:
     name: Microsoft
     policies:
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -63,7 +63,7 @@ policy_groups:
     name: Disney+
     policies: 
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -77,7 +77,7 @@ policy_groups:
     name: Netflix
     policies:
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -91,7 +91,7 @@ policy_groups:
     name: Spotify
     policies:
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -105,7 +105,7 @@ policy_groups:
     name: Telegram
     policies:
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -119,7 +119,7 @@ policy_groups:
     name: Twitter
     policies:
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -133,7 +133,7 @@ policy_groups:
     name: YouTube
     policies:
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -147,7 +147,7 @@ policy_groups:
     name: GitHub
     policies:
     - DIRECT
-    - 自动选择
+    - 国际代理
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -207,11 +207,15 @@ policy_groups:
     filter: ^((?!🇭🇰|港|HK|Hong|🇹🇼|台|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇺🇸|美|US|States|American|Music|防失联|入门无).)*$
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/World_Map.png
 - select:
-    name: 自动选择
-    type: url-test
+    name: 国际代理
     policies:
-    - 所有节点
-    flatten: true
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Auto.png
 rules:
 - domain_regex:
@@ -284,7 +288,7 @@ rules:
     match: 224.0.0.0/24
     policy: DIRECT
 - default:
-    policy: 自动选择
+    policy: 国际代理
 mitm:
   enabled: true
   ca_p12: egern.p12
