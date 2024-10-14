@@ -3,7 +3,7 @@
 Egern 配置文件
 
 ## Egern 懒人配置
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/Egern/subscription.conf
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/Egern/subscription.yaml
 
 
 ## 特别声明
