@@ -5,7 +5,7 @@ Egern 配置文件
 ## Egern 懒人配置
 https://raw.githubusercontent.com/arthur97172/Rule_script/main/Egern/subscription.yaml
 
-
+下载后请进入【工具】→【策略组】→【所有节点】→【URL】→【新URL】添加自己的订阅URL
 ## 特别声明
 1，本项目内所有资源文件，禁止任何公众号、自媒体进行任何形式的转载、发布。
 
