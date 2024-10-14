@@ -1,6 +1,4 @@
-# > 𝐥𝐚𝐨𝐬𝐡𝐮@𝐄𝐠𝐞𝐫𝐧 自用配置
-# > 配置下载𝐔𝐑𝐋： https://raw.githubusercontent.com/jnlaoshu/MySelf/master/Egern/Profile.yaml
-# > 𝐔𝐩𝐝𝐚𝐭𝐞: 2024.09.22 10:30
+# > 配置下载𝐔𝐑𝐋： https://raw.githubusercontent.com/arthur97172/Rule_script/main/Egern/subscription.yaml
 
 policy_groups:
 - external:
@@ -8,133 +6,223 @@ policy_groups:
     type: select
     urls:
     - https://www.v2ny.one/api/v1/client/subscribe?token=137f3ae5248ac71fcb7c26ae4f7f33
-    icon: 🌹
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Proxy.png
 - select:
-    name: Apple
+    name: 🍎 苹果服务
     policies:
     - DIRECT
-    - 香港优先
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点
     flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Apple.png
 - select:
-    name: ChatGPT
+    name: 🤖 OpenAI
     policies:
-    - 美国优先
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
     flatten: true
-    icon: https://avatars.githubusercontent.com/u/14957082?s=200&v=4    
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/OpenAI.png    
 - select:
-    name: Google
+    name: 🌐 Google
     policies:
-    - 香港优先
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点
     flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Google_Search.png
 - select:
-    name: Microsoft
-    policies:
-    - DIRECT
-    - 香港优先
-    flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png
-- select:
-    name: PayPal
-    policies:
-    - 美国优先
-    - DIRECT
-    flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/PayPal.png
-- select:
-    name: Spotify
-    policies:
-    - 美国优先
-    flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png    
-- select:
-    name: Telegram
-    policies:
-    - 香港优先
-    flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png
-- select:
-    name: Twitter
-    policies:
-    - 香港优先
-    flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Twitter.png
-- select:
-    name: WeChat
+    name: 💻 Microsoft
     policies:
     - DIRECT
-    - 香港优先
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点 
     flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/WeChat.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Microsoft.png
 - select:
-    name: YouTube
-    policies:
-    - 香港优先
+    name: 🐭 Disney+
+    policies: 
+    - DIRECT
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点
     flatten: true
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png
-- fallback:
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Disney+.png
+- select:
+    name: 🎥 Netflix
+    policies:
+    - DIRECT
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点
+    flatten: true
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Netflix.png    
+- select:
+    name: 🎶 Spotify
+    policies:
+    - DIRECT
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点
+    flatten: true
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Spotify.png    
+- select:
+    name: 📲 Telegram
+    policies:
+    - DIRECT
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点  
+    flatten: true
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Telegram.png
+- select:
+    name: 🐦 Twitter
+    policies:
+    - DIRECT
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点  
+    flatten: true
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Twitter.png
+- select:
+    name: 📹 YouTube
+    policies:
+    - DIRECT
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点    
+    flatten: true
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/YouTube.png
+- select:
+    name: 🔧 GitHub
+    policies:
+    - DIRECT
+    - 国际代理
+    - 香港节点
+    - 美国节点
+    - 新加坡节点
+    - 台湾节点
+    - 韩国节点
+    - 日本节点
+    - 其他节点
+    flatten: true
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/GitHub.png
+- select:
+    name: 🚫 广告拦截
+    policies:
+    - DIRECT
+    - REJECT 
+    flatten: true
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Advertising.png    
+- fallback
     name: 香港节点
     policies:
     - 所有节点
     flatten: true
-    filter: 🇭🇰|港|HK|Hong
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png
+    filter: (🇭🇰)|(香港)|(港)|(HK)|(Hong)
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/HK.png
 - fallback:
     name: 美国节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇺🇸)|(美)|(States)|(US)
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png
+    filter: (🇺🇸)|(美国)|(美)tates)|(US)
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/US.png
 - fallback:
     name: 台湾节点
     policies:
     - 所有节点
     flatten: true
-    filter: 🇹🇼|台|TW|Tai
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Taiwan.png
+    filter: (🇹🇼)|(台湾)|(台)|(TW)|(Tai)
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/TW.png
 - fallback:
     name: 日本节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇯🇵)|(日)|(日本)|(JP)
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png
+    filter: (🇯🇵)|(日)|(日本)|(JP)|(Japan)
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/JP.png
+ - fallback:
+    name: 韩国节点
+    policies:
+    - 所有节点
+    flatten: true
+    filter: (🇰🇷)|(韩)|(韩国)|(KR)|(Korea)
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/KR.png   
 - fallback:
     name: 新加坡节点
     policies:
     - 所有节点
     flatten: true
-    filter: (🇸🇬)|(新)|(新加坡)|(SG)
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png
+    filter: (🇸🇬)|(新)|(新加坡)|(SG)|(狮城)|(Singapore)
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/SG.png
 - fallback:
     name: 其他节点
     policies:
     - 所有节点
     flatten: true
-    filter: ^((?!🇭🇰|港|HK|Hong|🇹🇼|台|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇺🇸|美|US|States|American|Music).)*$
-    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/World_Map.png
+    filter: ^((?!🇭🇰|港|HK|Hong|🇹🇼|台|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇺🇸|美|US|States|American|Music|防失联|入门无).)*$
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/World_Map.png
 - select:
-    name: 香港优先
+    name: 国际代理
     policies:
     - 香港节点
     - 美国节点
     - 新加坡节点
     - 台湾节点
+    - 韩国节点
     - 日本节点
     - 其他节点
-    icon: 😊
-- select:
-    name: 美国优先
-    policies:
-    - 美国节点
-    - 香港节点
-    - 新加坡节点
-    - 台湾节点
-    - 日本节点
-    - 其他节点
-    icon: 🤣
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
 rules:
 - domain_regex:
     match: ^ad\..*|^ads\..*
@@ -144,37 +232,43 @@ rules:
     policy: REJECT
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list
-    policy: Apple
+    policy: 🍎 苹果服务
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple_Domain.list
-    policy: Apple
+    policy: 🍎 苹果服务
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/OpenAI/OpenAI.list
-    policy: ChatGPT    
+    policy: 🤖 OpenAI    
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Google/Google.list
-    policy: Google
+    policy: 🌐 Google
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Microsoft/Microsoft.list
-    policy: Microsoft
+    policy: 💻 Microsoft
 - rule_set:
-    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/PayPal/PayPal.list
-    policy: PayPal    
+    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Disney/Disney.list
+    policy: 🐭 Disney+    
+- rule_set:
+    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Netflix/Netflix.list
+    policy: 🎥 Netflix  
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Spotify/Spotify.list
-    policy: Spotify
+    policy: 🎶 Spotify
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Telegram/Telegram.list
-    policy: Telegram
+    policy: 📲 Telegram
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Twitter/Twitter.list
-    policy: Twitter
-- rule_set:
-    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/WeChat/WeChat.list
-    policy: WeChat    
+    policy: 🐦 Twitter   
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/YouTube/YouTube.list
-    policy: YouTube
+    policy: 📹 YouTube
+- rule_set:
+    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GitHub/GitHub.list
+    policy: 🔧 GitHub
+- rule_set:
+    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Advertising/Advertising.list
+    policy: 🚫 广告拦截
 - domain:
     match: ifconfig.me
     policy: DIRECT
