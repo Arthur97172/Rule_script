@@ -22,16 +22,3 @@ https://raw.githubusercontent.com/arthur97172/Rule_script/main/QuantumultX/subsc
 7，所有直接或间接使用本项目的个人和组织，应24小时内完成学习和研究，并及时删除本项目中的所有内容。如对本项目的功能有需求，应自行开发相关功能。
 
 8，本项目保留随时对免责声明进行补充或更改的权利，直接或间接使用本项目内容的个人或组织，视为接受本项目的特别声明。
-
-
-## 贴别感谢
-
-[@blackmatrix7](https://github.com/blackmatrix7)
-
-[@Centralmatrix3](https://github.com/Centralmatrix3)
-
-[@KOP-XIAO](https://github.com/KOP-XIAO)
-
-[@chavyleung](https://github.com/chavyleung)
-
-提供规则数据源。
