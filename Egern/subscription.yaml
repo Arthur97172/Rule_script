@@ -223,10 +223,10 @@ policy_groups:
 rules:
 - domain_regex:
     match: ^ad\..*|^ads\..*
-    policy: REJECT
+    policy: 🚫 广告拦截
 - rule_set:
     match: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list
-    policy: REJECT
+    policy: 🚫 广告拦截
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list
     policy: 🍎 苹果服务
@@ -294,7 +294,7 @@ rules:
     match: 224.0.0.0/24
     policy: DIRECT
 - default:
-    policy: 所有节点
+    policy: 自动选择
 mitm:
   enabled: true
   ca_p12: egern.p12
