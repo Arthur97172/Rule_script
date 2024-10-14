@@ -42,4 +42,3 @@ https://raw.githubusercontent.com/arthur97172/Rule_script/main/Stash/subscriptio
 
 [@chavyleung](https://github.com/chavyleung)
 
-提供规则数据源。
