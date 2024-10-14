@@ -34,6 +34,7 @@ policy_groups:
 - select:
     name: 🌐 Google
     policies:
+    - DIRECT    
     - 自动选择
     - 香港节点
     - 美国节点
@@ -217,6 +218,7 @@ policy_groups:
     type: url-test
     policies:
     - 所有节点
+    flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Auto.png
 rules:
 - domain_regex:
