@@ -2,10 +2,9 @@
 
 
 ## 使用
+
 ### 配置文件
 可参考配置文件内的注释说明，配置好使用。
-
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/Loon/subscription.conf
 
 ### 替换 GeoIP 数据源 推荐!
 点击底栏【配置】，拉到最下方其他，点击【高级设置】，找到【GEOIP】并点击，进入后选择【使用自定义数据库】，粘贴下方两个链接之一，点击自动更新策略，选择【每隔7天更新】。
