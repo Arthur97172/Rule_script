@@ -1,9 +1,8 @@
+## 简介
 
+### Loon配置文件
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/Loon/subscription.conf
 
-
-## 使用
-
-### 配置文件
 可参考配置文件内的注释说明，配置好使用。
 
 ### 替换 GeoIP 数据源 推荐!
