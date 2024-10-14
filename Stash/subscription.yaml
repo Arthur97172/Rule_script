@@ -238,7 +238,7 @@ proxy-groups:
       - 自动选择
       - 直连
   - name: 国内网站
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/StreamingCN.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Streaming!CN.png
     type: select
     proxies:
       - 直连
@@ -253,7 +253,7 @@ proxy-groups:
       - 全部节点
       - 自动选择
   - name: 其他外网
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Streaming!CN.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Area.png
     type: select
     proxies:
       - 默认节点
