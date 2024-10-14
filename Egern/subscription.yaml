@@ -8,7 +8,7 @@ policy_groups:
     - https://www.v2ny.one/api/v1/client/subscribe?token=137f3ae5248ac71fcb7c26ae4f7f33
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
 - select:
-    name: 🍎 苹果服务
+    name: 苹果服务
     policies:
     - DIRECT
     - 自动选择
@@ -22,7 +22,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Apple.png
 - select:
-    name: 🤖 OpenAI
+    name: OpenAI
     policies:
     - 美国节点
     - 新加坡节点
@@ -32,7 +32,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/OpenAI.png    
 - select:
-    name: 🌐 Google
+    name: Google
     policies:
     - DIRECT    
     - 自动选择
@@ -46,7 +46,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Google_Search.png
 - select:
-    name: 💻 Microsoft
+    name: Microsoft
     policies:
     - DIRECT
     - 自动选择
@@ -60,7 +60,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Microsoft.png
 - select:
-    name: 🐭 Disney+
+    name: Disney+
     policies: 
     - DIRECT
     - 自动选择
@@ -74,7 +74,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Disney+.png
 - select:
-    name: 🎥 Netflix
+    name: Netflix
     policies:
     - DIRECT
     - 自动选择
@@ -88,7 +88,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Netflix.png    
 - select:
-    name: 🎶 Spotify
+    name: Spotify
     policies:
     - DIRECT
     - 自动选择
@@ -102,7 +102,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Spotify.png    
 - select:
-    name: 📲 Telegram
+    name: Telegram
     policies:
     - DIRECT
     - 自动选择
@@ -116,7 +116,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Telegram.png
 - select:
-    name: 🐦 Twitter
+    name: Twitter
     policies:
     - DIRECT
     - 自动选择
@@ -130,7 +130,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Twitter.png
 - select:
-    name: 📹 YouTube
+    name: YouTube
     policies:
     - DIRECT
     - 自动选择
@@ -144,7 +144,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/YouTube.png
 - select:
-    name: 🔧 GitHub
+    name: GitHub
     policies:
     - DIRECT
     - 自动选择
@@ -158,7 +158,7 @@ policy_groups:
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/GitHub.png
 - select:
-    name: 🚫 广告拦截
+    name: 广告拦截
     policies:
     - DIRECT
     - REJECT 
@@ -223,49 +223,49 @@ policy_groups:
 rules:
 - domain_regex:
     match: ^ad\..*|^ads\..*
-    policy: 🚫 广告拦截
+    policy: 广告拦截
 - rule_set:
     match: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list
-    policy: 🚫 广告拦截
+    policy: 广告拦截
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list
-    policy: 🍎 苹果服务
+    policy: 苹果服务
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple_Domain.list
-    policy: 🍎 苹果服务
+    policy: 苹果服务
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/OpenAI/OpenAI.list
-    policy: 🤖 OpenAI    
+    policy: OpenAI    
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Google/Google.list
-    policy: 🌐 Google
+    policy: Google
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Microsoft/Microsoft.list
-    policy: 💻 Microsoft
+    policy: Microsoft
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Disney/Disney.list
-    policy: 🐭 Disney+    
+    policy: Disney+    
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Netflix/Netflix.list
-    policy: 🎥 Netflix  
+    policy: Netflix  
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Spotify/Spotify.list
-    policy: 🎶 Spotify
+    policy: Spotify
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Telegram/Telegram.list
-    policy: 📲 Telegram
+    policy: Telegram
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Twitter/Twitter.list
-    policy: 🐦 Twitter   
+    policy: Twitter   
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/YouTube/YouTube.list
-    policy: 📹 YouTube
+    policy: YouTube
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GitHub/GitHub.list
-    policy: 🔧 GitHub
+    policy: GitHub
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Advertising/Advertising.list
-    policy: 🚫 广告拦截
+    policy: 广告拦截
 - domain:
     match: ifconfig.me
     policy: DIRECT
