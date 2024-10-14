@@ -1,9 +1,7 @@
-# 我们并不生产规则，我们只是开源规则的搬运工。
-
 ## 简介
-Stash 配置列表
+Stash 配置文件
 
-### Stash 懒人配置
+### Stash 配置文件
 https://raw.githubusercontent.com/arthur97172/Rule_script/main/Stash/subscription.yaml
 
 #### 根据自己需要删除/更改subscription.yaml内的Provider名称及url订阅信息
