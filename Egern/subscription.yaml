@@ -7,8 +7,6 @@ policy_groups:
     name: 所有节点
     type: select
     urls:
-    - http://192.168.5.118:5101/WoTdstKxUR/dsfafas/dfa?target=Surge
-    - http://192.168.5.118:5101/WoTdstKxUR/dsfafas/ewtd?target=Surge
     filter: ^((?!防失联|入门无).)*$
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
     hidden: true
