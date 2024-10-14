@@ -7,6 +7,7 @@ policy_groups:
     name: 所有节点
     type: select
     urls:
+    - https://www.v2ny.one/api/v1/client/subscribe?token=137f3ae5248ac71fcb7c26ae4f7f33
     filter: ^((?!防失联|入门无).)*$
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
     hidden: true
@@ -270,8 +271,8 @@ rules:
 - default:
     policy: 自动选择
 mitm:
-  enabled: false
-  ca_p12:fgsfhg
+  enabled: true
+  ca_p12: egern.p12
   ca_passphrase: egern
 modules:
 - name: BoxJs
