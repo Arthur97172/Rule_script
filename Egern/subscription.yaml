@@ -157,13 +157,6 @@ policy_groups:
     - 其他节点
     flatten: true
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/GitHub.png
-- select:
-    name: 广告拦截
-    policies:
-    - DIRECT
-    - REJECT 
-    flatten: true
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Advertising.png    
 - fallback
     name: 香港节点
     policies:
@@ -223,10 +216,10 @@ policy_groups:
 rules:
 - domain_regex:
     match: ^ad\..*|^ads\..*
-    policy: 广告拦截
+    policy: REJECT
 - rule_set:
     match: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list
-    policy: 广告拦截
+    policy: REJECT
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list
     policy: 苹果服务
@@ -263,9 +256,6 @@ rules:
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GitHub/GitHub.list
     policy: GitHub
-- rule_set:
-    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Advertising/Advertising.list
-    policy: 广告拦截
 - domain:
     match: ifconfig.me
     policy: DIRECT
