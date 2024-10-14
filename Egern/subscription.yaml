@@ -6,12 +6,12 @@ policy_groups:
     type: select
     urls:
     - https://www.v2ny.one/api/v1/client/subscribe?token=137f3ae5248ac71fcb7c26ae4f7f33
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Proxy.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
 - select:
     name: 🍎 苹果服务
     policies:
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -34,7 +34,7 @@ policy_groups:
 - select:
     name: 🌐 Google
     policies:
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -48,7 +48,7 @@ policy_groups:
     name: 💻 Microsoft
     policies:
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -62,7 +62,7 @@ policy_groups:
     name: 🐭 Disney+
     policies: 
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -76,7 +76,7 @@ policy_groups:
     name: 🎥 Netflix
     policies:
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -90,7 +90,7 @@ policy_groups:
     name: 🎶 Spotify
     policies:
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -104,7 +104,7 @@ policy_groups:
     name: 📲 Telegram
     policies:
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -118,7 +118,7 @@ policy_groups:
     name: 🐦 Twitter
     policies:
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -132,7 +132,7 @@ policy_groups:
     name: 📹 YouTube
     policies:
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -146,7 +146,7 @@ policy_groups:
     name: 🔧 GitHub
     policies:
     - DIRECT
-    - 国际代理
+    - 自动选择
     - 香港节点
     - 美国节点
     - 新加坡节点
@@ -213,7 +213,7 @@ policy_groups:
     filter: ^((?!🇭🇰|港|HK|Hong|🇹🇼|台|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇺🇸|美|US|States|American|Music|防失联|入门无).)*$
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/World_Map.png
 - select:
-    name: 国际代理
+    name: 自动选择
     policies:
     - 香港节点
     - 美国节点
@@ -222,7 +222,7 @@ policy_groups:
     - 韩国节点
     - 日本节点
     - 其他节点
-    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Auto.png
 rules:
 - domain_regex:
     match: ^ad\..*|^ads\..*
