@@ -76,7 +76,6 @@ FINAL,Proxy
 
 [Host]
 # > 域名指定 DNS 映射
-*.tw = server:1.1.1.1
 localhost = 127.0.0.1
 # > Firebase Cloud Messaging
 mtalk.google.com = 108.177.125.188
@@ -86,52 +85,23 @@ dl.l.google.com = server:119.29.29.29
 update.googleapis.com = server:119.29.29.29
 # > Apple
 apple.com = server:223.5.5.5
-*icloud.com = server:223.5.5.5
-*icloud.com.cn = server:223.5.5.5
-*testflight.apple.com = server:8.8.4.4
 # > Alibaba
-*.alicdn.com = server:223.5.5.5
 aliyun.com = server:223.5.5.5
-*.aliyun.com = server:223.5.5.5
 taobao.com = server:223.6.6.6
-*.taobao.com = server:223.6.6.6
 tmall.com = server:223.6.6.6
-*.tmall.com = server:223.6.6.6
 # > JD
 jd.com = server:119.29.29.29
-*.jd.com = server:119.28.28.28
 # > Tencent
-*.qq.com = server:119.28.28.28
-*.tencent.com = server:119.28.28.28
 weixin.com = server:119.28.28.28
-*.weixin.com = server:119.28.28.28
 # > bilibili
 bilibili.com = server:119.29.29.29
-*.bilibili.com = server:119.29.29.29
 hdslb.com = server:119.29.29.29
 # > NetEase
 163.com = server:119.29.29.29
-*.163.com = server:119.29.29.29
 126.com = server:119.29.29.29
-*.126.com = server:119.29.29.29
-*.126.net = server:119.29.29.29
-*.127.net = server:119.29.29.29
-*.netease.com = server:119.29.29.29
 # > xiaomi
 mi.com = server:119.29.29.29
-*.mi.com = server:119.29.29.29
 xiaomi.com = server:119.29.29.29
-*.xiaomi.com = server:119.29.29.29
-# > Baidu
-*.baidu.com = server:119.29.29.29
-*.bdstatic.com = server:119.29.29.29
-# > Others
-*.unicompayment.com = server:119.29.29.29
-*.ximalaya.com = server:119.29.29.29
-*.vercel.app = server:119.29.29.29
-*.vercel.com = server:119.29.29.29
-# > Local Area Network
-*.lan = server:system
 
 [URL Rewrite]
 # > Google重定向
