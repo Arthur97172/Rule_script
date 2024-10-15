@@ -1,6 +1,14 @@
-[General]
-update-url = https://raw.githubusercontent.com/arthur97172/Rule_script/main/Pharos/subscription.yaml
-proxy-test-url = http://cp.cloudflare.com/generate_204
+port: 7890
+socks-port: 7891
+allow-lan: true
+mode: Rule
+log-level: info
+external-controller: :9090
+proxy-providers:
+ - Subscribe1:
+    url: https://sub.xeton.dev/sub?target=clash&url=http://192.168.5.118:3001/WoTdsKxUR/download/FTQ?target=Clash&list=true&udp=false
+ - Subscribe2:
+    url: https://sub.xeton.dev/sub?target=clash&url=http://192.168.5.118:3001/WoTdsKxUR/download/Feiji?target=Clash&list=true&udp=false
 bypass-system = true
 skip-proxy = 192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,localhost,*.local,captive.apple.com,*.ccb.com,*.abchina.com.cn,*.psbc.com,www.baidu.com
 tun-excluded-routes = 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.0.0.0/24, 192.0.2.0/24, 192.88.99.0/24, 192.168.0.0/16, 198.51.100.0/24, 203.0.113.0/24, 224.0.0.0/4, 255.255.255.255/32, 239.255.255.250/32
@@ -20,42 +28,45 @@ hijack-dns = 8.8.8.8:53,8.8.4.4:53
 proxy-groups:
   - name: ♻️ 自动选择
     type: url-test
+    proxies:
+      - Subscribe1
+      - Subscribe1
     lazy: true
     url: http://www.gstatic.com/generate_204
     interval: 300
     filter: '^(?!.*(防失联|入门无)).*$'  
   - name: 🇭🇰 香港节点
-    type: url-test
+    type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300      
     filter: 香港|港|🇭🇰|HK|(?i)Hong
   - name: 🇹🇼 台湾节点
-    type: url-test
+    type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300      
     filter: 台湾|台|🇹🇼|TW|(?i)Taiwan
   - name: 🇯🇵 日本节点
-    type: url-test
+    type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300      
     filter: 日本|日|🇯🇵|JP|(?i)Japan
   - name: 🇰🇷 韩国节点
-    type: url-test
+    type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300      
     filter: 韩国|韩|🇰🇷|KR|(?i)Korea
   - name: 🇸🇬 新加坡节点
-    type: url-test
+    type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300      
     filter: 新加坡|狮城|新|🇸🇬|SG|(?i)Singapore
   - name: 🇺🇸 美国节点
-    type: url-test
+    type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300      
     filter: 美国|美|🇺🇸|US|(?i)States
   - name: 🚀 其它节点
-    type: url-test
+    type: fallback
     url: http://www.gstatic.com/generate_204
     interval: 300      
     filter: '^(?!.*(香港|港|🇭🇰|HK|(?i)Hong|台湾|台|🇹🇼|TW|(?i)Taiwan|日本|日|🇯🇵|JP|(?i)Japan|韩国|韩|🇰🇷|KR|新加坡|狮城|新|🇸🇬|SG|(?i)Singapore|美国|美|🇺🇸|US|(?i)States|防失联|入门无)).*$'  
