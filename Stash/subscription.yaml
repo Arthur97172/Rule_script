@@ -207,6 +207,36 @@ proxy-groups:
       - 全部节点
       - 自动选择
       - 直连
+  - name: GitHub
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/GitHub.png
+    type: select
+    proxies:
+      - 默认节点
+      - HK 香港
+      - TW 台湾
+      - JP 日本
+      - KR 韩国
+      - US 美国
+      - SG 新加坡
+      - 其它地区
+      - 全部节点
+      - 自动选择
+      - 直连
+  - name: LinkedIn
+    icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Linkedin.png
+    type: select
+    proxies:
+      - 默认节点
+      - HK 香港
+      - TW 台湾
+      - JP 日本
+      - KR 韩国
+      - US 美国
+      - SG 新加坡
+      - 其它地区
+      - 全部节点
+      - 自动选择
+      - 直连      
   - name: 哔哩东南亚
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/bilibili.png
     type: select
@@ -347,6 +377,8 @@ rules:
   - RULE-SET,youtube,YouTube
   - RULE-SET,Twitter,Twitter
   - RULE-SET,netflix,NETFLIX
+  - RULE-SET,github,GitHub
+  - RULE-SET,linkedin,LinkedIn
   - RULE-SET,spotify,Spotify
   - RULE-SET,disney,Disney+
   - RULE-SET,tiktok,TikTok
@@ -457,6 +489,18 @@ rule-providers:
     behavior: domain
     format: text
     url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/microsoft.list
+  github:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: text
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/github.list
+  linkedin:
+    type: http
+    interval: 86400
+    behavior: domain
+    format: text
+    url: https://fastly.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/linkedin.list   
   Twitter:
     behavior: "domain"
     interval: 864000
