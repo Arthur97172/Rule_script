@@ -1,6 +1,4 @@
 [General]
-
-[General]
 update-url = https://raw.githubusercontent.com/arthur97172/Rule_script/main/Pharos/subscription.yaml
 proxy-test-url = http://cp.cloudflare.com/generate_204
 bypass-system = true
@@ -28,19 +26,20 @@ ChatGPT = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩�
 Facebook = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
 Google = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
 Netflix = select,DIRECT,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=1,url=http://www.gstatic.com/generate_204
+Disney = select,DIRECT,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=1,url=http://www.gstatic.com/generate_204
 Spotify = select,DIRECT,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=1,url=http://www.gstatic.com/generate_204
 Telegram = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
 TikTok = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
 Twitter = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
 YouTube = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-自动筛选 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=100,timeout=5,select=0,policy-regex-filter=.*
+自动筛选 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=100,timeout=5,select=0,policy-regex-filter=^((?!防失联|入门无).)*$
 香港节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇭🇰|港|HK|Hong
 台湾节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇹🇼|台|TW|Tai
 日本节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇯🇵|日|JP|Japan
 狮城节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇸🇬|坡|狮城|SG|Singapore
 韩国节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇰🇷|韩|KR|KOR|Korea
 美国节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇺🇸|美|US|States|American
-其他节点 = select,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=^((?!🇭🇰|港|HK|Hong|台|🇹🇼|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇰🇷|韩|KR|KOR|Korea|🇺🇸|美|US|States|American|Music).)*$
+其他节点 = select,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=^((?!🇭🇰|港|HK|Hong|台|🇹🇼|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇰🇷|韩|KR|KOR|Korea|🇺🇸|美|US|States|American|Music|防失联|入门无).)*$
 
 [Rule]
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Advertising/Advertising.list,REJECT
@@ -59,6 +58,7 @@ RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/r
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Microsoft/Microsoft.list,DIRECT
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/NetEaseMusic/NetEaseMusic.list,DIRECT
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Netflix/Netflix.list,Netflix
+RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Disney/Disney.list,Disney
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Sina/Sina.list,DIRECT
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Spotify/Spotify.list,Spotify
 RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Telegram/Telegram.list,Telegram
