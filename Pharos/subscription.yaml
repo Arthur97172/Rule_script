@@ -1,7 +1,7 @@
 [General]
 
 [General]
-update-url = https://raw.githubusercontent.com/jnlaoshu/MySelf/main/Shadowrocket/Config.conf
+update-url = https://raw.githubusercontent.com/arthur97172/Rule_script/main/Pharos/subscription.yaml
 proxy-test-url = http://cp.cloudflare.com/generate_204
 bypass-system = true
 skip-proxy = 192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,localhost,*.local,captive.apple.com,*.ccb.com,*.abchina.com.cn,*.psbc.com,www.baidu.com
