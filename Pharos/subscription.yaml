@@ -17,30 +17,6 @@ dns-direct-fallback-proxy = false
 udp-policy-not-supported-behaviour = REJECT
 hijack-dns = 8.8.8.8:53,8.8.4.4:53
 
-[Proxy Group]
-Proxy = select,自动筛选,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=600,timeout=5,select=1,url=http://cp.cloudflare.com/generate_204
-Amazon = select,DIRECT,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=1,url=http://www.gstatic.com/generate_204
-Apple = select,DIRECT,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-Bilibili = select,DIRECT,Proxy,香港节点,台湾节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-ChatGPT = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-Facebook = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-Google = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-Netflix = select,DIRECT,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=1,url=http://www.gstatic.com/generate_204
-Disney = select,DIRECT,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=1,url=http://www.gstatic.com/generate_204
-Spotify = select,DIRECT,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=1,url=http://www.gstatic.com/generate_204
-Telegram = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-TikTok = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-Twitter = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-YouTube = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩国节点,美国节点,其他节点,interval=86400,timeout=5,select=0,url=http://www.gstatic.com/generate_204
-自动筛选 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=100,timeout=5,select=0,policy-regex-filter=^((?!防失联|入门无).)*$
-香港节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇭🇰|港|HK|Hong
-台湾节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇹🇼|台|TW|Tai
-日本节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇯🇵|日|JP|Japan
-狮城节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇸🇬|坡|狮城|SG|Singapore
-韩国节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇰🇷|韩|KR|KOR|Korea
-美国节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇺🇸|美|US|States|American
-其他节点 = select,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=^((?!🇭🇰|港|HK|Hong|台|🇹🇼|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇰🇷|韩|KR|KOR|Korea|🇺🇸|美|US|States|American|Music|防失联|入门无).)*$
-
 proxy-groups:
   - name: ♻️ 自动选择
     type: url-test
@@ -83,10 +59,206 @@ proxy-groups:
     url: http://www.gstatic.com/generate_204
     interval: 300      
     filter: '^(?!.*(香港|港|🇭🇰|HK|(?i)Hong|台湾|台|🇹🇼|TW|(?i)Taiwan|日本|日|🇯🇵|JP|(?i)Japan|韩国|韩|🇰🇷|KR|新加坡|狮城|新|🇸🇬|SG|(?i)Singapore|美国|美|🇺🇸|US|(?i)States|防失联|入门无)).*$'  
+  - name: 🔰 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+      - DIRECT
+  - name: 🎥 NETFLIX
+    type: select
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 🤖 OpenAI
+    type: select
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+  - name: 📲 电报信息
+    type: select
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 🍎 苹果服务
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 🐦 Twitter
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 📹 YouTube
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 🎵 TikTok
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 🎶 Spotify
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 🐭 Disney
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 🌐 Google
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 🔧 GitHub
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+   - name: 💻 Microsoft
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+      - direct      
+   - name: 📺 国内网站
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+      - direct     
+   - name: 🚫 广告拦截
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+      - reject
+      - direct     
+   - name: 🐟 漏网之鱼
+    type: select   
+    proxies:
+      - 🔰 节点选择
+      - ♻️ 自动选择
+      - 🇭🇰 香港节点
+      - 🇯🇵 日本节点
+      - 🇹🇼 台湾节点
+      - 🇰🇷 韩国节点
+      - 🇸🇬 新加坡节点
+      - 🇺🇸 美国节点
+      - 🚀 其它节点
+      - reject
+      - direct
+      
 
-
-    
-
+      
 rule-providers:
   Advertising:
     url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Advertising/Advertising.list
@@ -146,36 +318,42 @@ rule-providers:
     url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/China/China.list
   Lan:
     url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Lan/Lan.list
+  SteamCN:
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/SteamCN/SteamCN.list
+  ChinaNews:
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/SteamCN/SteamCN.list
     
 rules:
-  - RULE-SET,Advertising,REJECT
-  - DOMAIN-SET,Advertising_Domain,REJECT
-  - RULE-SET,Amazon,Proxy
-  - RULE-SET,Apple,Apple
-  - RULE-SET,AppleNews,Proxy
-  - RULE-SET,Baidu,DIRECT
-  - RULE-SET,Bilibili,DIRECT
-  - RULE-SET,OpenAI,OpenAI
-  - RULE-SET,DouBan,DIRECT
-  - RULE-SET,DouYin,DIRECT
-  - RULE-SET,Facebook,Proxy
-  - RULE-SET,Google,Google
-  - RULE-SET,GitHub,GitHub
-  - RULE-SET,Microsoft,DIRECT
-  - RULE-SET,NetEaseMusic,DIRECT
-  - RULE-SET,Netflix,Netflix
-  - RULE-SET,Disney,Disney
-  - RULE-SET,Sina,DIRECT
-  - RULE-SET,Spotify,Spotify
-  - RULE-SET,Telegram,Telegram
-  - RULE-SET,TikTok,TikTok
-  - RULE-SET,TVB,Proxy
-  - RULE-SET,Twitter,Twitter
-  - RULE-SET,XiaoHongShu,DIRECT
-  - RULE-SET,YouTube,YouTube
-  - RULE-SET,Zhihu,DIRECT
-  - RULE-SET,Global,Proxy
-  - RULE-SET,China,DIRECT
-  - RULE-SET,Lan,DIRECT
+  - RULE-SET,Advertising,🚫 广告拦截
+  - DOMAIN-SET,Advertising_Domain,🚫 广告拦截
+  - RULE-SET,Amazon,🔰 节点选择
+  - RULE-SET,Apple,🍎 苹果服务
+  - RULE-SET,AppleNews,🔰 节点选择
+  - RULE-SET,SteamCN,📺 国内网站
+  - RULE-SET,ChinaNews,📺 国内网站  
+  - RULE-SET,Baidu,📺 国内网站
+  - RULE-SET,Bilibili,📺 国内网站
+  - RULE-SET,OpenAI,🤖 OpenAI
+  - RULE-SET,DouBan,📺 国内网站
+  - RULE-SET,DouYin,📺 国内网站
+  - RULE-SET,Facebook,🔰 节点选择
+  - RULE-SET,Google,🌐 Google
+  - RULE-SET,GitHub,🔧 GitHub
+  - RULE-SET,Microsoft,💻 Microsoft
+  - RULE-SET,NetEaseMusic,📺 国内网站
+  - RULE-SET,Netflix,🎥 NETFLIX
+  - RULE-SET,Disney,🐭 Disney
+  - RULE-SET,Sina,📺 国内网站
+  - RULE-SET,Spotify,🎶 Spotify
+  - RULE-SET,Telegram,📲 电报信息
+  - RULE-SET,TikTok,🎵 TikTok
+  - RULE-SET,TVB,🔰 节点选择
+  - RULE-SET,Twitter,🐦 Twitter
+  - RULE-SET,XiaoHongShu,📺 国内网站
+  - RULE-SET,YouTube,📹 YouTube
+  - RULE-SET,Zhihu,📺 国内网站
+  - RULE-SET,Global,🔰 节点选择
+  - RULE-SET,China,📺 国内网站
+  - RULE-SET,Lan,📺 国内网站
   - GEOIP,CN,DIRECT
   - MATCH,🐟 漏网之鱼
