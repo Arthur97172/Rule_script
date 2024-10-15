@@ -41,6 +41,15 @@ YouTube = select,Proxy,香港节点,台湾节点,日本节点,狮城节点,韩�
 美国节点 = url-test,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=🇺🇸|美|US|States|American
 其他节点 = select,url=http://cp.cloudflare.com/generate_204,interval=600,tolerance=0,timeout=5,select=0,policy-regex-filter=^((?!🇭🇰|港|HK|Hong|台|🇹🇼|TW|Tai|🇯🇵|日|JP|Japan|🇸🇬|坡|狮城|SG|Singapore|🇰🇷|韩|KR|KOR|Korea|🇺🇸|美|US|States|American|Music|防失联|入门无).)*$
 
+proxy-groups:
+  - name: ♻️ 自动选择
+    type: url-test
+    lazy: true
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    filter: '^(?!.*(防失联|入门无)).*$'  
+      
+
 
 rule-providers:
   Advertising:
