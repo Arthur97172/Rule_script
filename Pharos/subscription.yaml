@@ -48,8 +48,44 @@ proxy-groups:
     url: http://www.gstatic.com/generate_204
     interval: 300
     filter: '^(?!.*(防失联|入门无)).*$'  
-      
+  - name: 🇭🇰 香港节点
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300      
+    filter: 香港|港|🇭🇰|HK|(?i)Hong
+  - name: 🇹🇼 台湾节点
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300      
+    filter: 台湾|台|🇹🇼|TW|(?i)Taiwan
+  - name: 🇯🇵 日本节点
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300      
+    filter: 日本|日|🇯🇵|JP|(?i)Japan
+  - name: 🇰🇷 韩国节点
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300      
+    filter: 韩国|韩|🇰🇷|KR|(?i)Korea
+  - name: 🇸🇬 新加坡节点
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300      
+    filter: 新加坡|狮城|新|🇸🇬|SG|(?i)Singapore
+  - name: 🇺🇸 美国节点
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300      
+    filter: 美国|美|🇺🇸|US|(?i)States
+  - name: 🚀 其它节点
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300      
+    filter: '^(?!.*(香港|港|🇭🇰|HK|(?i)Hong|台湾|台|🇹🇼|TW|(?i)Taiwan|日本|日|🇯🇵|JP|(?i)Japan|韩国|韩|🇰🇷|KR|新加坡|狮城|新|🇸🇬|SG|(?i)Singapore|美国|美|🇺🇸|US|(?i)States|防失联|入门无)).*$'  
 
+
+    
 
 rule-providers:
   Advertising:
