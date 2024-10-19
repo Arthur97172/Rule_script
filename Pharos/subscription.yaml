@@ -42,14 +42,14 @@ dns:
     geoip-code: CN
     
 proxies:
-- name: "🏠 直连"
-  type: direct
-  udp: true
-- name: "🚫 广告拦截"
-  type: reject
-  udp: true
+ - name: "🏠 直连"
+   type: direct
+   udp: true
+ - name: "🚫 广告拦截"
+   type: reject
+   udp: true
   
-  proxy-groups:
+ proxy-groups:
   - name: 🚀 节点选择
     type: select
     proxies: 
