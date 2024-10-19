@@ -37,7 +37,10 @@ dns:
   fallback:
     - https://1.12.12.12/dns-query
     - https://223.5.5.5/dns-query
-
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    
 proxies:
 - name: "🏠 直连"
   type: direct
@@ -47,7 +50,7 @@ proxies:
   udp: true
   
   proxy-groups:
-  - {name: ♻️ 节点选择, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🌐 全部节点]}
+  - {name: 🚀 节点选择, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🌐 全部节点]}
   - {name: 🇭🇰 香港节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|美|防失联|入门无)).)*$"}
   - {name: 🇹🇼 台湾节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(台|TW|(?i)Tai))^((?!(港|日|韩|新|美|防失联|入门无)).)*$"}
   - {name: 🇯🇵 日本节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美|防失联|入门无)).)*$" }
@@ -75,9 +78,9 @@ proxies:
 rules:
   - RULE-SET,chinamax,🏠 直连
   - RULE-SET,abc,🏠 直连
-  - RULE-SET,proxy,♻️ 节点选择
-  - RULE-SET,proxymedia,♻️ 节点选择
-  - RULE-SET,proxylite,♻️ 节点选择
+  - RULE-SET,proxy,🚀 节点选择
+  - RULE-SET,proxymedia,🚀 节点选择
+  - RULE-SET,proxylite,🚀 节点选择
   - RULE-SET,apple,🍎 Apple
   - RULE-SET,openai,🤖 ChatGPT
   - RULE-SET,github,🔧 GitHub
@@ -95,7 +98,8 @@ rules:
   #- RULE-SET,telegram,Telegram,no-resolve 
   - RULE-SET,paypal,💶 PayPal
   - RULE-SET,advertisinglite,🚫 广告拦截
-  - MATCH,🏠 直连
+  - GEOIP,CN,🏠 直连  
+  - MATCH,🚀 节点选择
 rule-anchor:
   qcy: &qcy {type: http, interval: 86400, behavior: domain, format: text}
   class: &class {type: http, interval: 86400, behavior: classical, format: text}   
