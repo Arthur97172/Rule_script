@@ -39,29 +39,15 @@ dns:
     - https://223.5.5.5/dns-query
 
 proxies:
-- name: "直连"
+- name: "🏠 直连"
   type: direct
   udp: true
-- name: "广告拦截"
+- name: "🚫 广告拦截"
   type: reject
   udp: true
   
   proxy-groups:
-  - {name: 节点选择, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 全部节点, 直连]}
-  - {name: YouTube, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: Google, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: ChatGPT, type: select, proxies: [自动选择, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: GitHub, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: OneDrive, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: Microsoft, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: TikTok, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: Disney, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: Twitter, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: Telegram, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: NETFLIX, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: Speedtest, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: PayPal, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: Apple, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: ♻️ 节点选择, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 全部节点]}
   - {name: 🇭🇰 香港节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|美|防失联|入门无)).)*$"}
   - {name: 🇹🇼 台湾节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(台|TW|(?i)Tai))^((?!(港|日|韩|新|美|防失联|入门无)).)*$"}
   - {name: 🇯🇵 日本节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美|防失联|入门无)).)*$" }
@@ -69,33 +55,47 @@ proxies:
   - {name: 🇸🇬 新加坡节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(新|SG|(?i)Singapore))^((?!(港|台|韩|日|美|防失联|入门无)).)*$" }
   - {name: 🇺🇸 美国节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(美|US|(?i)United States|America))^((?!(港|台|韩|新|日|防失联|入门无)).)*$" } 
   - {name: 其它节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)^(?!.*(?:🇭🇰|HK|hk|香港|港|HongKong|🇯🇵|JP|jp|日本|日|Japan|🇹🇼|TW|tw|台湾|台|Taiwan|🇰🇷|KR|kr|韩国|韩|Korea|🇸🇬|SG|sg|新加坡|Singapore|🇺🇸|US|us|美国|美|United States|America|防失联|入门无|(直连))).*"}  
-  - {name: 自动选择, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(直连)|防失联|入门无).)*$"}
+  - {name: 🔄 自动选择, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(直连)|防失联|入门无).)*$"}
   - {name: 全部节点, type: select, include-all: true, filter: "(?i)^(?!.*(?:防失联|入门无)).*"} 
-
+  - {name: 📹 YouTube, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 🌍 Google, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 🤖 ChatGPT, type: select, proxies: [🔄 自动选择, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 💼 LinkedIn, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}  
+  - {name: 🔧 GitHub, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 🐬 OneDrive, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 💻 Microsoft, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 🎵 TikTok, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 🐭 Disney, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 🐦 Twitter, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 📲 Telegram, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 🎥 Netflix, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: ✈️ Speedtest, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 💶 PayPal, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: 🍎 Apple, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
 rules:
-  - RULE-SET,chinamax,直连
-  - RULE-SET,abc,直连
-  - RULE-SET,proxy,节点选择
-  - RULE-SET,proxymedia,节点选择
-  - RULE-SET,proxylite,节点选择
-  - RULE-SET,apple,Apple
-  - RULE-SET,openai,ChatGPT
-  - RULE-SET,github,GitHub
-  - RULE-SET,youtube,YouTube
-  - RULE-SET,google,Google
-  - RULE-SET,onedrive,OneDrive
-  - RULE-SET,microsoft,Microsoft
-  - RULE-SET,tiktok,TikTok
-  - RULE-SET,disney,Disney
-  - RULE-SET,linkedin,LinkedIn
-  - RULE-SET,twitter,Twitter
-  - RULE-SET,speedtest,Speedtest
-  - RULE-SET,netflix,NETFLIX
-  - RULE-SET,telegram,Telegram
+  - RULE-SET,chinamax,🏠 直连
+  - RULE-SET,abc,🏠 直连
+  - RULE-SET,proxy,♻️ 节点选择
+  - RULE-SET,proxymedia,♻️ 节点选择
+  - RULE-SET,proxylite,♻️ 节点选择
+  - RULE-SET,apple,🍎 Apple
+  - RULE-SET,openai,🤖 ChatGPT
+  - RULE-SET,github,🔧 GitHub
+  - RULE-SET,youtube,📹 YouTube
+  - RULE-SET,google,🌍 Google
+  - RULE-SET,onedrive,🐬 OneDrive
+  - RULE-SET,microsoft,💻 Microsoft
+  - RULE-SET,tiktok,🎵 TikTok
+  - RULE-SET,disney,🐭 Disney
+  - RULE-SET,linkedin,💼 LinkedIn
+  - RULE-SET,twitter,🐦 Twitter
+  - RULE-SET,speedtest,✈️ Speedtest
+  - RULE-SET,netflix,🎥 Netflix
+  - RULE-SET,telegram,📲 Telegram
   #- RULE-SET,telegram,Telegram,no-resolve 
-  - RULE-SET,paypal,PayPal
-  - RULE-SET,advertisinglite,广告拦截 
-  - MATCH,直连
+  - RULE-SET,paypal,💶 PayPal
+  - RULE-SET,advertisinglite,🚫 广告拦截
+  - MATCH,🏠 直连
 rule-anchor:
   qcy: &qcy {type: http, interval: 86400, behavior: domain, format: text}
   class: &class {type: http, interval: 86400, behavior: classical, format: text}   
