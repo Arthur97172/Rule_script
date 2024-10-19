@@ -19,346 +19,88 @@ dns:
     - https://1.12.12.12/dns-query
     - https://223.5.5.5/dns-query
 
-#proxy-groups:
-  - name: ♻️ 自动选择
-    type: url-test
-    proxies:
-      - Subscribe1
-      - Subscribe1
-    lazy: true
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    filter: '^(?!.*(防失联|入门无)).*$'  
-  - name: 🇭🇰 香港节点
-    type: fallback
-    url: http://www.gstatic.com/generate_204
-    interval: 300      
-    filter: 香港|港|🇭🇰|HK|(?i)Hong
-  - name: 🇹🇼 台湾节点
-    type: fallback
-    url: http://www.gstatic.com/generate_204
-    interval: 300      
-    filter: 台湾|台|🇹🇼|TW|(?i)Taiwan
-  - name: 🇯🇵 日本节点
-    type: fallback
-    url: http://www.gstatic.com/generate_204
-    interval: 300      
-    filter: 日本|日|🇯🇵|JP|(?i)Japan
-  - name: 🇰🇷 韩国节点
-    type: fallback
-    url: http://www.gstatic.com/generate_204
-    interval: 300      
-    filter: 韩国|韩|🇰🇷|KR|(?i)Korea
-  - name: 🇸🇬 新加坡节点
-    type: fallback
-    url: http://www.gstatic.com/generate_204
-    interval: 300      
-    filter: 新加坡|狮城|新|🇸🇬|SG|(?i)Singapore
-  - name: 🇺🇸 美国节点
-    type: fallback
-    url: http://www.gstatic.com/generate_204
-    interval: 300      
-    filter: 美国|美|🇺🇸|US|(?i)States
-  - name: 🚀 其它节点
-    type: fallback
-    url: http://www.gstatic.com/generate_204
-    interval: 300      
-    filter: '^(?!.*(香港|港|🇭🇰|HK|(?i)Hong|台湾|台|🇹🇼|TW|(?i)Taiwan|日本|日|🇯🇵|JP|(?i)Japan|韩国|韩|🇰🇷|KR|新加坡|狮城|新|🇸🇬|SG|(?i)Singapore|美国|美|🇺🇸|US|(?i)States|防失联|入门无)).*$'  
-  - name: 🔰 节点选择
-    type: select
-    proxies:
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-      - DIRECT
-  - name: 🎥 NETFLIX
-    type: select
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 🤖 OpenAI
-    type: select
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-  - name: 📲 电报信息
-    type: select
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 🍎 苹果服务
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 🐦 Twitter
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 📹 YouTube
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 🎵 TikTok
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 🎶 Spotify
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 🐭 Disney
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 🌐 Google
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 🔧 GitHub
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-   - name: 💻 Microsoft
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-      - direct      
-   - name: 📺 国内网站
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-      - direct     
-   - name: 🚫 广告拦截
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-      - reject
-      - direct     
-   - name: 🐟 漏网之鱼
-    type: select   
-    proxies:
-      - 🔰 节点选择
-      - ♻️ 自动选择
-      - 🇭🇰 香港节点
-      - 🇯🇵 日本节点
-      - 🇹🇼 台湾节点
-      - 🇰🇷 韩国节点
-      - 🇸🇬 新加坡节点
-      - 🇺🇸 美国节点
-      - 🚀 其它节点
-      - reject
-      - direct
-      
+proxies:
+- name: "🏠 直连"
+  type: direct
+  udp: true
+- name: "🚫 广告拦截"
+  type: reject
+  udp: true
+  
+  proxy-groups:
+  - {name: 🚀 节点选择, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🌐 全部节点, 🏠 直连]}
+  - {name: 📹 YouTube, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🌍 Google, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🤖 ChatGPT, type: select, proxies: [🔄 自动选择, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 👨🏿‍💻 GitHub, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🐬 OneDrive, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 💻 Microsoft, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🎵 TikTok, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🐭 Disney, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🐦 Twitter, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 📲 Telegram, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🎥 NETFLIX, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: ✈️ Speedtest, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 💶 PayPal, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🍎 Apple, type: select, proxies: [🔄 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🐟 其它节点, 🏠 直连]}
+  - {name: 🇭🇰 香港节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|美|防失联|入门无)).)*$"}
+  - {name: 🇹🇼 台湾节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(台|TW|(?i)Tai))^((?!(港|日|韩|新|美|防失联|入门无)).)*$"}
+  - {name: 🇯🇵 日本节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(日|JP|(?i)Japan))^((?!(港|台|韩|新|美|防失联|入门无)).)*$" }
+  - {name: 🇰🇷 韩国节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(韩|KR|(?i)Korea))^((?!(港|台|日|新|美|防失联|入门无)).)*$" }
+  - {name: 🇸🇬 新加坡节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(新|SG|(?i)Singapore))^((?!(港|台|韩|日|美|防失联|入门无)).)*$" }
+  - {name: 🇺🇸 美国节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(美|US|(?i)United States|America))^((?!(港|台|韩|新|日|防失联|入门无)).)*$" } 
+  - {name: 🐟 其它节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?i)^(?!.*(?:🇭🇰|HK|hk|香港|港|HongKong|🇯🇵|JP|jp|日本|日|Japan|🇹🇼|TW|tw|台湾|台|Taiwan|🇰🇷|KR|kr|韩国|韩|Korea|🇸🇬|SG|sg|新加坡|Singapore|🇺🇸|US|us|美国|美|United States|America|防失联|入门无|(直连))).*"}  
+  - {name: 🔄 自动选择, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "^((?!(直连)|防失联|入门无).)*$"}
+  - {name: 🌐 全部节点, type: select, include-all: true, filter: "(?i)^(?!.*(?:防失联|入门无)).*"} 
 
-      
-rule-providers:
-  Advertising:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Advertising/Advertising.list
-  Advertising_Domain:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Advertising/Advertising_Domain.list
-    Amazon:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Amazon/Amazon.list 
-  Apple:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Apple/Apple.list
-  AppleNews:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/AppleNews/AppleNews.list
-  Baidu:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Baidu/Baidu.list
-  Bilibili:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/BiliBili/BiliBili.list
-  OpenAI:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/OpenAI/OpenAI.list
-  DouBan:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/DouBan/DouBan.list
-  DouYin:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/DouYin/DouYin.list
-  Facebook:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Facebook/Facebook.list
-  Google:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Google/Google.list
-  GitHub:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/GitHub/GitHub.list
-  Microsoft:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Microsoft/Microsoft.list
-  NetEaseMusic:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/NetEaseMusic/NetEaseMusic.list
-  Netflix:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Netflix/Netflix.list
-  Disney:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Disney/Disney.list
-  Sina:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Sina/Sina.list
-  Spotify:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Spotify/Spotify.list
-  Telegram:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Telegram/Telegram.list
-   TikTok:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/TikTok/TikTok.list
-  TVB:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/TVB/TVB.list
-  Twitter:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Twitter/Twitter.list 
-  XiaoHongShu:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/XiaoHongShu/XiaoHongShu.list
-  YouTube:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/YouTube/YouTube.list
-  Zhihu:
-    url: ,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Zhihu/Zhihu.list
-  Global:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Global/Global.list
-  China:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/China/China.list
-  Lan:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Lan/Lan.list
-  SteamCN:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/SteamCN/SteamCN.list
-  ChinaNews:
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/SteamCN/SteamCN.list
-    
 rules:
-  - RULE-SET,Advertising,🚫 广告拦截
-  - DOMAIN-SET,Advertising_Domain,🚫 广告拦截
-  - RULE-SET,Amazon,🔰 节点选择
-  - RULE-SET,Apple,🍎 苹果服务
-  - RULE-SET,AppleNews,🔰 节点选择
-  - RULE-SET,SteamCN,📺 国内网站
-  - RULE-SET,ChinaNews,📺 国内网站  
-  - RULE-SET,Baidu,📺 国内网站
-  - RULE-SET,Bilibili,📺 国内网站
-  - RULE-SET,OpenAI,🤖 OpenAI
-  - RULE-SET,DouBan,📺 国内网站
-  - RULE-SET,DouYin,📺 国内网站
-  - RULE-SET,Facebook,🔰 节点选择
-  - RULE-SET,Google,🌐 Google
-  - RULE-SET,GitHub,🔧 GitHub
-  - RULE-SET,Microsoft,💻 Microsoft
-  - RULE-SET,NetEaseMusic,📺 国内网站
-  - RULE-SET,Netflix,🎥 NETFLIX
-  - RULE-SET,Disney,🐭 Disney
-  - RULE-SET,Sina,📺 国内网站
-  - RULE-SET,Spotify,🎶 Spotify
-  - RULE-SET,Telegram,📲 电报信息
-  - RULE-SET,TikTok,🎵 TikTok
-  - RULE-SET,TVB,🔰 节点选择
-  - RULE-SET,Twitter,🐦 Twitter
-  - RULE-SET,XiaoHongShu,📺 国内网站
-  - RULE-SET,YouTube,📹 YouTube
-  - RULE-SET,Zhihu,📺 国内网站
-  - RULE-SET,Global,🔰 节点选择
-  - RULE-SET,China,📺 国内网站
-  - RULE-SET,Lan,📺 国内网站
-  - GEOIP,CN,DIRECT
-  - MATCH,🐟 漏网之鱼
+  - RULE-SET,chinamax,🏠 直连
+  - RULE-SET,abc,🏠 直连  
+  - RULE-SET,apple,🍎 Apple
+  - RULE-SET,proxy,🚀 节点选择
+  - RULE-SET,proxymedia,🚀 节点选择
+  - RULE-SET,proxylite,🚀 节点选择  
+  - RULE-SET,openai,🤖 ChatGPT
+  - RULE-SET,github,👨🏿‍💻 GitHub
+  - RULE-SET,youtube,📹 YouTube
+  - RULE-SET,google,🌍 Google
+  - RULE-SET,onedrive,🐬 OneDrive
+  - RULE-SET,microsoft,💻 Microsoft
+  - RULE-SET,tiktok,🎵 TikTok
+  - RULE-SET,disney,🐭 Disney
+  - RULE-SET,linkedin,💼 LinkedIn
+  - RULE-SET,twitter,🐦 Twitter
+  - RULE-SET,speedtest,✈️ Speedtest
+  - RULE-SET,netflix,🎥 NETFLIX
+  - RULE-SET,telegram,📲 Telegram
+  #- RULE-SET,telegram,📲 Telegram,no-resolve 
+  - RULE-SET,paypal,💶 PayPal
+  - RULE-SET,google,🌍 Google
+  - RULE-SET,netflix,🎥 NETFLIX
+  - RULE-SET,advertisinglite,🚫 广告拦截 
+  - MATCH,🏠 直连
+rule-anchor:
+  qcy: &qcy {type: http, interval: 86400, behavior: domain, format: text}
+  class: &class {type: http, interval: 86400, behavior: classical, format: text}   
+rule-providers:
+  chinamax: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMax/ChinaMax.list" }
+  abc: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ABC/ABC.list" }  
+  proxy: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global.list" }
+  proxymedia: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GlobalMedia/GlobalMedia.list" }
+  proxylite: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ProxyLite/ProxyLite.list" }  
+  openai: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.list" }
+  twitter: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Twitter/Twitter.list" }
+  youtube: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.list" }
+  google: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list" }
+  github: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.list" }
+  telegram: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.list" }
+  netflix: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.list" }
+  paypal: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/PayPal/PayPal.list" }
+  onedrive: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OneDrive/OneDrive.list" }
+  microsoft: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.list" }
+  apple: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.list" }
+  speedtest: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Speedtest/Speedtest.list" }
+  tiktok: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TikTok/TikTok.list" }
+  disney: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Disney/Disney.list" }
+  linkedin: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/LinkedIn/LinkedIn.list" }
+  advertisinglite: { <<: *class, url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AdvertisingLite/AdvertisingLite.list" }
