@@ -59,7 +59,7 @@ proxies:
   - {name: Twitter, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
   - {name: Telegram, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
   - {name: NETFLIX, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
-  - {name: ✈Speedtest, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
+  - {name: Speedtest, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
   - {name: PayPal, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
   - {name: Apple, type: select, proxies: [自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇰🇷 韩国节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 其它节点, 直连]}
   - {name: 🇭🇰 香港节点, type: url-test, include-all: true, tolerance: 20, interval: 300, filter: "(?=.*(港|HK|(?i)Hong))^((?!(台|日|韩|新|美|防失联|入门无)).)*$"}
@@ -74,11 +74,11 @@ proxies:
 
 rules:
   - RULE-SET,chinamax,直连
-  - RULE-SET,abc,直连  
-  - RULE-SET,apple,Apple
+  - RULE-SET,abc,直连
   - RULE-SET,proxy,节点选择
   - RULE-SET,proxymedia,节点选择
-  - RULE-SET,proxylite,节点选择  
+  - RULE-SET,proxylite,节点选择
+  - RULE-SET,apple,Apple
   - RULE-SET,openai,ChatGPT
   - RULE-SET,github,GitHub
   - RULE-SET,youtube,YouTube
