@@ -94,8 +94,6 @@ rules:
   - RULE-SET,telegram,Telegram
   #- RULE-SET,telegram,Telegram,no-resolve 
   - RULE-SET,paypal,PayPal
-  - RULE-SET,google,Google
-  - RULE-SET,netflix,NETFLIX
   - RULE-SET,advertisinglite,广告拦截 
   - MATCH,直连
 rule-anchor:
