@@ -1,4 +1,4 @@
-#172.67.217.208# NAME: home
+# NAME: home
 # AUTHOR: Arthur97172
 # REPO: https://github.com/arthur97172/Rule_script/Rule
 # UPDATED: 2024-11-03 21:20:33
@@ -12,5 +12,5 @@ payload:
   - IP-CIDR,172.64.142.0/24
   - IP-CIDR,172.67.147.0/24
   - IP-CIDR,104.21.54.0/24
-  #- PROCESS-NAME,LookupViewService
-  #- PROCESS-NAME,TV
+  # - PROCESS-NAME,LookupViewService
+  # - PROCESS-NAME,TV
