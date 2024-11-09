@@ -8,6 +8,11 @@ payload:
   - DOMAIN-KEYWORD,yjys05.com
   - DOMAIN-KEYWORD,dy.town
   - DOMAIN-KEYWORD,seedhub.info
+  - DOMAIN-KEYWORD,githubusercontent.com
+  - IP-CIDR,185.199.108.0/24  
+  - IP-CIDR,185.199.109.0/24  
+  - IP-CIDR,185.199.110.0/24
+  - IP-CIDR,185.199.111.0/24
   - IP-CIDR,172.67.217.0/24
   - IP-CIDR,172.64.142.0/24
   - IP-CIDR,172.67.147.0/24
