@@ -4,7 +4,7 @@
 https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/XX.png
 
 #### Egren 配置文件
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/Egren/subscription.yaml
+https://raw.githubusercontent.com/arthur97172/Rule_script/main/Egern/subscription.yaml
 
 #### Loon 配置文件
 https://raw.githubusercontent.com/arthur97172/Rule_script/main/Loon/subscription.conf
