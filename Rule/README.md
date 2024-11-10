@@ -1,19 +1,8 @@
 ## 简介
 
-#### 如需引用图标只需把XX改为对应的文件名
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/XX.png
+#### 自用文件
+[https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/XX.png](https://raw.githubusercontent.com/arthur97172/Rule_script/main/Rule/Globalhome.yaml)
 
-#### Egren 配置文件
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/Egern/subscription.yaml
-
-#### Loon 配置文件
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/Loon/subscription.conf
-
-#### QuantumultX 配置文件
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/QuantumultX/subscription.conf
-
-#### Stash 配置文件
-https://raw.githubusercontent.com/arthur97172/Rule_script/main/Stash/subscription.yaml
 
 ## 特别声明
 1，本项目内所有资源文件，禁止任何公众号、自媒体进行任何形式的转载、发布。
@@ -31,14 +20,4 @@ https://raw.githubusercontent.com/arthur97172/Rule_script/main/Stash/subscriptio
 7，所有直接或间接使用本项目的个人和组织，应24小时内完成学习和研究，并及时删除本项目中的所有内容。如对本项目的功能有需求，应自行开发相关功能。
 
 8，本项目保留随时对免责声明进行补充或更改的权利，直接或间接使用本项目内容的个人或组织，视为接受本项目的特别声明。
-
-## 贴别感谢
-
-[@blackmatrix7](https://github.com/blackmatrix7)
-
-[@Centralmatrix3](https://github.com/Centralmatrix3)
-
-[@KOP-XIAO](https://github.com/KOP-XIAO)
-
-[@chavyleung](https://github.com/chavyleung)
 
