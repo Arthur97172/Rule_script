@@ -1,7 +1,7 @@
 ## 简介
 
 #### 自用文件
-[https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/XX.png](https://raw.githubusercontent.com/arthur97172/Rule_script/main/Rule/Globalhome.yaml)
+[https://raw.githubusercontent.com/arthur97172/Rule_script/main/Rule/Globalhome.yaml](https://raw.githubusercontent.com/arthur97172/Rule_script/main/Rule/Globalhome.yaml)
 
 
 ## 特别声明
