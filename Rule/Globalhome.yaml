@@ -10,6 +10,8 @@ payload:
   - DOMAIN-KEYWORD,seedhub.info
   - DOMAIN-KEYWORD,githubusercontent.com
   - DOMAIN-KEYWORD,yjys02.com
+  - DOMAIN-KEYWORD,commscope.com
+  - DOMAIN-KEYWORD,ondemand.com
   - IP-CIDR,185.199.108.0/24  
   - IP-CIDR,185.199.109.0/24  
   - IP-CIDR,185.199.110.0/24
