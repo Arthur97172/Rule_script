@@ -12,6 +12,7 @@ payload:
   - DOMAIN-KEYWORD,yjys02.com
   - DOMAIN-KEYWORD,commscope.com
   - DOMAIN-KEYWORD,ondemand.com
+  - DOMAIN-KEYWORD,onmicrosoft.com
   - IP-CIDR,185.199.108.0/24  
   - IP-CIDR,185.199.109.0/24  
   - IP-CIDR,185.199.110.0/24
