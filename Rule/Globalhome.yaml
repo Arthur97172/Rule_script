@@ -13,6 +13,8 @@ payload:
   - DOMAIN-KEYWORD,commscope.com
   - DOMAIN-KEYWORD,ondemand.com
   - DOMAIN-KEYWORD,onmicrosoft.com
+  - DOMAIN-KEYWORD,asveuhaez.accounts.com 
+  - DOMAIN-KEYWORD,epd-orod.launchpad.com
   - IP-CIDR,185.199.108.0/24  
   - IP-CIDR,185.199.109.0/24  
   - IP-CIDR,185.199.110.0/24
