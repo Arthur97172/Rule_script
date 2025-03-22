@@ -16,8 +16,9 @@ payload:
   - DOMAIN-KEYWORD,asveuhaez.accounts.com 
   - DOMAIN-KEYWORD,epd-orod.launchpad.com
   - DOMAIN-KEYWORD,feijicloud.com
+  - DOMAIN-KEYWORD,paloaltoneworks.com  
   - IP-CIDR,185.199.108.0/24  
-  - IP-CIDR,185.199.109.0/24  
+  - IP-CIDR,185.199.109.0/24
   - IP-CIDR,185.199.110.0/24
   - IP-CIDR,185.199.111.0/24
   - IP-CIDR,172.67.217.0/24
