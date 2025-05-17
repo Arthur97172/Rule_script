@@ -17,6 +17,7 @@ payload:
   - DOMAIN-KEYWORD,epd-orod.launchpad.com
   - DOMAIN-KEYWORD,feijicloud.com
   - DOMAIN-KEYWORD,paloaltoneworks.com  
+  - DOMAIN-KEYWORD,plex.tv    
   - IP-CIDR,185.199.108.0/24  
   - IP-CIDR,185.199.109.0/24
   - IP-CIDR,185.199.110.0/24
