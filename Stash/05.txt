@@ -1,0 +1,148 @@
+[    0.786383] TCP: Hash tables configured (established 32768 bind 32768)
+[    0.786879] MPTCP token hash table entries: 4096 (order: 4, 98304 bytes, linear)
+[    0.787057] UDP hash table entries: 2048 (order: 4, 65536 bytes, linear)
+[    0.787162] UDP-Lite hash table entries: 2048 (order: 4, 65536 bytes, linear)
+[    0.787543] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[    0.787632] NET: Registered PF_XDP protocol family
+[    0.787664] PCI: CLS 0 bytes, default 64
+[    0.788347] Trying to unpack rootfs image as initramfs...
+[    0.799785] hw perfevents: enabled with armv8_cortex_a55 PMU driver, 7 counters available
+[    0.801051] kvm [1]: IPA Size Limit: 40 bits
+[    0.801133] kvm [1]: GICv3: no GICV resource entry
+[    0.801153] kvm [1]: disabling GICv2 emulation
+[    0.801192] kvm [1]: GIC system register CPU interface enabled
+[    0.801786] kvm [1]: vgic interrupt IRQ9
+[    0.802300] kvm [1]: VHE mode initialized successfully
+[    0.806241] Initialise system trusted keyrings
+[    0.806628] workingset: timestamp_bits=46 max_order=20 bucket_order=0
+[    0.815610] zbud: loaded
+[    0.818290] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.819124] fuse: init (API version 7.38)
+[    0.819921] SGI XFS with ACLs, security attributes, quota, no debug enabled
+[    0.880471] NET: Registered PF_ALG protocol family
+[    0.880647] xor: measuring software checksum speed
+[    0.882682]    8regs           :  1629 MB/sec
+[    0.884674]    32regs          :  1665 MB/sec
+[    0.886619]    arm64_neon      :  1700 MB/sec
+[    0.886639] xor: using function: arm64_neon (1700 MB/sec)
+[    0.886663] Key type asymmetric registered
+[    0.886677] Asymmetric key parser '
+[    1.153794] cacheinfo: Unable to detect cache hierarchy for CPU 0
+[    1.157414] brd: module loaded
+[    1.240498] loop: module loaded
+[    1.253829] rk_gmac-dwmac fe2a0000.ethernet: IRQ eth_lpi not found
+[    1.254807] rk_gmac-dwmac fe2a0000.ethernet: supply phy not found, using dummy regulator
+[    1.255760] rk_gmac-dwmac fe2a0000.ethernet: clock input or output? (output).
+[    1.256410] rk_gmac-dwmac fe2a0000.ethernet: TX delay(0x43).
+[    1.256923] rk_gmac-dwmac fe2a0000.ethernet: RX delay(0x33).
+[    1.257446] rk_gmac-dwmac fe2a0000.ethernet: integrated PHY? (no).
+[    1.263166] rk_gmac-dwmac fe2a0000.ethernet: init for RGMII
+[    1.263980] rk_gmac-dwmac fe2a0000.ethernet: User ID: 0x30, Synopsys ID: 0x51
+[    1.264632] rk_gmac-dwmac fe2a0000.ethernet:         DWMAC4/5
+[    1.265102] rk_gmac-dwmac fe2a0000.ethernet: DMA HW capability register supported
+[    1.265794] rk_gmac-dwmac fe2a0000.ethernet: RX Checksum Offload Engine supported
+[    1.266466] rk_gmac-dwmac fe2a0000.ethernet: TX Checksum insertion supported
+[    1.267096] rk_gmac-dwmac fe2a0000.ethernet: Wake-Up On Lan supported
+[    1.267671] rk_gmac-dwmac fe2a0000.ethernet: TSO supported
+[    1.268164] rk_gmac-dwmac fe2a0000.ethernet: Enable RX Mitigation via HW Watchdog Timer
+[    1.268881] rk_gmac-dwmac fe2a0000.ethernet: Enabled RFS Flow TC (entries=10)
+[    1.269542] rk_gmac-dwmac fe2a0000.ethernet: TSO feature enabled
+[    1.270086] rk_gmac-dwmac fe2a0000.ethernet: Using 32/32 bits DMA host/device width
+[    4.766376] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+[    4.768181] NET: Registered PF_PACKET protocol family
+[    4.768663] NET: Registered PF_KEY protocol family
+[    4.769493] 8021q: 802.1Q VLAN Support v1.8
+[    4.770712] registered taskstats version 1
+[    4.771126] Loading compiled-in X.509 certificates
+[    4.779844] zswap: loaded using pool zstd/zbud
+[    4.781143] Key type .fscrypt registered
+[    4.781513] Key type fscrypt-provisioning registered
+[    4.783503] Btrfs loaded, crc32c=crc32c-generic, zoned=no, fsverity=no
+[    5.127722] alg: No test for 842 (842-scomp)
+[    5.128550] alg: No test for 842 (842-generic)
+[    6.152161] dw-pcie 3c0800000.pcie: Missing *config* reg space
+[    6.152722] dw-pcie 3c0800000.pcie: Failed to initialize host
+[    6.153528] rockchip-dw-pcie 3c0800000.pcie: invalid resource
+[    6.154109] rockchip-dw-pcie: probe of 3c0800000.pcie failed with error -22
+[    6.161198] rk808 0-0020: chip id: 0x8090
+[    6.259066] rk808-regulator rk808-regulator: there is no dvs0 gpio
+[    6.259680] rk808-regulator rk808-regulator: there is no dvs1 gpio
+[    6.285435] vdda0v9_image: Bringing 600000uV into 900000-900000uV
+[    6.301940] vccio_acodec: Bringing 600000uV into 3000000-3000000uV
+[    6.326800] vcca1v8_image: Bringing 600000uV into 1800000-1800000uV
+[    6.346536] input: rk805 pwrkey as /devices/platform/fdd40000.i2c/i2c-0/0-0020/rk805-pwrkey/input/input0
+[    6.376260] ehci-platform fd800000.usb: EHCI Host Controller
+[    6.376995] ehci-platform fd880000.usb: EHCI Host Controller
+[    6.377180] ehci-platform fd800000.usb: new USB bus registered, assigned bus number 1
+[    6.377921] ehci-platform fd880000.usb: new USB bus registered, assigned bus number 2
+[    6.378471] ehci-platform fd800000.usb: irq 66, io mem 0xfd800000
+[    6.379074] ehci-platform fd880000.usb: irq 67, io mem 0xfd880000
+[    6.379211] clk: Disabling unused clocks
+[    6.382423] ALSA device list:
+[    6.382714]   No soundcards found.
+[    6.393997] ehci-platform fd800000.usb: USB 2.0 started, EHCI 1.00
+[    6.394841] usb usb1: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.01
+[    6.395592] usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[    6.396243] usb usb1: Product: EHCI Host Controller
+[    6.396684] usb usb1: Manufacturer: Linux 6.1.147-ophub ehci_hcd
+[    6.397223] usb usb1: SerialNumber: fd800000.usb
+[    6.398332] hub 1-0:1.0: USB hub found
+[    6.398728] hub 1-0:1.0: 1 port detected
+[    6.414002] ehci-platform fd880000.usb: USB 2.0 started, EHCI 1.00
+[    6.414899] usb usb2: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 6.01
+[    6.415652] usb usb2: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[    6.416302] usb usb2: Product: EHCI Host Controller
+[    6.416744] usb usb2: Manufacturer: Linux 6.1.147-ophub ehci_hcd
+[    6.417285] usb usb2: SerialNumber: fd880000.usb
+[    6.418416] hub 2-0:1.0: USB hub found
+[    6.418813] hub 2-0:1.0: 1 port detected
+[    6.422695] Freeing unused kernel memory: 6016K
+[    6.423299] Run /init as init process
+Begin: Mounting root file system ... Begin: Running /scripts/local-top ... done.
+Begin: Running /scripts/local-premount ... Scanning for Btrfs filesystems
+done.
+Begin: Waiting for root file system ... Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+[   18.398729] rockchip-vop2 fe040000.vop: deferred probe timeout, ignoring dependency
+[   18.400005] rockchip-drm display-subsystem: [drm] *ERROR* failed to get vop2 register byname
+[   18.400782] rockchip-drm display-subsystem: failed to bind fe040000.vop (ops vop2_component_ops): -22
+[   18.401727] rockchip-drm display-subsystem: adev bind failed: -22
+[   18.402364] rockchip-vop2: probe of fe040000.vop failed with error -22
+[   18.405136] platform cpufreq-dt: deferred probe pending
+[   18.405645] platform vdd-cpu: deferred probe pending
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+Begin: Running /scripts/local-block ... done.
+done.
+Gave up waiting for root file system device.  Common problems:
+ - Boot args (cat /proc/cmdline)
+   - Check rootdelay= (did the system wait long enough?)
+ - Missing modules (cat /proc/modules; ls /dev)
+ALERT!  PARTUUID=33972388-2dd3-486e-b657-06464cf1f9b8 does not exist.  Dropping to a shell!
+
+
+
+
