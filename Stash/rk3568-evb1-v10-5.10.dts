@@ -4285,7 +4285,7 @@
 		dmas = <0x47 0x02 0x47 0x03>;
 		pinctrl-names = "default";
 		pinctrl-0 = <0x107>;
-		status = "disabled";
+		status = "okay";
 		phandle = <0x1e5>;
 	};
 
@@ -7731,13 +7731,13 @@
 	};
 
 chosen {
-    bootargs = "earlycon=uart8250,mmio32,0xfe660000 console=ttyS2,1500000 root=PARTUUID=614e0000-0000 rw rootwait";
+    bootargs = "earlycon=uart8250,mmio32,0xfe650000 console=ttyS1,1500000 root=PARTUUID=614e0000-0000 rw rootwait";
 		phandle = <0x32f>;
 	};
 
 	fiq-debugger {
 		compatible = "rockchip,fiq-debugger";
-		rockchip,serial-id = <0x06>; /* V1 orginal valuse was 0x02 */
+		rockchip,serial-id = <0x02>;
 		rockchip,wake-irq = <0x00>;
 		rockchip,irq-mode-enable = <0x01>;
 		rockchip,baudrate = <0x16e360>;
