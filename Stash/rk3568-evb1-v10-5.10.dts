@@ -574,69 +574,6 @@
 		ports = <0x16>;
 		devfreq = <0x17>;
 		phandle = <0x159>;
-
-		route {
-
-			route-dsi0 {
-				status = "okay";
-				logo,uboot = "logo.bmp";
-				logo,kernel = "logo_kernel.bmp";
-				logo,mode = "center";
-				charge_logo,mode = "center";
-				connect = <0x18>;
-				phandle = <0x15a>;
-			};
-
-			route-dsi1 {
-				status = "disabled";
-				logo,uboot = "logo.bmp";
-				logo,kernel = "logo_kernel.bmp";
-				logo,mode = "center";
-				charge_logo,mode = "center";
-				connect = <0x19>;
-				phandle = <0x15b>;
-			};
-
-			route-edp {
-				status = "okay";
-				logo,uboot = "logo.bmp";
-				logo,kernel = "logo_kernel.bmp";
-				logo,mode = "center";
-				charge_logo,mode = "center";
-				connect = <0x1a>;
-				phandle = <0x15c>;
-			};
-
-			route-hdmi {
-				status = "okay";
-				logo,uboot = "logo.bmp";
-				logo,kernel = "logo_kernel.bmp";
-				logo,mode = "center";
-				charge_logo,mode = "center";
-				connect = <0x1b>;
-				phandle = <0x15d>;
-			};
-
-			route-lvds {
-				status = "disabled";
-				logo,uboot = "logo.bmp";
-				logo,kernel = "logo_kernel.bmp";
-				logo,mode = "center";
-				charge_logo,mode = "center";
-				connect = <0x1c>;
-				phandle = <0x15e>;
-			};
-
-			route-rgb {
-				status = "disabled";
-				logo,uboot = "logo.bmp";
-				logo,kernel = "logo_kernel.bmp";
-				logo,mode = "center";
-				charge_logo,mode = "center";
-				connect = <0x1d>;
-				phandle = <0x15f>;
-			};
-		};
 	};
 
 	edac {
@@ -2541,7 +2478,7 @@
 		snps,axi-config = <0x87>;
 		snps,mtl-rx-config = <0x88>;
 		snps,mtl-tx-config = <0x89>;
-		status = "okay";
+		status = "disabled";
 		phy-mode = "rgmii";
 		clock_in_out = "output";
 		snps,reset-gpio = <0x8a 0x19 0x01>;
@@ -3233,7 +3170,7 @@
 		fifo-depth = <0x100>;
 		resets = <0x24 0xeb>;
 		reset-names = "reset";
-		status = "okay";
+		status = "disabled";
 		no-sd;
 		no-mmc;
 		bus-width = <0x04>;
@@ -3635,7 +3572,7 @@
 		assigned-clock-rates = <0xbebc200>;
 		resets = <0x24 0x69>;
 		reset-names = "crypto-rst";
-		status = "disabled";
+		status = "okay";
 		phandle = <0x1cc>;
 	};
 
@@ -4164,7 +4101,7 @@
 		pinctrl-0 = <0xf5>;
 		#address-cells = <0x01>;
 		#size-cells = <0x00>;
-		status = "okay";
+		status = "disabled";
 		phandle = <0x1dd>;
 
 		mxc6655xa@15 {
@@ -4390,7 +4327,7 @@
 		dmas = <0x47 0x10 0x47 0x11>;
 		pinctrl-names = "default";
 		pinctrl-0 = <0x10e 0x10f>;
-		status = "okay";
+		status = "disabled";
 		phandle = <0x1ec>;
 	};
 
@@ -4417,7 +4354,7 @@
 		pinctrl-0 = <0x111>;
 		clocks = <0x24 0x15a 0x24 0x159>;
 		clock-names = "pwm\0pclk";
-		status = "okay";
+		status = "disabled";
 		phandle = <0x142>;
 	};
 
@@ -4429,7 +4366,7 @@
 		pinctrl-0 = <0x112>;
 		clocks = <0x24 0x15a 0x24 0x159>;
 		clock-names = "pwm\0pclk";
-		status = "okay";
+		status = "disabled";
 		phandle = <0x143>;
 	};
 
@@ -4454,7 +4391,7 @@
 		pinctrl-0 = <0x114>;
 		clocks = <0x24 0x15a 0x24 0x159>;
 		clock-names = "pwm\0pclk";
-		status = "okay";
+		status = "disabled";
 		remote_pwm_id = <0x03>;
 		handle_cpu_id = <0x01>;
 		remote_support_psci = <0x00>;
@@ -4696,7 +4633,7 @@
 		reset-names = "apb";
 		power-domains = <0x26 0x09>;
 		#phy-cells = <0x00>;
-		status = "okay";
+		status = "disabled";
 		phandle = <0x33>;
 	};
 
@@ -4854,7 +4791,7 @@
 		resets = <0x24 0x1be>;
 		reset-names = "phy";
 		rockchip,phy-grf = <0x133>;
-		status = "okay";
+		status = "disabled";
 		phandle = <0xc1>;
 	};
 
@@ -7774,12 +7711,6 @@ chosen {
 		cpu0_opp_table = "/cpu0-opp-table";
 		arm_pmu = "/arm-pmu";
 		display_subsystem = "/display-subsystem";
-		route_dsi0 = "/display-subsystem/route/route-dsi0";
-		route_dsi1 = "/display-subsystem/route/route-dsi1";
-		route_edp = "/display-subsystem/route/route-edp";
-		route_hdmi = "/display-subsystem/route/route-hdmi";
-		route_lvds = "/display-subsystem/route/route-lvds";
-		route_rgb = "/display-subsystem/route/route-rgb";
 		edac = "/edac";
 		scmi = "/firmware/scmi";
 		scmi_clk = "/firmware/scmi/protocol@14";
