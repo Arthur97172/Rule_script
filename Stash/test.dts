@@ -22,7 +22,15 @@
 		mmc1 = &sdhci;
 	};
 
-
+	backlight: backlight {
+		compatible = "pwm-backlight";
+		brightness-levels = <20 220>;
+		default-brightness-level = <100>;
+		num-interpolated-steps = <200>;
+		power-supply = <&vcc3v3_sys>;
+		pwms = <&pwm4 0 25000 0>;
+	};
+	
 	chosen: chosen {
 		stdout-path = "serial2:1500000n8";
 	};
@@ -575,6 +583,19 @@
 	vccio5-supply = <&vcc_3v3>;
 	vccio6-supply = <&vcc_1v8>;
 	vccio7-supply = <&vcc_3v3>;
+	status = "okay";
+};
+
+&pmucru {
+	rockchip,pmugrf = <&pmugrf>;
+	rockchip,grf = <&grf>;
+};
+
+&pwm4 {
+	status = "okay";
+};
+
+&combphy2 {
 	status = "okay";
 };
 
