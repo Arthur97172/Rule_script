@@ -599,6 +599,10 @@
 	status = "okay";
 };
 
+&backlight {
+	status = "okay";
+};
+
 &saradc {
 	vref-supply = <&vcca_1v8>;
 	status = "okay";
