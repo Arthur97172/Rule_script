@@ -326,34 +326,6 @@
 	reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>; /* tested by voltmeter */
 	reset-delay-us = <5000>;
     reset-post-delay-us = <8000>;
-	
-    pcie@0 {
-		compatible = "pci1b21,1064";
-        device_type = "pci-device";
-		status = "okay";
-		
-        pcie@1 {
-            compatible = "asmedia,asm1064";
-            device_type = "pci-bridge";
-            status = "okay";
-			#interrupt-cells = <1>;
-            
-            sata@0 {
-                compatible = "ata,asmedia-asm1064";
-                status = "okay";
-            };
-
-            sata@1 {
-                compatible = "ata,asmedia-asm1064";
-                status = "okay";
-            };
-
-            sata@2 {
-                compatible = "ata,asmedia-asm1064";
-                status = "okay";
-            };
-        };
-	};
 };
 
 &pwm_ab {
