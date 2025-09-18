@@ -299,7 +299,7 @@
 	status = "okay";
 	phy-mode = "rgmii";
 	phy-handle = <&rtl8211f>;
-	amlogic,tx-delay-ns = <2>;
+	amlogic,tx-delay-ns = <4>;
 };
 
 &ext_mdio {
