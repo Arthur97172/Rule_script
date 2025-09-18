@@ -320,9 +320,10 @@
 };
 
 &pcie {
-	compatible = "amlogic,axg-pcie", "snps,dw-pcie";
+	compatible = "amlogic,axg-pcie", "snps,dw-pcie";  /* changed by arthur org: compatible = "pci8086,1e16"; */
 	status = "okay";
-	skip-version-detect;
+	/* skip-version-detect; */
+	ranges = <0x81000000 0 0 0x0 0xfc600000 0 0x00100000>, <0x82000000 0 0xfc700000 0 0x00400000>; /* changed by Arthur */
 	reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>; /* tested by voltmeter */
 	reset-delay-us = <5000>;
     reset-post-delay-us = <8000>;
