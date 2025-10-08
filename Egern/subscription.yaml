@@ -1,13 +1,14 @@
 dns:
   bootstrap:
   - 8.8.8.8
-  - https://1.12.12.12/dns-query
+  - 233.5.5.5
+  - 119.29.29.29
 policy_groups:
 - external:
     name: 所有节点
     type: select
     urls:
-    - https://www.v2ny.one/api/v1/client/subscribe?token=137f3ae5248ac71fcb7c26ae4f7f33
+    - 订阅节点
     filter: ^((?!防失联|入门无).)*$
     icon: https://raw.githubusercontent.com/arthur97172/Rule_script/main/Iconset/Global.png
     hidden: true
@@ -232,7 +233,7 @@ rules:
     match: ^ad\..*|^ads\..*
     policy: REJECT
 - rule_set:
-    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/AdvertisingLite/AdvertisingLite.list
+    match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Advertising/Advertising.list
     policy: REJECT
 - rule_set:
     match: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list
@@ -325,8 +326,3 @@ modules:
 - name: ''
   url: https://raw.githubusercontent.com/Maasea/sgmodule/master/YouTube.Enhance.sgmodule
   enabled: true
-- name: 高德地图去广告
-  url: https://raw.githubusercontent.com/Repcz/Tool/X/Surge/Module/NoAds/Amap.sgmodule
-  enabled: true
-- name: 滴滴出行去广告
-  url: https://raw.githubusercontent.com/Repcz/Tool/X/Surge/Module/NoAds/Didichuxing.sgmodule
