@@ -1,0 +1,1 @@
+为什么现在每敲一个键 → write 触发 → self.update_plots()，我的需求是当用户点击Reresh Plots按钮后才会进行触发 → self.update_plots()
