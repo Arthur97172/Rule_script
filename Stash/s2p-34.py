@@ -192,7 +192,7 @@ class SViewGUI:
         self.status_var = tk.StringVar(value="Please load S2P file(s)...")
         tk.Label(main_frame, textvariable=self.status_var, font=("sans-serif", 10),
                  bg="#e0e0e0", anchor="w", relief="sunken").pack(side="bottom", fill="x", pady=(10, 0))
-        tk.Label(main_frame, text="© 2025 S-View | Cross-Platform", font=("sans-serif", 9),
+        tk.Label(main_frame, text="© 2025 S-View | By Arthur", font=("sans-serif", 9),
                  bg="#f0f2f5", fg="gray").pack(side="bottom", pady=10)
 
     def setup_chart_tab(self):
@@ -527,15 +527,15 @@ class SViewGUI:
             frame.pack(fill="x", pady=4, padx=5)
             
             unit_map = {
-                "Magnitude (dB)": ("dB", "-30", "0"),
-                "Phase (deg)": ("deg", "-180", "180"),
-                "Group Delay (ns)": ("ns", "-1", "10") 
+                "Magnitude (dB)": ("dB", "-20", "-20"),
+                "Phase (deg)": ("deg", "-180", "-180"),
+                "Group Delay (ns)": ("ns", "10", "10") 
             }
             unit, default_lower, default_upper = unit_map.get(plot_type, ("?", "0", "0"))
 
             type_var = line_data.get("type", tk.StringVar(value="Max"))
-            start_var = line_data.get("start", tk.StringVar(value="0"))
-            stop_var = line_data.get("stop", tk.StringVar(value="1000"))
+            start_var = line_data.get("start", tk.StringVar(value="800"))
+            stop_var = line_data.get("stop", tk.StringVar(value="900"))
             start_unit_var = line_data.get("start_unit", tk.StringVar(value="MHz"))
             stop_unit_var = line_data.get("stop_unit", tk.StringVar(value="MHz"))
             lower_var = line_data.get("lower", tk.StringVar(value=default_lower))
