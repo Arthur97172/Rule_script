@@ -269,7 +269,7 @@ class SViewGUI:
                   bg="#9C27B0", fg="white", relief="flat", padx=10, pady=8, command=self.save_chart).pack(fill="x", padx=5, pady=5)
 
         # 新增：Marker Click Control Feature 控制组
-        marker_control_group = tk.LabelFrame(control_stack_frame, text="Marker Click Feature", 
+        marker_control_group = tk.LabelFrame(control_stack_frame, text="Marker Click Control", 
                                              font=("sans-serif", 10, "bold"), bg="#f0f2f5")
         marker_control_group.pack(fill="x", padx=5, pady=5)
         
@@ -278,7 +278,7 @@ class SViewGUI:
         inner_frame.pack(anchor='w', padx=5, pady=5)  # 左侧小缩进
         
         tk.Checkbutton(inner_frame,
-                       text="Enable Click Marker",
+                       text="Enable Click Feature",
                        variable=self.marker_click_enabled,
                        bg="#f0f2f5",
                        anchor='w',  # 左对齐复选框和文本
