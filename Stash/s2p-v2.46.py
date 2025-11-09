@@ -317,6 +317,7 @@ class SViewGUI:
             return True # 无效或空数据，默认通过 (N/A 状态由调用者处理)
             
         # 1. 准备 Y 轴数据和频率
+        # 注意: 确保您在文件的其他地方定义了 calculate_group_delay
         freq_hz = dataset['freq']
         y_data = None
         freq_mhz = None
@@ -325,6 +326,7 @@ class SViewGUI:
             y_data = 20 * np.log10(np.abs(s_data) + 1e-20)
             freq_mhz = freq_hz / 1e6
         elif plot_type == "Phase (deg)":
+            # 假设 np.unwrap 和 np.angle 已经导入 (通常在文件顶部)
             y_data = np.unwrap(np.angle(s_data)) * 180 / np.pi
             freq_mhz = freq_hz / 1e6
         elif plot_type == "Group Delay (ns)":
@@ -332,6 +334,7 @@ class SViewGUI:
                 # 假设您已定义 calculate_group_delay，并且它返回 (y_data, freq_mhz)
                 y_data, freq_mhz = self.calculate_group_delay(freq_hz, s_data)
             except AttributeError:
+                # 如果 calculate_group_delay 未定义，无法计算群延迟，默认通过
                 return True
         else:
             return True
@@ -342,15 +345,18 @@ class SViewGUI:
         # 2. 检查限制线
         for line in limit_lines:
             try:
+                # 从 Tkinter 变量中获取值
                 lower = float(line["lower"].get())
                 upper = float(line["upper"].get())
                 ltype = line["type"].get()
                 
                 start_val = float(line["start"].get())
-                start_unit = line["start_unit"].get()
+                # start_unit 在上一步优化中被强制设置为 'MHz'，但此处仍需从变量获取
+                start_unit = line["start_unit"].get() 
                 stop_val = float(line["stop"].get())
                 stop_unit = line["stop_unit"].get()
                 
+                # 统一转换到 MHz
                 start_mhz = start_val * 1000 if start_unit == "GHz" else start_val
                 stop_mhz = stop_val * 1000 if stop_unit == "GHz" else stop_val
                 
@@ -365,20 +371,19 @@ class SViewGUI:
                     
                 y_data_masked = y_data[freq_mask]
                 
-                # --- 核心修复：根据 ltype 修正检查逻辑 ---
+                # --- 核心修复：添加新的类型名称 "Upper Limit" 和 "Lower Limit" ---
                 
                 violation = False
                 
-                # 检查上限 (Max 或 Upper/Lower)
-                # 假设 ltype 的值为 Max/Min/Band 或您的 Upper/Lower 变种
-                # 检查是否有点大于上限 (对应 Max 或 Band/Upper/Lower)
-                if ltype in ["Max", "Band", "Upper Only", "Upper/Lower"]:
+                # 检查上限：包括旧的 Max/Band/Upper Only/Upper/Lower 类型 和 新的 Upper Limit
+                # 只要有点大于 Upper Limit，即为违规
+                if ltype in ["Max", "Band", "Upper Only", "Upper/Lower", "Upper Limit"]:
                      if np.any(y_data_masked > upper):
                          violation = True
 
-                # 检查下限 (Min 或 Upper/Lower)
-                # 检查是否有点小于下限 (对应 Min 或 Band/Upper/Lower)
-                if ltype in ["Min", "Band", "Lower Only", "Upper/Lower"]:
+                # 检查下限：包括旧的 Min/Band/Lower Only/Upper/Lower 类型 和 新的 Lower Limit
+                # 只要有点小于 Lower Limit，即为违规
+                if ltype in ["Min", "Band", "Lower Only", "Upper/Lower", "Lower Limit"]:
                      if np.any(y_data_masked < lower):
                          violation = True
                          
@@ -386,7 +391,7 @@ class SViewGUI:
                     return False # 发现任何违规，立即返回 FAIL
 
             except ValueError:
-                # 忽略无效的限制线输入值
+                # 忽略无效的限制线输入值 (如 start/stop/lower/upper 无法转换为浮点数)
                 continue
                 
         return True # 所有限制线都检查通过，PASS
@@ -2370,7 +2375,7 @@ class SViewGUI:
         self.status_var.set(f"Plots refreshed: {len(self.datasets)} dataset(s), {self.plot_type.get()}")
 
     # Max模式配置
-    def plot_combined(self):
+    def plot_combined(self, redraw_full=True): # 增加 redraw_full 参数以优化性能 (可选)
         # 1. 绘图环境和数据检查
         if not self.max_ax or not self.max_canvas:
             return
@@ -2429,7 +2434,10 @@ class SViewGUI:
                 elif plot_type == "Phase (deg)":
                     y_data = np.unwrap(np.angle(s)) * 180 / np.pi
                 elif plot_type == "Group Delay (ns)":
-                    y_data, freq_mhz = self.calculate_group_delay(freq, s)
+                    # 注意: Group Delay 的 freq_mhz 可能会在 calculate_group_delay 中被修改
+                    y_data, temp_freq_mhz = self.calculate_group_delay(freq, s)
+                    if temp_freq_mhz is not None:
+                        freq_mhz = temp_freq_mhz # 使用 Group Delay 计算后的频率数组
                 
                 if y_data is None:
                     continue 
@@ -2460,18 +2468,22 @@ class SViewGUI:
                             start_mhz = start_val * 1000 if start_unit == "GHz" else start_val
                             stop_mhz = stop_val * 1000 if stop_unit == "GHz" else stop_val
                             
-                            freq_mask = (freq_mhz >= start_mhz) & (freq_mhz <= stop_mhz)
+                            f_min = min(start_mhz, stop_mhz)
+                            f_max = max(start_mhz, stop_mhz)
+                            
+                            freq_mask = (freq_mhz >= f_min) & (freq_mhz <= f_max)
                             
                             if np.any(freq_mask):
                                 y_data_masked = y_data[freq_mask]
                                 violation = False
                                 
-                                if ltype == "Max":
+                                # FIX: 检查上限，添加 "Upper Limit"
+                                if ltype in ["Max", "Band", "Upper Only", "Upper/Lower", "Upper Limit"]: 
                                     if np.any(y_data_masked > upper): violation = True
-                                elif ltype == "Min":
+                                
+                                # FIX: 检查下限，添加 "Lower Limit"
+                                if ltype in ["Min", "Band", "Lower Only", "Upper/Lower", "Lower Limit"]: 
                                     if np.any(y_data_masked < lower): violation = True
-                                elif ltype == "Band":
-                                    if np.any((y_data_masked < lower) | (y_data_masked > upper)): violation = True
                                         
                                 if violation:
                                     pass_fail_status = "FAIL"
@@ -2524,8 +2536,13 @@ class SViewGUI:
                     pass 
 
             if not is_custom_y and all_y_values:
-                y_min_data = np.min(all_y_values) if all_y_values else 0
-                y_max_data = np.max(all_y_values) if all_y_values else 1
+                # 排除 NaN/Inf 值，防止自动缩放出错
+                valid_y_values = np.array([v for v in all_y_values if np.isfinite(v)])
+                if valid_y_values.size > 0:
+                    y_min_data = np.min(valid_y_values)
+                    y_max_data = np.max(valid_y_values)
+                else:
+                    y_min_data, y_max_data = 0, 1 # 默认值
                 
                 y_min, y_max, y_step = self._calculate_friendly_y_limits(y_min_data, y_max_data)
                 
@@ -2565,77 +2582,83 @@ class SViewGUI:
                             upper = float(line["upper"].get())
                             ltype = line["type"].get()
 
-                            min_f_mhz = max(x_min_mhz, start_mhz)
-                            max_f_mhz = min(x_max_mhz, stop_mhz)
+                            min_f_mhz = max(x_min_mhz, min(start_mhz, stop_mhz)) # 修正 min/max 逻辑
+                            max_f_mhz = min(x_max_mhz, max(start_mhz, stop_mhz)) # 修正 min/max 逻辑
 
                             if min_f_mhz < max_f_mhz:
-                                value_to_use = upper if ltype == "Max" else lower
-                                
-                                ax.hlines(value_to_use, min_f_mhz, max_f_mhz, colors='blue',
-                                          linestyles='-', linewidth=1.0, zorder=4)
-                                
+                                # FIX: 根据新的 ltype 决定绘制 Upper 或 Lower
+                                if ltype in ["Max", "Band", "Upper Only", "Upper/Lower", "Upper Limit"]:
+                                     ax.hlines(upper, min_f_mhz, max_f_mhz, colors='blue',
+                                              linestyles='-', linewidth=1.0, zorder=4)
+                                elif ltype in ["Min", "Band", "Lower Only", "Upper/Lower", "Lower Limit"]:
+                                     ax.hlines(lower, min_f_mhz, max_f_mhz, colors='blue',
+                                              linestyles='-', linewidth=1.0, zorder=4)
+                                # 之前这里只有 `value_to_use = upper if ltype == "Max" else lower`，
+                                # 现在必须明确判断 ltype 以绘制正确的边界。
+                            
                         except Exception:
                             pass
 
         # 9. 绘制 Marker (保持不变)
         marker_info_list = []
         
+        # ... (Marker 绘制代码保持不变) ...
         if plot_type in self.data:
-            for p in visible_params:
-                for mark in self.data[plot_type]["marks"].get(p, []):
-                    try:
-                        target_freq_hz = self._get_marker_freq_hz(mark)
-                        f_str = mark["freq"].get()
-                        unit = mark["unit"].get()
-                        x_display = f"{f_str} {unit}"
-                        mark_id = mark['id']
-                        selected_data_id = mark["data_id"].get()
-                        
-                        dataset = next((d for d in self.datasets if str(d['id']) == selected_data_id), None)
-                        if not dataset or dataset['s_data'].get(p.lower()) is None:
-                            continue
-                            
-                        s_data = dataset['s_data'][p.lower()]
-                        freq = dataset['freq']
-                        
-                        data_array = None
-                        if plot_type == "Magnitude (dB)":
-                            data_array = 20 * np.log10(np.abs(s_data) + 1e-20)
-                        elif plot_type == "Phase (deg)":
-                            data_array = np.unwrap(np.angle(s_data)) * 180 / np.pi
-                        elif plot_type == "Group Delay (ns)":
-                            data_array, _ = self.calculate_group_delay(freq, s_data)
+             for p in visible_params:
+                 for mark in self.data[plot_type]["marks"].get(p, []):
+                     try:
+                         target_freq_hz = self._get_marker_freq_hz(mark)
+                         f_str = mark["freq"].get()
+                         unit = mark["unit"].get()
+                         x_display = f"{f_str} {unit}"
+                         mark_id = mark['id']
+                         selected_data_id = mark["data_id"].get()
+                         
+                         dataset = next((d for d in self.datasets if str(d['id']) == selected_data_id), None)
+                         if not dataset or dataset['s_data'].get(p.lower()) is None:
+                             continue
+                             
+                         s_data = dataset['s_data'][p.lower()]
+                         freq = dataset['freq']
+                         
+                         data_array = None
+                         if plot_type == "Magnitude (dB)":
+                             data_array = 20 * np.log10(np.abs(s_data) + 1e-20)
+                         elif plot_type == "Phase (deg)":
+                             data_array = np.unwrap(np.angle(s_data)) * 180 / np.pi
+                         elif plot_type == "Group Delay (ns)":
+                             data_array, _ = self.calculate_group_delay(freq, s_data)
 
-                        if data_array is None or len(freq) < 2:
-                            continue
-                            
-                        val = self.safe_interp(target_freq_hz, freq, data_array)
-                        if val is None:
-                            continue
-                            
-                        x_pt_original = target_freq_hz / 1e6
-                        y_pt = val
-                        
-                        x_pt_plot = max(x_min_mhz, min(x_max_mhz, x_pt_original))
-                        
-                        color = self.get_max_mode_color(dataset['id'], p)
-                        custom_name = self.custom_id_names.get(selected_data_id, f"ID {selected_data_id}") 
-                        
-                        # Draw marker 
-                        ax.plot(x_pt_plot, y_pt, '.', markerfacecolor='none', markeredgecolor=color, 
-                                markersize=4, markeredgewidth=2, zorder=5)
-                                
-                        # 注释
-                        ax.annotate(mark['id'], xy=(x_pt_plot, y_pt), xytext=(5, 5),
-                                    textcoords='offset points', fontsize=9, color=color,
-                                    zorder=6)
+                         if data_array is None or len(freq) < 2:
+                             continue
+                             
+                         val = self.safe_interp(target_freq_hz, freq, data_array)
+                         if val is None:
+                             continue
+                             
+                         x_pt_original = target_freq_hz / 1e6
+                         y_pt = val
+                         
+                         x_pt_plot = max(x_min_mhz, min(x_max_mhz, x_pt_original))
+                         
+                         color = self.get_max_mode_color(dataset['id'], p)
+                         custom_name = self.custom_id_names.get(selected_data_id, f"ID {selected_data_id}") 
+                         
+                         # Draw marker 
+                         ax.plot(x_pt_plot, y_pt, '.', markerfacecolor='none', markeredgecolor=color, 
+                                 markersize=4, markeredgewidth=2, zorder=5)
+                                 
+                         # 注释
+                         ax.annotate(mark['id'], xy=(x_pt_plot, y_pt), xytext=(5, 5),
+                                     textcoords='offset points', fontsize=9, color=color,
+                                     zorder=6)
 
-                        # 收集 Marker 信息 
-                        full_legend_text = f"{mark['id']} ({p} {custom_name}) @{x_display}, {val:.3f} {y_unit}"
-                        marker_info_list.append((mark['id'], p, full_legend_text, selected_data_id))
-                        
-                    except Exception:
-                        pass
+                         # 收集 Marker 信息 
+                         full_legend_text = f"{mark['id']} ({p} {custom_name}) @{x_display}, {val:.3f} {y_unit}"
+                         marker_info_list.append((mark['id'], p, full_legend_text, selected_data_id))
+                         
+                     except Exception:
+                         pass
 
         # 10. Matplotlib Legend for Data Lines 
         ax.legend(loc='best', fontsize=9, framealpha=0.7)
@@ -2652,7 +2675,7 @@ class SViewGUI:
                 
                 try: data_id_number = int(data_id_str)
                 except ValueError: data_id_number = 9999
-                    
+                        
                 param_index = PARAM_ORDER.get(param_str, 99)
                 return (data_id_number, param_index)
 
@@ -2682,9 +2705,9 @@ class SViewGUI:
                     pass 
 
             txt_artist = ax.text(x_val, y_val, txt, transform=ax.transAxes, fontsize=9, 
-                                    verticalalignment=v_align, horizontalalignment=h_align, 
-                                    multialignment='left', 
-                                    bbox=dict(boxstyle="round,pad=0.3", facecolor="yellow", alpha=0.9), zorder=7)
+                                 verticalalignment=v_align, horizontalalignment=h_align, 
+                                 multialignment='left', 
+                                 bbox=dict(boxstyle="round,pad=0.3", facecolor="yellow", alpha=0.9), zorder=7)
 
         # 12. 更新 Marker Artist 引用
         if not hasattr(self, 'max_marker_legend_artists'):
@@ -2698,7 +2721,8 @@ class SViewGUI:
             self.max_fig.text(0.5, 0.97, sn_text, fontsize=11, ha='center', va='top', fontweight='bold')
             self.max_fig.subplots_adjust(top=0.92, bottom=0.08, left=0.10, right=0.95)
 
-        self.max_canvas.draw()
+        if redraw_full: # 根据需要决定是否重绘
+            self.max_canvas.draw()
 
     def _get_y_data_for_limit_calc(self, dataset, param, plot_type):
         """Helper to get calculated Y data array for a specific dataset and parameter."""
@@ -3792,7 +3816,7 @@ class SViewGUI:
                 upper_var = line_data.get("upper", tk.StringVar(value=default_upper))
                 
                 tk.Label(frame, text="Type:", bg="#ffffff").grid(row=0, column=0, padx=3)
-                #Max和 Min的显示顺序 ”Min为Lower Limit“， ”Max为Upper Limit“
+                #Max和 Min的显示顺序 "Min为Lower Limit"， "Max为Upper Limit"
                 ttk.Combobox(frame, textvariable=type_var, values=["Upper Limit", "Lower Limit"], width=12, state="readonly").grid(row=0, column=1, padx=3)        
                 
                 tk.Label(frame, text="Start:", bg="#ffffff").grid(row=0, column=2, padx=3)
