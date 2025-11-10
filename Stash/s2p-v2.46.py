@@ -497,7 +497,7 @@ class SViewGUI:
                                  bg="#f0f2f5")
         
         # 保持外部填充一致
-        sn_group.pack(fill="x", padx=5, pady=5)
+        sn_group.pack(fill="x", padx=5, pady=2)
         
         # 将输入框放置在 LabelFrame 内部 （SN-001字体设置位置）
         #tk.Entry(sn_group, textvariable=self.title_var, font=("sans-serif", 12), width=18).pack(fill="x", padx=5, pady=(0, 5))
@@ -505,24 +505,24 @@ class SViewGUI:
 
         # File Operations
         file_ops_group = tk.LabelFrame(control_stack_frame, text="File Operations", font=("sans-serif", 10, "bold"), bg="#f0f2f5")
-        file_ops_group.pack(fill="x", padx=5, pady=5)
-        tk.Button(file_ops_group, text="Load S2P File", font=("sans-serif", 12, "bold"),
-                  bg="#4CAF50", fg="white", relief="flat", padx=10, pady=8, command=self.load_s2p).pack(fill="x", padx=5, pady=5)
-        tk.Button(file_ops_group, text="Clear Data", font=("sans-serif", 12),
-                  bg="#e74c3c", fg="white", relief="flat", padx=10, pady=8, command=self.clear_all_datasets).pack(fill="x", padx=5, pady=5)
-        tk.Button(file_ops_group, text="Reset App", font=("sans-serif", 12, "bold"),
-                  bg="#3F51B5", fg="white", relief="flat", padx=10, pady=8, command=self.reset_application).pack(fill="x", padx=5, pady=5)
+        file_ops_group.pack(fill="x", padx=5, pady=2)
+        tk.Button(file_ops_group, text="Load S2P File", font=("sans-serif", 10, "bold"),
+                  bg="#4CAF50", fg="white", relief="flat", padx=10, pady=6, command=self.load_s2p).pack(fill="x", padx=5, pady=2)
+        tk.Button(file_ops_group, text="Clear Data", font=("sans-serif", 10, "bold"),
+                  bg="#e74c3c", fg="white", relief="flat", padx=10, pady=6, command=self.clear_all_datasets).pack(fill="x", padx=5, pady=2)
+        tk.Button(file_ops_group, text="Reset App", font=("sans-serif", 10, "bold"),
+                  bg="#3F51B5", fg="white", relief="flat", padx=10, pady=6, command=self.reset_application).pack(fill="x", padx=5, pady=2)
 
         # Plot Type
         plot_type_group = tk.LabelFrame(control_stack_frame, text="Plot Type", font=("sans-serif", 10, "bold"), bg="#f0f2f5")
-        plot_type_group.pack(fill="x", padx=5, pady=5)
+        plot_type_group.pack(fill="x", padx=5, pady=2)
         plot_values = ["Magnitude (dB)", "Phase (deg)", "Group Delay (ns)"]
         plot_combo = ttk.Combobox(plot_type_group, textvariable=self.plot_type, values=plot_values, state="readonly")
-        plot_combo.pack(fill="x", padx=5, pady=5)
+        plot_combo.pack(fill="x", padx=5, pady=2)
 
         # Display Mode (新增)
         display_mode_group = tk.LabelFrame(control_stack_frame, text="Display Mode", font=("sans-serif", 10, "bold"), bg="#f0f2f5")
-        display_mode_group.pack(fill="x", padx=5, pady=5)
+        display_mode_group.pack(fill="x", padx=5, pady=2)
         display_combo = ttk.Combobox(display_mode_group, textvariable=self.display_mode, values=["Normal", "Max"], state="readonly")
         display_combo.pack(fill="x", padx=5, pady=(8, 5))
 
@@ -545,25 +545,25 @@ class SViewGUI:
             self.disable_refresh_var.set(False)
             self.update_plots()
             
-        tk.Button(control_stack_frame, text="Refresh Plots", font=("sans-serif", 12, "bold"),
-                  bg="#FF9800", fg="white", relief="flat", padx=10, pady=8, command=refresh_plots_and_reset_flag).pack(fill="x", padx=5, pady=5)
+        tk.Button(control_stack_frame, text="Refresh Plots", font=("sans-serif", 10, "bold"),
+                  bg="#FF9800", fg="white", relief="flat", padx=10, pady=6, command=refresh_plots_and_reset_flag).pack(fill="x", padx=5, pady=2)
         
         # Chart ops
         chart_ops_group = tk.LabelFrame(control_stack_frame, text="Chart Output", font=("sans-serif", 10, "bold"), bg="#f0f2f5")
-        chart_ops_group.pack(fill="x", padx=5, pady=5)
-        tk.Button(chart_ops_group, text="Copy Plots", font=("sans-serif", 12, "bold"),
-                  bg="#FF5722", fg="white", relief="flat", padx=10, pady=8, command=self.copy_all_charts).pack(fill="x", padx=5, pady=5)
-        tk.Button(chart_ops_group, text="Save as Image", font=("sans-serif", 12),
-                  bg="#9C27B0", fg="white", relief="flat", padx=10, pady=8, command=self.save_chart).pack(fill="x", padx=5, pady=5)
+        chart_ops_group.pack(fill="x", padx=5, pady=2)
+        tk.Button(chart_ops_group, text="Copy Plots", font=("sans-serif", 10, "bold"),
+                  bg="#FF5722", fg="white", relief="flat", padx=10, pady=6, command=self.copy_all_charts).pack(fill="x", padx=5, pady=2)
+        tk.Button(chart_ops_group, text="Save as Image", font=("sans-serif", 10, "bold"),
+                  bg="#9C27B0", fg="white", relief="flat", padx=10, pady=6, command=self.save_chart).pack(fill="x", padx=5, pady=2)
 
         # 新增：Marker Click Control Feature 控制组
         marker_control_group = tk.LabelFrame(control_stack_frame, text="Add Tag Control", 
                                              font=("sans-serif", 10, "bold"), bg="#f0f2f5")
-        marker_control_group.pack(fill="x", padx=5, pady=5)
+        marker_control_group.pack(fill="x", padx=5, pady=2)
         
         # 使用内部Frame确保严格左对齐
         inner_frame = tk.Frame(marker_control_group, bg="#f0f2f5")
-        inner_frame.pack(anchor='w', padx=5, pady=5)  # 左侧小缩进
+        inner_frame.pack(anchor='w', padx=5, pady=2)  # 左侧小缩进
         
         # 打开鼠标添加Marker功能
         tk.Checkbutton(inner_frame,
@@ -576,11 +576,11 @@ class SViewGUI:
         # [新增功能] Disable Refresh Feature关闭自动刷新控制组
         disable_refresh_group = tk.LabelFrame(control_stack_frame, text="Auto Refresh", 
                                              font=("sans-serif", 10, "bold"), bg="#f0f2f5")
-        disable_refresh_group.pack(fill="x", padx=5, pady=5)
+        disable_refresh_group.pack(fill="x", padx=5, pady=2)
 
         # 使用内部Frame确保严格左对齐
         inner_refresh_frame = tk.Frame(disable_refresh_group, bg="#f0f2f5")
-        inner_refresh_frame.pack(anchor='w', padx=5, pady=5)  # 左侧小缩进
+        inner_refresh_frame.pack(anchor='w', padx=5, pady=2)  # 左侧小缩进
 
         # 关闭图表刷新功能
         tk.Checkbutton(inner_refresh_frame,
@@ -593,10 +593,10 @@ class SViewGUI:
         # [新增功能] Limits Check 控制组
         limits_check_group = tk.LabelFrame(control_stack_frame, text="Limits Check", 
                                              font=("sans-serif", 10, "bold"), bg="#f0f2f5")
-        limits_check_group.pack(fill="x", padx=5, pady=5) 
+        limits_check_group.pack(fill="x", padx=5, pady=2) 
 
         inner_limits_frame = tk.Frame(limits_check_group, bg="#f0f2f5")
-        inner_limits_frame.pack(anchor='w', padx=5, pady=5) 
+        inner_limits_frame.pack(anchor='w', padx=5, pady=2) 
 
         tk.Checkbutton(inner_limits_frame,
                        text=" Enable ",
