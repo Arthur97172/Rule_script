@@ -8,9 +8,11 @@ from tkinter import ttk, filedialog, messagebox, simpledialog, scrolledtext # �
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.ticker import MaxNLocator, MultipleLocator, AutoMinorLocator
+from matplotlib.ticker import MaxNLocator, MultipleLocator, AutoMinorLocator, LinearLocator, FuncFormatter
 import os
 import re
+import traceback
+import tkinter.colorchooser as colorchooser
 import sys # 确保导入 sys
 import platform
 import matplotlib.font_manager as fm
@@ -31,11 +33,14 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.backends import default_backend
 from cryptography.exceptions import InvalidSignature
 # -------------------------------
-
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # 支持 Smith 图 - 已移除 skrf 依赖
 SMITH_AVAILABLE = False # 显式设置为 False
+
+#Update log
+#2.46.16移除整个 def _draw_max_plot(self)
+#2.46.17移除/合并子项内的import
 
 # ----------------------------------------------------
 # [新增] PyInstaller 资源路径解析函数 (修复 onefile 模式路径问题)
@@ -204,7 +209,6 @@ class ActivationDialog(simpledialog.Dialog):
 
     def apply(self):
         """点击确认激活按钮时调用，进行验证和保存"""
-        import traceback # 导入用于打印堆栈信息的模块
         
         try:
             self.activation_code = self.activation_entry.get(1.0, tk.END).strip()
@@ -320,7 +324,6 @@ def get_marker_id_number(marker_id_str):
     """
     从 Marker ID 字符串（如 'M1', 'M10'）中提取数字部分。
     """
-    import re
     # 查找字符串中第一个连续的数字序列
     match = re.search(r'\d+', marker_id_str)
     # 如果找到数字，返回整数；否则返回一个很大的数，确保它排在最后
@@ -376,7 +379,7 @@ def copy_image_to_clipboard(img):
 class SViewGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("S-View Created By Arthur Gu | V2.46.12")
+        self.root.title("S-View Created By Arthur Gu | V2.46.17")
         self.root.geometry("1450x980")
         self.root.resizable(True, True)
         self.root.minsize(1150, 780)
@@ -476,7 +479,9 @@ class SViewGUI:
                 "x_var": tk.StringVar(value="0.5"),
                 "y_var": tk.StringVar(value="0.5")
             }
-
+            
+        self.custom_id_colors = {} # <<< 新增：存储自定义 ID 颜色
+        
         self.data = {
             "Magnitude (dB)": {
                 "limit_lines": {p: [] for p in self.params},
@@ -972,8 +977,6 @@ class SViewGUI:
         根据 Plot Title 和当前时间日期生成一个安全的文件名。
         格式: Plot_Title_YYYYMMDD_HHMMSS
         """
-        import datetime # 确保函数内也能访问 datetime
-        import re       # 确保函数内也能访问 re
         
         # 1. 获取 Plot Title
         plot_title = self.title_var.get()
@@ -1562,7 +1565,6 @@ class SViewGUI:
         从 Marker ID 字符串中提取数字部分，用于 Marker 的数字排序。
         例如: 'M1' -> 1, 'M10' -> 10。
         """
-        import re 
         match = re.search(r'\d+', marker_id_str)
         if match:
             try:
@@ -1842,8 +1844,6 @@ class SViewGUI:
         """
         在 Combined 图中点击添加 Marker：为每个被选中的 param 创建 marker
         """
-        import tkinter as tk # 确保导入 tk
-        import numpy as np   # 确保导入 np
         
         if not self.marker_click_enabled.get(): # <--- 检查 Marker 点击功能是否开启
             return
@@ -2024,9 +2024,6 @@ class SViewGUI:
         """
         在 Normal 模式下添加 Marker 的核心逻辑。
         """
-        # 确保导入 tk
-        import tkinter as tk # 确保导入 tk
-        import numpy as np   # 确保导入 np
         
         if not self.marker_click_enabled.get(): # <--- 检查 Marker 点击功能是否开启
             return        
@@ -2982,8 +2979,7 @@ class SViewGUI:
         param_index = self.params.index(param)
         color_index = ((data_id - 1) * len(self.params) + param_index) % len(COLOR_CYCLE)
         return COLOR_CYCLE[color_index]
-
-                       
+  
     # ---------- Plot / draw logic ----------
     def update_plots(self):
         self.status_var.set("Refreshing plots... Please wait")
@@ -3090,9 +3086,6 @@ class SViewGUI:
         except AttributeError:
             is_limit_check_enabled = False 
             
-        # 确保 Matplotlib 导入
-        from matplotlib.ticker import MaxNLocator, MultipleLocator, AutoMinorLocator
-
 
         # 4. 绘制数据曲线 (Data Plotting Loop)
         visible_params = [p for p in self.params if self.show_param_vars[p].get()]
@@ -3948,8 +3941,6 @@ class SViewGUI:
 
     def _optimize_tick_labels_output(self, ax, fig):
         try:
-            import numpy as np
-            import matplotlib.ticker as ticker
             
             fig.canvas.draw()  # 确保当前视图已渲染
             
@@ -4001,8 +3992,6 @@ class SViewGUI:
 
     # ---------- Optimized marker UI helpers with Display/Hide button (Removed all trace_add) ----------
     def _draw_marker_frame_and_bind(self, mark_data, plot_type, param, marker_list_frame, canvas):
-        import tkinter as tk
-        from tkinter import ttk 
         
         frame = tk.Frame(marker_list_frame, bg="#ffffff", relief="solid", bd=1)
         frame.pack(fill="x", pady=3, padx=5)
@@ -4799,7 +4788,7 @@ class SViewGUI:
         except tk.TclError:
             # 如果 tab 尚未添加，上面的 add 语句已经处理，这里只是预防性检查
             pass
-        
+            
         # 2. 创建文件列表区域 (Loaded Files)
         if not hasattr(self, 'file_list_frame'):
             self.file_list_frame = tk.LabelFrame(self.data_information_tab, text="Loaded Files (ID - Name)",
@@ -4811,21 +4800,19 @@ class SViewGUI:
             self.file_list_content.pack(fill="x", padx=5, pady=5)
 
         # 3. 创建自定义 ID 名称区域 (Customize Files (ID - Name))
-        # 此区域被移到文件列表下方，总结内容上方
         if not hasattr(self, 'custom_id_outer'):
-            
             # 使用独立外层Frame保证独立成行并左对齐
             custom_id_outer = tk.Frame(self.data_information_tab, bg="#f0f2f5")
-            # 保持原始打包：占据顶部第二行，与 file_list_frame 对齐 (padx=15)
+            # 统一 pady 为 (10, 10) 以匹配第二个（或调整为一致值）
             custom_id_outer.pack(fill="x", side="top", anchor="w", padx=15, pady=(10, 10))
-            self.custom_id_outer = custom_id_outer # 保存引用
+            self.custom_id_outer = custom_id_outer  # 保存引用
             
             custom_id_frame = tk.LabelFrame(custom_id_outer, text="Customize Files (ID - Name)",
-                                             font=("sans-serif", 10), bg="#f0f2f5", labelanchor="nw")
+                                            font=("sans-serif", 10), bg="#f0f2f5", labelanchor="nw")
             custom_id_frame.pack(fill="x", anchor="w", padx=0, pady=0)
-
             input_frame = tk.Frame(custom_id_frame, bg="#f0f2f5")
-            input_frame.pack(fill="x", padx=10, pady=8, anchor="w")
+            # 统一 padx=5, pady=5 以匹配第二个
+            input_frame.pack(fill="x", padx=5, pady=5, anchor="w")  # 修改这里
 
             # 变量检查（虽然在 __init__ 中可能已创建，但为安全起见）
             if not hasattr(self, 'selected_data_id_var'):
@@ -4840,13 +4827,59 @@ class SViewGUI:
             tk.Label(input_frame, text="New Name:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
             tk.Entry(input_frame, textvariable=self.custom_name_var, width=22).pack(side="left", padx=5)
 
-            tk.Button(input_frame, text="Set Name", command=self.set_custom_id_name, width=10).pack(side="left", padx=(20, 0))
+            tk.Button(input_frame, text="Set Name", command=self.set_custom_id_name, width=10).pack(side="left", padx=(15, 5))
             # 新增：清空自定义名称按钮
             tk.Button(input_frame, text="Clear Names", bg="#e74c3c", fg="white", command=self.clear_custom_names).pack(side="left", padx=(15, 5))
 
             # 下拉事件绑定
             self.id_combo.bind("<<ComboboxSelected>>", self._on_id_selected_for_rename)
         # --- 自定义功能区结束 ---
+
+        # ----------------------------------------------------------------------
+        # [新增功能] Customize ID Color 区域 (位于 Customize Files (ID - Name) 下方)
+        # ----------------------------------------------------------------------
+        if not hasattr(self, 'customize_color_frame'):
+            # 使用独立的 LabelFrame 确保新行显示
+            self.customize_color_frame = tk.LabelFrame(self.data_information_tab, text="Customize ID Color", 
+                                                       font=("sans-serif", 10), bg="#f0f2f5", labelanchor="nw")
+            # 插入位置: 紧接在 self.custom_id_outer 之后， Summary Content 之前
+            self.customize_color_frame.pack(fill="x", side="top", anchor="w", padx=15, pady=(5, 10))
+
+            color_input_frame = tk.Frame(self.customize_color_frame, bg="#f0f2f5")
+            color_input_frame.pack(fill="x", padx=5, pady=5)
+            
+            # 变量初始化
+            if not hasattr(self, 'color_id_var'):
+                self.color_id_var = tk.StringVar()
+            
+            # 绑定选择变化事件，用于更新当前颜色显示
+            self.color_id_var.trace_add("write", self._update_color_ui_display)
+                
+            # 1. Label and Combobox for Select ID >>> Marker Legend
+            tk.Label(color_input_frame, text="Select ID:", bg="#f0f2f5").pack(side="left", padx=(0, 5))
+            
+            self.color_id_combo = ttk.Combobox(color_input_frame, textvariable=self.color_id_var, 
+                                               values=[], width=8, state="readonly")
+            self.color_id_combo.pack(side="left", padx=5)
+            
+            # 2. Current Color Display (用于显示和接收 colorchooser 结果)
+            tk.Label(color_input_frame, text="Current Color:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
+            self.current_color_display = tk.Label(color_input_frame, text="  ", bg="white", 
+                                                  relief="sunken", width=3, bd=1)
+            self.current_color_display.pack(side="left", padx=(0, 10))
+            
+            # 3. Color Picker Button
+            tk.Button(color_input_frame, text="Select Color", 
+                      command=self._open_color_picker).pack(side="left", padx=(7.5, 5))
+            
+            # 4. Apply & Clear Buttons
+            # 调整 Apply Color 按钮的 padx，增加左侧填充 (从 padx=5 改为 padx=(15, 5))
+            tk.Button(color_input_frame, text="Apply Color",
+                      command=self._apply_custom_color).pack(side="left", padx=(15, 5)) 
+            # Clear Colors 按钮的 padx 保持不变，它会跟在 Apply Color 按钮后面
+            tk.Button(color_input_frame, text="Clear Colors", bg="#e74c3c", fg="white",
+                      command=self._clear_custom_colors).pack(side="left", padx=(15, 5))
+        # ----------------------------------------------------------------------
 
         # 4. 创建可滚动的总结内容区域 (Summary Content)
         if not hasattr(self, 'summary_content_frame'):
@@ -4863,7 +4896,7 @@ class SViewGUI:
             # 使用 side="left" / "right" 让 canvas 和 scrollbar 占据剩余空间
             canvas.pack(side="left", fill="both", expand=True, padx=15, pady=15)
             scrollbar.pack(side="right", fill="y")
-        
+            
         # 5. 刷新文件列表 UI
         self.update_file_list_ui()
 
@@ -5017,36 +5050,73 @@ class SViewGUI:
     def update_data_information_tab(self):
         if not hasattr(self, 'summary_content_frame'):
             return
+
+        # ----------------------------------------------------------------------
+        # 清空 Treeview 所在的 summary_content_frame 的所有子控件
+        # ----------------------------------------------------------------------
         for w in self.summary_content_frame.winfo_children():
             w.destroy()
+
+        # ----------------------------------------------------------------------
+        # [优化] 更新 Customize ID Color 和 Customize Name 组合框的值 (同步 Data ID)
+        # ----------------------------------------------------------------------
+        data_id_list = [str(d['id']) for d in self.datasets]
+        
+        # 1. 更新 Customize ID Color Combo Box (self.color_id_combo)
+        if hasattr(self, "color_id_combo"):
+            self.color_id_combo["values"] = data_id_list
+            # 如果当前选中的 ID 不在列表中，则清空选中并更新颜色显示为默认白色
+            if self.color_id_var.get() not in data_id_list:
+                self.color_id_var.set("")
+                if hasattr(self, "current_color_display"):
+                    self.current_color_display.config(bg="white")
+
+        # 2. 更新 Customize Files (ID - Name) Combo Box (self.id_combo)
+        if hasattr(self, "id_combo"):
+            self.id_combo["values"] = data_id_list
+            # 如果当前选中的 ID 不在列表中，则清空选中和输入框
+            if self.selected_data_id_var.get() not in data_id_list:
+                self.selected_data_id_var.set("")
+                if hasattr(self, "custom_name_var"):
+                    self.custom_name_var.set("")
+        # ----------------------------------------------------------------------
+
         if not self.datasets:
             tk.Label(self.summary_content_frame, text="No S2P files loaded.", font=("sans-serif", 12), fg="gray", bg="#f0f2f5").pack(padx=20, pady=20)
             self.summary_content_frame.update_idletasks()
             return
+            
         columns = ("ID", "File Path", "Points", "Format", "Frequency Range")
         tree = ttk.Treeview(self.summary_content_frame, columns=columns, show="headings", height=8)
+        
         style = ttk.Style()
         # 增加 TNotebook.Tab 的水平内边距（[水平填充, 垂直填充]）。
         # 将水平填充从默认值（通常很小）增加到 15 像素。
         style.configure("LeftAligned.Treeview.Heading", font=("Microsoft YaHei", 10, "bold"), foreground="#1a1a1a")
         style.configure("LeftAligned.Treeview", font=("Microsoft YaHei", 9), rowheight=28, background="#ffffff", foreground="#2c3e50", fieldbackground="#ffffff")
         tree.configure(style="LeftAligned.Treeview")
+
         for col in columns:
             tree.heading(col, text=col, anchor="w")
             tree.column(col, anchor="w", stretch=True)
+
         tree.column("ID", width=60, minwidth=50)
         tree.column("File Path", width=500, minwidth=300)
         tree.column("Points", width=100, minwidth=80)
         tree.column("Format", width=100, minwidth=80)
         tree.column("Frequency Range", width=240, minwidth=180)
+
         v_scrollbar = ttk.Scrollbar(self.summary_content_frame, orient="vertical", command=tree.yview)
         h_scrollbar = ttk.Scrollbar(self.summary_content_frame, orient="horizontal", command=tree.xview)
         tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+
         tree.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
         v_scrollbar.grid(row=0, column=1, sticky="ns")
         h_scrollbar.grid(row=1, column=0, sticky="ew")
+
         self.summary_content_frame.grid_rowconfigure(0, weight=1)
         self.summary_content_frame.grid_columnconfigure(0, weight=1)
+
         for dataset in self.datasets:
             data_id = dataset['id']
             name = dataset['name']
@@ -5055,6 +5125,7 @@ class SViewGUI:
             freq = dataset['freq']
             min_f = freq.min()
             max_f = freq.max()
+            
             def format_freq(f_hz):
                 if f_hz >= 1e9:
                     return f"{f_hz / 1e9:.3f} GHz"
@@ -5064,8 +5135,11 @@ class SViewGUI:
                     return f"{f_hz / 1e3:.3f} KHz"
                 else:
                     return f"{f_hz:.3f} Hz"
+                    
             freq_range_str = f"{format_freq(min_f)} to {format_freq(max_f)}"
+            
             tree.insert("", "end", values=(str(data_id), name, str(points), s_format, freq_range_str))
+            
         def on_treeview_motion(event):
             item = tree.identify_row(event.y)
             if item:
@@ -5077,8 +5151,109 @@ class SViewGUI:
                     self.status_var.set("Loaded File Information")
             else:
                 self.status_var.set("Loaded File Information")
+                
         tree.bind("<Motion>", on_treeview_motion)
         self.summary_content_frame.update_idletasks()
+
+
+    # [新增功能] Customize ID Color 相关的辅助方法
+    # --------------------------------------------------------------------------
+    def _open_color_picker(self):
+        """
+        打开颜色选择器并更新颜色显示框。
+        """
+        color_code = colorchooser.askcolor(title="Choose ID Color")
+        if color_code and color_code[1]:
+            self.current_color_display.config(bg=color_code[1])
+
+    def _update_color_ui_display(self, *args):
+        """
+        当 Data ID 组合框选择变化时，更新颜色显示框。
+        """
+        selected_id_str = self.color_id_var.get()
+        if not selected_id_str:
+            self.current_color_display.config(bg="white")
+            return
+            
+        try:
+            id_int = int(selected_id_str)
+            # 检查是否有自定义颜色
+            color = self.custom_id_colors.get(id_int, "white")
+            self.current_color_display.config(bg=color)
+        except ValueError:
+            self.current_color_display.config(bg="white")
+
+    def _apply_custom_color(self):
+        """
+        将选定的颜色应用于选定的 Data ID 并保存。
+        """
+        selected_id = self.color_id_var.get()
+        new_color = self.current_color_display.cget("bg")
+        
+        if not selected_id:
+            messagebox.showerror("Error", "Please select a Data ID first.")
+            return
+            
+        # 默认背景色或未选择颜色时为白色 (依赖于 self.current_color_display 的默认设置)
+        if new_color == "white":
+            messagebox.showwarning("Warning", "Please select or re-select a color first.")
+            return
+            
+        # 保存颜色
+        try:
+            id_int = int(selected_id)
+            self.custom_id_colors[id_int] = new_color
+            self.status_var.set(f"Data ID {selected_id} custom color set to {new_color}.")
+            # self.update_plots() # 暂时注释，按要求不关联其他功能
+        except ValueError:
+            messagebox.showerror("Error", "Invalid Data ID selected.")
+
+    def _clear_custom_colors(self):
+        """
+        [优化] 强制清除所有 Data ID 的自定义颜色，并清空颜色下拉菜单的选中记录和当前颜色显示。
+        执行完成后弹出成功提示。
+        """
+        
+        # ----------------------------------------------------------------------
+        # 1. 强制清除所有自定义颜色
+        # ----------------------------------------------------------------------
+        if self.custom_id_colors:
+            self.custom_id_colors.clear()
+            self.status_var.set("Cleared custom colors for ALL Data IDs.")
+            was_cleared = True
+        else:
+            self.status_var.set("No custom colors were set.")
+            was_cleared = False
+            
+        # ----------------------------------------------------------------------
+        # 2. 清空所有相关的 UI 变量 (仅限颜色相关)
+        # ----------------------------------------------------------------------
+        
+        # 确保当前颜色显示重置为默认白色
+        if hasattr(self, 'current_color_display'):
+            self.current_color_display.config(bg="white")
+            
+        # 清空 UI 变量（初次清空）
+        self.color_id_var.set("") # 清空颜色自定义下拉菜单的选中记录
+
+        # ----------------------------------------------------------------------
+        # 3. 刷新 UI
+        # ----------------------------------------------------------------------
+        self.update_file_list_ui() 
+        
+        # 4. 再次清空变量，确保 Combobox 在 update_file_list_ui() 后显示为空
+        self.color_id_var.set("") 
+        
+        # ----------------------------------------------------------------------
+        # 5. 【修正】执行完成后弹出对话框告知结果
+        # ----------------------------------------------------------------------
+        if was_cleared:
+            messagebox.showinfo("Success", "All custom colors have been cleared successfully.")
+        else:
+            messagebox.showinfo("Completed", "No custom colors were set, but the UI has been reset.")
+            
+        # self.update_plots() # 暂时注释，按要求不关联其他功能
+            
 
 if __name__ == '__main__':
     root = tk.Tk()

@@ -31,11 +31,16 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.backends import default_backend
 from cryptography.exceptions import InvalidSignature
 # -------------------------------
-
 warnings.filterwarnings("ignore", category=UserWarning)
 
 # 支持 Smith 图 - 已移除 skrf 依赖
 SMITH_AVAILABLE = False # 显式设置为 False
+
+#Update log
+#2.46.16移除整个 def _draw_max_plot(self)
+#2.46.18移除整个 Normal模式切换为新显示形式
+#2.46.19修复Normal模式下的bug
+#2.46.20增加启动程序但未加载文件光标坐标区显示 "X: ---, Y: ---"
 
 # ----------------------------------------------------
 # [新增] PyInstaller 资源路径解析函数 (修复 onefile 模式路径问题)
@@ -376,7 +381,7 @@ def copy_image_to_clipboard(img):
 class SViewGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("S-View Created By Arthur Gu | V2.46.12")
+        self.root.title("S-View Created By Arthur Gu | V2.46.20")
         self.root.geometry("1450x980")
         self.root.resizable(True, True)
         self.root.minsize(1150, 780)
@@ -476,7 +481,9 @@ class SViewGUI:
                 "x_var": tk.StringVar(value="0.5"),
                 "y_var": tk.StringVar(value="0.5")
             }
-
+            
+        self.custom_id_colors = {} # <<< 新增：存储自定义 ID 颜色
+        
         self.data = {
             "Magnitude (dB)": {
                 "limit_lines": {p: [] for p in self.params},
@@ -1183,7 +1190,7 @@ class SViewGUI:
         tk.Label(main_frame, textvariable=self.status_var, font=("sans-serif", 10),
                      bg="#e0e0e0", anchor="w", relief="sunken").pack(side="bottom", fill="x", pady=(10, 0))
         tk.Label(main_frame, text="© 2025 S-View | Created By Arthur Gu", font=("sans-serif", 9),
-                     bg="#f0f2f5", fg="gray").pack(side="bottom", pady=10)
+                     bg="#f0f2f5", fg="gray").pack(side="bottom", pady=10, anchor="center")
 
         # 【修复 Bug 1】 
         # 将 on_display_mode_change 移至 self.status_var 初始化之后，
@@ -1449,85 +1456,38 @@ class SViewGUI:
 
 
     def setup_chart_tab(self):
+        # 1. 创建 charts_frame 容器
         charts_frame = tk.Frame(self.chart_tab, bg="#f0f2f5")
         charts_frame.pack(fill="both", expand=True)
         self.charts_frame = charts_frame
 
-        param_list = ["S11", "S21", "S12", "S22"]
-        colors = {"S11": "#d32f2f", "S21": "#1976d2", "S12": "#7b1fa2", "S22": "#388e3c"}
-
-        for i, param in enumerate(param_list):
-            row = i // 2
-            col = i % 2
-
-            # --- Normal 模式：使用普通 Frame；Max 模式：使用 LabelFrame ---
-            if self.display_mode.get() == "Normal":
-                frame = tk.Frame(charts_frame, bg="#f0f2f5")
-            else:
-                frame = tk.LabelFrame(
-                    charts_frame,
-                    text=f" {param} ",
-                    font=("sans-serif", 11, "bold"),
-                    bg="#f0f2f5",
-                    fg=colors[param]
-                )
-
-            frame.grid(row=row, column=col, padx=8, pady=8, sticky="nsew")
-
-            # --- 创建图表 ---
-            fig = plt.Figure(figsize=(5, 4), dpi=100)
-            ax = fig.add_subplot(111)
-            canvas = FigureCanvasTkAgg(fig, frame)
-            canvas_widget = canvas.get_tk_widget()
-            canvas_widget.pack(fill="both", expand=True)
-
-            # --- 隐藏 Matplotlib 工具栏（Normal 模式下不显示） ---
-            toolbar_frame = tk.Frame(frame)
-            toolbar = NavigationToolbar2Tk(canvas, toolbar_frame)
-            # toolbar_frame.pack(side=tk.BOTTOM, fill=tk.X)  # 如果需要工具栏可取消注释
-
-            # --- 鼠标滚轮缩放（Normal 模式） ---
-            canvas.mpl_connect(
-                'scroll_event',
-                lambda event, p=param: self.on_scroll_zoom_normal(event, p)
-            )
-
-            # --- 鼠标移动事件：实时更新 Normal 模式下的坐标显示 ---
-            canvas.mpl_connect(
-                'motion_notify_event',
-                lambda event, p=param: self._on_mouse_move_cursor_normal(event)
-            )
-            
-            # --- 【新增功能】: Dual-Button Pan Bindings (Normal Mode) ---
-            canvas.mpl_connect(
-                'button_press_event',
-                lambda event, p=param: self.on_dual_button_pan_press(event, p)
-            )
-            canvas.mpl_connect(
-                'button_release_event',
-                self.on_dual_button_pan_release
-            )
-            canvas.mpl_connect(
-                'motion_notify_event',
-                self.on_dual_button_pan_motion
-            )
-            # ----------------------------------------------------
-
-            # --- 保存绘图配置 ---
-            self.plot_configs[param] = {
-                "frame": frame,
-                "fig": fig,
-                "ax": ax,
-                "canvas": canvas,
-                "canvas_widget": canvas_widget,
-                "toolbar_frame": toolbar_frame,
-                "toolbar": toolbar
-            }
-
-        # --- 使四个子图等比例伸展 ---
+        # 2. 确保 charts_frame 的 2x2 grid 权重已设置
         for i in range(2):
             charts_frame.grid_rowconfigure(i, weight=1)
             charts_frame.grid_columnconfigure(i, weight=1)
+            
+        # 3. 初始化 Max 模式框架（安全创建）
+        
+        # 检查是否需要重新创建 Max 模式的 frame
+        needs_recreation = False
+        
+        # 情况 1: 属性不存在，或者属性值为 None (修复 NoneType 错误)
+        if not hasattr(self, 'max_frame') or self.max_frame is None:
+            needs_recreation = True
+        # 情况 2: 属性存在且非 None，但其对应的 Tk 窗口已经被销毁
+        elif not self.max_frame.winfo_exists():
+            needs_recreation = True
+            
+        if needs_recreation:
+            self.max_frame = tk.Frame(self.charts_frame, bg="#f0f2f5") 
+
+        # 4. 初始化/清空 plot_configs 字典
+        self.plot_configs = {} 
+
+        # 5. 初始化 Max 模式的图表引用（安全措施）
+        self.max_fig = None
+        self.max_ax = None
+        self.max_canvas = None
 
     # ---------- Utility plotting / interaction helpers ----------
     def _format_coords(self, x, y):
@@ -1573,35 +1533,58 @@ class SViewGUI:
         return float('inf')
 
     def _on_mouse_move_custom(self, event, param_or_combined):
-        # param_or_combined: can be 'COMBINED' or actual param name
+        # param_or_combined: 'COMBINED' or specific param (S11/S21/S12/S22)
+
+        # ▼ NEW: 若尚未加载文件，则不更新任何光标坐标显示
+        if not hasattr(self, "datasets") or not self.datasets:
+            if hasattr(self, "cursor_content") and param_or_combined == "COMBINED":
+                self.cursor_content.config(text="X: ---, Y: ---")
+            return
+
+        # 找到对应的 toolbar
+        tb = None
+        if param_or_combined == 'COMBINED':
+            tb = self.max_toolbar
+        elif param_or_combined in self.plot_configs:
+            tb = self.plot_configs[param_or_combined]["toolbar"]
+
+        # ───────────────────────────────────────────────
+        # 鼠标在坐标轴内 → 显示坐标
+        # ───────────────────────────────────────────────
         if event.inaxes and event.xdata is not None and event.ydata is not None:
+
+            # Toolbar 文本
             msg = self._format_coords(event.xdata, event.ydata)
-            # choose toolbar message
-            tb = None
-            if param_or_combined == 'COMBINED':
-                tb = self.max_toolbar
-            elif param_or_combined in self.plot_configs:
-                tb = self.plot_configs[param_or_combined]["toolbar"]
             if tb:
                 try:
                     tb.set_message(msg)
                 except:
                     pass
+
+            # Max 模式光标显示
+            if param_or_combined == 'COMBINED' and hasattr(self, "cursor_content"):
+                self.cursor_content.config(text=f"X: {event.xdata:.3f}, Y: {event.ydata:.3f}")
+
         else:
-            # show default
-            if param_or_combined == 'COMBINED' and self.max_toolbar:
+            # ───────────────────────────────────────────────
+            # 鼠标不在图内 → Toolbar 恢复默认提示
+            # ───────────────────────────────────────────────
+            if tb:
                 try:
-                    if self.max_toolbar.mode == '':
-                        self.max_toolbar.set_message("Zoom & Pan enabled (Combined)")
-                except:
-                    pass
-            elif param_or_combined in self.plot_configs:
-                try:
-                    tb = self.plot_configs[param_or_combined]["toolbar"]
                     if tb.mode == '':
-                        tb.set_message(f"Zoom & Pan enabled for {param_or_combined}")
+                        default_msg = (
+                            "Zoom & Pan enabled (Combined)"
+                            if param_or_combined == "COMBINED"
+                            else f"Zoom & Pan enabled for {param_or_combined}"
+                        )
+                        tb.set_message(default_msg)
                 except:
                     pass
+
+            # Max 模式光标显示（鼠标离开图区域）
+            if param_or_combined == 'COMBINED' and hasattr(self, "cursor_content"):
+                self.cursor_content.config(text="X: ---, Y: ---")
+
 
     #Normal模式zoom操作
     def on_scroll_zoom_normal(self, mpl_event, param):
@@ -1701,20 +1684,25 @@ class SViewGUI:
 
     def _on_mouse_move_cursor_normal(self, event):
         """
-        在 Normal 模式下实时显示鼠标坐标。
-        鼠标移动到任意子图区域内时，更新右下角的 Cursor Coordinates。
+        在所有模式下实时显示鼠标坐标。
+        鼠标移动到任意图表区域内时，更新右下角的 Cursor Coordinates。
+        (此函数现已绑定到 Normal 和 Max 模式下的 Canvas)
         """
-        # 仅在 Normal 模式下启用
-        if self.display_mode.get() != "Normal":
+        # --- 核心优化：移除模式检查，让数据检查逻辑控制显示 ---
+
+        # 1. 检查数据是否加载 (处理静止/清空状态)
+        if not hasattr(self, "datasets") or not self.datasets:
+            self.cursor_content.config(text="X: ---, Y: ---")
             return
 
-        # 判断鼠标是否在坐标轴内
+        # 2. 判断鼠标是否在坐标轴内
         if event.inaxes and event.xdata is not None and event.ydata is not None:
             # 显示到小数点后三位
             self.cursor_content.config(text=f"X: {event.xdata:.3f}, Y: {event.ydata:.3f}")
         else:
             # 鼠标不在图内时清空显示
             self.cursor_content.config(text="X: ---, Y: ---")
+
 
     def _update_mouse_button_state(self, mpl_event):
         """更新鼠标按键的按下/释放状态。"""
@@ -1842,8 +1830,6 @@ class SViewGUI:
         """
         在 Combined 图中点击添加 Marker：为每个被选中的 param 创建 marker
         """
-        import tkinter as tk # 确保导入 tk
-        import numpy as np   # 确保导入 np
         
         if not self.marker_click_enabled.get(): # <--- 检查 Marker 点击功能是否开启
             return
@@ -2019,32 +2005,96 @@ class SViewGUI:
         
         # 注意：最终的 self.update_plots() 调用会负责 Matplotlib Canvas 的 draw() 刷新。
 
-    # Normal mode添加Marker信息
+    # Normal mode添加/删除 Marker，并处理 Pan 委托
     def add_marker_on_click_normal(self, event, param):
         """
-        在 Normal 模式下添加 Marker 的核心逻辑。
+        在 Normal 模式下处理鼠标点击事件，包括 Marker 添加/删除和 Pan 委托。
+        此函数作为唯一的 button_press_event 绑定入口。
         """
-        # 确保导入 tk
-        import tkinter as tk # 确保导入 tk
-        import numpy as np   # 确保导入 np
+
+        # 1. 【核心修复 1】：处理事件冲突：如果 Marker 禁用，则执行 Pan 逻辑，然后返回。
+        if not self.marker_click_enabled.get():
+            # 调用 Pan Press handler。Pan Motion/Release 保持独立绑定，不受影响。
+            self.on_dual_button_pan_press(event, param) 
+            return
+
+        # --- Marker 模式启用 ---
         
-        if not self.marker_click_enabled.get(): # <--- 检查 Marker 点击功能是否开启
-            return        
         # 确保点击事件有效且存在数据集
         if not event.inaxes or event.xdata is None or event.ydata is None or not self.datasets:
             return
 
-        # 检查是否为左键点击 (button=1)
-        if event.button != 1:
-            return
-
-        # 1. 获取点击坐标和当前绘图类型
         plot_type = self.plot_type.get()
         x_click_mhz = event.xdata
         x_click_hz = x_click_mhz * 1e6
         y_click_value = event.ydata
+        
+        # ----------------------------------------------------
+        # 2. 【核心修复 2】：处理右键删除 Marker (Button 3)
+        # ----------------------------------------------------
+        if event.button == 3: # 右键点击
+            # 获取当前轴上所有 Marker
+            if plot_type not in self.data or "marks" not in self.data[plot_type] or param not in self.data[plot_type]["marks"]:
+                return
+            
+            current_marks = self.data[plot_type]["marks"][param]
+            
+            if not current_marks:
+                return # 无 Marker 可删除
 
-        # 2. 寻找最接近点击位置的 Dataset ID 
+            # 查找最近的 Marker
+            closest_marker_index = -1
+            min_dist = float('inf')
+            
+            # 找到最近 Marker 的逻辑 (使用 X 轴距离简化)
+            for i, mark in enumerate(current_marks):
+                try:
+                    # 将 Marker 频率转换为 MHz (与 event.xdata 保持一致的单位)
+                    f_val = float(mark["freq"].get())
+                    f_unit = mark["unit"].get()
+                    
+                    if f_unit == "GHz":
+                        freq_mhz = f_val * 1e3 # GHz to MHz
+                    else: # f_unit == "MHz"
+                        freq_mhz = f_val
+                    
+                    # 比较 X 轴（频率）距离
+                    dist = abs(x_click_mhz - freq_mhz)
+                    
+                    if dist < min_dist:
+                        min_dist = dist
+                        closest_marker_index = i
+                except ValueError:
+                    continue # 忽略无效的 Marker 频率
+
+            # 判定删除阈值 (例如，距离小于 0.5% 的 X 轴范围)
+            x_lim = event.inaxes.get_xlim()
+            x_range = x_lim[1] - x_lim[0]
+            delete_threshold = x_range * 0.005 # 0.5% 的频率范围
+            
+            if closest_marker_index != -1 and min_dist < delete_threshold:
+                deleted_mark = current_marks.pop(closest_marker_index)
+                mark_id = deleted_mark["id"]
+                
+                # 刷新 UI
+                self._reindex_markers_and_refresh_ui(plot_type, param)
+                
+                if not self.disable_refresh_var.get():
+                    self.update_plots()
+                    self.status_var.set(f"Marker {mark_id} deleted from {param}.")
+                else:
+                    self._safe_refresh_markers(reset_limits=False)
+                    self.status_var.set(f"Marker {mark_id} deleted from {param}. Zoom state preserved.")
+
+            return # 右键处理完毕
+
+        # ----------------------------------------------------
+        # 3. 左键添加 Marker (Button 1)
+        # ----------------------------------------------------
+        if event.button != 1:
+            return # 忽略其他按钮
+
+        # 1. 寻找最接近点击位置的 Dataset ID 
         # ----------------------------------------------------
         closest_data_id = None
         min_y_diff = float('inf')
@@ -2578,6 +2628,7 @@ class SViewGUI:
 
 
     # ---------- Layout switchers (Normal <-> Max) ----------
+    #模式切换
     def on_display_mode_change(self, *args):
         mode = self.display_mode.get()
         
@@ -2711,134 +2762,257 @@ class SViewGUI:
                 else:
                     custom_frame.pack_forget()
 
-    def enter_max_mode(self):
-        # Hide individual param frames, create combined frame if not exists
-        for p, cfg in self.plot_configs.items():
-            cfg["frame"].grid_forget()
+    def _bind_max_mode_mpl_events(self):
+        """
+        Binds all necessary Matplotlib events (click, scroll, motion, pan)
+        to the max_fig canvas. Called after self.max_canvas is created.
+        Ensures events are bound exactly once (or rebound safely when needed).
+        """
+        # If figure or canvas not ready, do nothing
+        if not self.max_fig or not hasattr(self.max_fig, 'canvas'):
+            return
 
-        # Create combined frame if not exists
-        if not self.max_frame:
-            # ... UI setup code (max_frame, max_fig, max_ax, max_canvas) ...
-            self.max_frame = tk.LabelFrame(self.charts_frame, text=" Combined S-Parameters (Max) ", font=("sans-serif", 12, "bold"), bg="#f0f2f5")
+        # If we already have stored CIDs and they are non-empty, assume bound.
+        # However, allow re-binding if dict is empty (fresh start) or if forced.
+        if hasattr(self, 'max_cids') and self.max_cids:
+            return
+
+        canvas = self.max_fig.canvas
+
+        # 1. 基础事件
+        cid_click = canvas.mpl_connect('button_press_event', lambda e: self.add_marker_on_click_combined(e))
+        cid_rclick = canvas.mpl_connect('button_press_event', lambda e: self.delete_marker_on_right_click(e))
+        cid_scroll = canvas.mpl_connect('scroll_event', lambda e: self.on_scroll_zoom_combined(e))
+        cid_motion = canvas.mpl_connect('motion_notify_event', lambda e: self._on_mouse_move_custom(e, 'COMBINED'))
+
+        # 2. Dual-Button Pan 事件
+        cid_pan_press = canvas.mpl_connect('button_press_event', lambda e: self.on_dual_button_pan_press(e))
+        cid_pan_release = canvas.mpl_connect('button_release_event', self.on_dual_button_pan_release)
+        cid_pan_motion = canvas.mpl_connect('motion_notify_event', self.on_dual_button_pan_motion)
+
+        # 3. 统一存储所有 CIDs
+        self.max_cids = {
+            'click': cid_click,
+            'rclick': cid_rclick,
+            'scroll': cid_scroll,
+            'motion': cid_motion,
+            'pan_press': cid_pan_press,
+            'pan_release': cid_pan_release,
+            'pan_motion': cid_pan_motion
+        }
+
+        # 保存鼠标移动事件 ID 用作后续解绑
+        self._cursor_move_cid = cid_motion
+
+
+    def enter_max_mode(self):
+        """
+        Enter Max mode: create or show the combined chart area,
+        ensure a valid canvas exists, rebind events, and trigger drawing.
+        """
+        # Hide individual param frames
+        for p, cfg in self.plot_configs.items():
+            try:
+                cfg["frame"].grid_forget()
+            except Exception:
+                pass
+        created = False
+        # Create frame + figure + canvas if missing
+        if not getattr(self, "max_frame", None):
+            created = True
+            self.max_frame = tk.LabelFrame(self.charts_frame, text=" Combined S-Parameters (Max) ",
+                                           font=("sans-serif", 12, "bold"), bg="#f0f2f5")
             self.max_frame.grid(row=0, column=0, rowspan=2, columnspan=2, sticky="nsew", padx=8, pady=8)
+            # create figure and axes
             self.max_fig = plt.Figure(figsize=(10, 7), dpi=120)
             self.max_ax = self.max_fig.add_subplot(111)
-            self.max_canvas = FigureCanvasTkAgg(self.max_fig, self.max_frame)
-            self.max_canvas_widget = self.max_canvas.get_tk_widget()
-            self.max_canvas_widget.pack(fill="both", expand=True)
-            
-            # toolbar setup
-            toolbar_frame = tk.Frame(self.max_frame)
-            # toolbar_frame.pack(side=tk.BOTTOM, fill=tk.X) # 保持注释
-            self.max_toolbar = NavigationToolbar2Tk(self.max_canvas, toolbar_frame)
-            self.max_toolbar.update()
-            
-            # =========================================================
-            # === 核心修复 2：创建后立即解除 Matplotlib 默认拖拽事件 ===
-            # =========================================================
-            if self.max_toolbar:
-                self._disable_mpl_default_pan_zoom(self.max_toolbar)
-            
-            # =========================================================================
-            # === 【Max 模式事件绑定】: 首次创建时，定义并统一存储所有 CIDs ===
-            # =========================================================================
-            
-            # 1. 基础事件
-            cid_click = self.max_fig.canvas.mpl_connect('button_press_event', lambda e: self.add_marker_on_click_combined(e))
-            cid_rclick = self.max_fig.canvas.mpl_connect('button_press_event', lambda e: self.delete_marker_on_right_click(e))
-            cid_scroll = self.max_fig.canvas.mpl_connect('scroll_event', lambda e: self.on_scroll_zoom_combined(e))
-            cid_motion = self.max_fig.canvas.mpl_connect('motion_notify_event', lambda e: self._on_mouse_move_custom(e, 'COMBINED'))
-            
-            # 2. 【新增的 Dual-Button Pan 事件】: 必须先定义，再使用
-            cid_pan_press = self.max_fig.canvas.mpl_connect('button_press_event', lambda e: self.on_dual_button_pan_press(e)) 
-            cid_pan_release = self.max_fig.canvas.mpl_connect('button_release_event', self.on_dual_button_pan_release)
-            cid_pan_motion = self.max_fig.canvas.mpl_connect('motion_notify_event', self.on_dual_button_pan_motion)
-            
-            # 3. 统一存储所有 CIDs (包括 Pan 事件)
-            self.max_cids = {
-                'click': cid_click, 
-                'rclick': cid_rclick, 
-                'scroll': cid_scroll, 
-                'motion': cid_motion,
-                'pan_press': cid_pan_press,    # 正确引用已定义的变量
-                'pan_release': cid_pan_release,
-                'pan_motion': cid_pan_motion
-            }
-            # =========================================================================
-            
+            # create a new FigureCanvasTkAgg and attach
+            try:
+                self.max_canvas = FigureCanvasTkAgg(self.max_fig, master=self.max_frame)
+                self.max_canvas_widget = self.max_canvas.get_tk_widget()
+                self.max_canvas_widget.pack(fill="both", expand=True)
+            except Exception as e:
+                self.max_canvas = None
+                self.max_canvas_widget = None
+            # toolbar (optional)
+            try:
+                toolbar_frame = tk.Frame(self.max_frame)
+                self.max_toolbar = NavigationToolbar2Tk(self.max_canvas, toolbar_frame)
+                self.max_toolbar.update()
+                # disable default pan/zoom if needed
+                try:
+                    self._disable_mpl_default_pan_zoom(self.max_toolbar)
+                except Exception:
+                    pass
+            except Exception as e:
+                self.max_toolbar = None
         else:
-            # re-grid it
-            self.max_frame.grid(row=0, column=0, rowspan=2, columnspan=2, sticky="nsew", padx=8, pady=8)
-            
-            # ... (Axes recreation logic) ...
-            if self.max_fig and not self.max_fig.axes:
-                self.max_ax = self.max_fig.add_subplot(111)
-            elif self.max_fig and self.max_fig.axes:
-                self.max_ax = self.max_fig.axes[0]
-                
-            # 【关键修复 3】：重新进入 Max 模式时，再次解除 Matplotlib 默认拖拽事件
-            if self.max_toolbar:
-                self._disable_mpl_default_pan_zoom(self.max_toolbar)
-                
-            # rebind events if needed (logic remains the same)
-            # 仅在 self.max_cids 为空时才需要重新绑定
-            if self.max_fig and not self.max_cids:
-                # =========================================================================
-                # === 【Max 模式事件绑定】: 重新进入时，重新定义并存储所有 CIDs ===
-                # =========================================================================
-                # 1. 基础事件
-                cid_click = self.max_fig.canvas.mpl_connect('button_press_event', lambda e: self.add_marker_on_click_combined(e))
-                cid_rclick = self.max_fig.canvas.mpl_connect('button_press_event', lambda e: self.delete_marker_on_right_click(e))
-                cid_scroll = self.max_fig.canvas.mpl_connect('scroll_event', lambda e: self.on_scroll_zoom_combined(e))
-                cid_motion = self.max_fig.canvas.mpl_connect('motion_notify_event', lambda e: self._on_mouse_move_custom(e, 'COMBINED'))
-                
-                # 2. 【新增的 Dual-Button Pan 事件】
-                cid_pan_press = self.max_fig.canvas.mpl_connect('button_press_event', lambda e: self.on_dual_button_pan_press(e)) 
-                cid_pan_release = self.max_fig.canvas.mpl_connect('button_release_event', self.on_dual_button_pan_release)
-                cid_pan_motion = self.max_fig.canvas.mpl_connect('motion_notify_event', self.on_dual_button_pan_motion)
-                
-                # 3. 统一存储所有 CIDs 
-                self.max_cids = {
-                    'click': cid_click, 
-                    'rclick': cid_rclick, 
-                    'scroll': cid_scroll, 
-                    'motion': cid_motion,
-                    'pan_press': cid_pan_press,    
-                    'pan_release': cid_pan_release,
-                    'pan_motion': cid_pan_motion
-                }
-                # =========================================================================
-
-        # =============================================================
-        # === 核心修复：无论是新建还是重新进入，都调用管理函数初始化绑定 ===
-        # =============================================================
-        enable_drag = not self.marker_click_enabled.get()
-        self._manage_max_mode_drag_bindings(enable_drag)
-        
-        self.charts_frame.update_idletasks()
-        # --- Show Cursor Coordinates frame in Max mode ---
-        self.cursor_frame.pack(fill="x", padx=5, pady=(5, 0), side="bottom")
-
-        # 绑定鼠标移动事件 (使用一个单独的 CID，以便在 exit_max_mode 中断开)
-        def _on_mouse_move_cursor(event):
-            if event.inaxes:
-                x, y = event.xdata, event.ydata
-                self.cursor_content.config(text=f"X: {x:.3f}, Y: {y:.3f}") #调节X和Y轴的精确度
+            # Existing frame: ensure it is visible and that we have axes/canvas
+            try:
+                self.max_frame.grid(row=0, column=0, rowspan=2, columnspan=2, sticky="nsew", padx=8, pady=8)
+            except Exception:
+                pass
+            # Ensure figure & axes exist
+            if getattr(self, "max_fig", None) is None:
+                try:
+                    self.max_fig = plt.Figure(figsize=(10, 7), dpi=120)
+                    self.max_ax = self.max_fig.add_subplot(111)
+                except Exception as e:
+                    pass
             else:
-                self.cursor_content.config(text="X: ---, Y: ---")
-        
-        # 确保 motion 事件只被绑定一次。如果它已经在 max_cids['motion'] 中，这里不应该再次绑定。
-        # 这里单独处理，并更新 self._cursor_move_cid 确保旧的被替换。
-        
-        # 移除旧的 _cursor_move_cid 绑定（如果有）
-        if hasattr(self, "_cursor_move_cid") and self._cursor_move_cid is not None:
-             self.max_canvas.mpl_disconnect(self._cursor_move_cid)
-        
-        # 重新绑定，使用 Max 模式专用的 max_canvas
-        self._cursor_move_cid = self.max_canvas.mpl_connect("motion_notify_event", _on_mouse_move_cursor)
-
+                if not getattr(self.max_fig, "axes", None):
+                    try:
+                        self.max_ax = self.max_fig.add_subplot(111)
+                    except Exception as e:
+                        pass
+                else:
+                    try:
+                        self.max_ax = self.max_fig.axes[0]
+                    except Exception:
+                        pass
+            # If max_canvas missing or invalid, try to recreate it
+            if not getattr(self, "max_canvas", None):
+                try:
+                    self.max_canvas = FigureCanvasTkAgg(self.max_fig, master=self.max_frame)
+                    self.max_canvas_widget = self.max_canvas.get_tk_widget()
+                    self.max_canvas_widget.pack(fill="both", expand=True)
+                except Exception as e:
+                    self.max_canvas = None
+                    self.max_canvas_widget = None
+            # Ensure toolbar present
+            if not getattr(self, "max_toolbar", None):
+                try:
+                    toolbar_frame = tk.Frame(self.max_frame)
+                    self.max_toolbar = NavigationToolbar2Tk(self.max_canvas, toolbar_frame)
+                    self.max_toolbar.update()
+                    try:
+                        self._disable_mpl_default_pan_zoom(self.max_toolbar)
+                    except Exception:
+                        pass
+                except Exception:
+                    self.max_toolbar = None
+            else:
+                # try disable defaults again
+                try:
+                    self._disable_mpl_default_pan_zoom(self.max_toolbar)
+                except Exception:
+                    pass
+        # At this point we either have a FigureCanvasTkAgg or not.
+        # If we have one, call draw() to ensure figure.canvas gets attached.
+        canvas_obj = getattr(self, "max_canvas", None)
+        if canvas_obj:
+            try:
+                canvas_obj.draw() # ensure backend attaches canvas to figure
+            except Exception as e:
+                pass
+        # Determine concrete object to bind mpl events on (prefer FigureCanvasTkAgg)
+        bind_target = None
+        if getattr(self, "max_canvas", None):
+            bind_target = self.max_canvas
+        else:
+            # fallback: if Figure got a canvas attribute (rare until draw), use it
+            if getattr(self, "max_fig", None) and getattr(self.max_fig, "canvas", None):
+                bind_target = self.max_fig.canvas
+        # If still no bind_target, attempt to (re)create a canvas once more
+        if bind_target is None:
+            try:
+                self.max_canvas = FigureCanvasTkAgg(self.max_fig, master=self.max_frame)
+                self.max_canvas_widget = self.max_canvas.get_tk_widget()
+                self.max_canvas_widget.pack(fill="both", expand=True)
+                self.max_canvas.draw()
+                bind_target = self.max_canvas
+            except Exception as e:
+                bind_target = None
+        # Now bind events robustly to the concrete bind_target
+        if bind_target is not None:
+            try:
+                # remove old motion cid if present
+                if hasattr(self, "_cursor_move_cid") and self._cursor_move_cid is not None:
+                    try:
+                        # try to disconnect from whichever object created it previously
+                        try:
+                            if getattr(self, "max_canvas", None):
+                                self.max_canvas.mpl_disconnect(self._cursor_move_cid)
+                            elif getattr(self, "max_fig", None) and getattr(self.max_fig, "canvas", None):
+                                self.max_fig.canvas.mpl_disconnect(self._cursor_move_cid)
+                        except Exception:
+                            pass
+                    finally:
+                        self._cursor_move_cid = None
+                # helper wrapper for cursor movement
+                def _on_mouse_move_cursor(event):
+                    try:
+                        if hasattr(self, "_on_mouse_move_custom"):
+                            self._on_mouse_move_custom(event, "COMBINED")
+                    except Exception:
+                        pass
+                cid = None
+                try:
+                    cid = bind_target.mpl_connect("motion_notify_event", _on_mouse_move_cursor)
+                    self._cursor_move_cid = cid
+                except Exception as e:
+                    pass
+                # bind other helpful events (click/scroll/pan)
+                try:
+                    bind_target.mpl_connect('button_press_event', lambda e: self.add_marker_on_click_combined(e))
+                    bind_target.mpl_connect('button_press_event', lambda e: self.delete_marker_on_right_click(e))
+                    bind_target.mpl_connect('scroll_event', lambda e: self.on_scroll_zoom_combined(e))
+                    bind_target.mpl_connect('button_press_event', lambda e: self.on_dual_button_pan_press(e))
+                    bind_target.mpl_connect('button_release_event', self.on_dual_button_pan_release)
+                    bind_target.mpl_connect('motion_notify_event', self.on_dual_button_pan_motion)
+                except Exception:
+                    pass
+            except Exception as e:
+                pass
+        else:
+            pass
+        # Manage drag-binding if needed
+        try:
+            enable_drag = not self.marker_click_enabled.get()
+            if getattr(self, "max_canvas", None):
+                self._manage_max_mode_drag_bindings(enable_drag)
+        except Exception as e:
+            pass
+        # Force immediate draw + idle + tk update to force refresh
+        try:
+            if getattr(self, "max_canvas", None):
+                try:
+                    self.max_canvas.draw_idle()
+                except Exception:
+                    pass
+                try:
+                    self.max_canvas.draw()
+                except Exception:
+                    pass
+            elif getattr(self, "max_fig", None) and getattr(self.max_fig, "canvas", None):
+                try:
+                    self.max_fig.canvas.draw_idle()
+                except Exception:
+                    pass
+                try:
+                    self.max_fig.canvas.draw()
+                except Exception:
+                    pass
+        except Exception as e:
+            pass
+        # Ensure cursor frame visible
+        try:
+            self.cursor_frame.pack(fill="x", padx=5, pady=(5, 0), side="bottom")
+        except Exception:
+            pass
         self.max_mode_active = True
-        self.update_plots()
+        # Finally, explicitly call update_plots and plot_combined to ensure drawing
+        try:
+            self.update_plots()
+            # also try calling plot_combined directly if available
+            if hasattr(self, "plot_combined"):
+                try:
+                    self.plot_combined(redraw_full=True)
+                except Exception as e:
+                    pass
+        except Exception as e:
+            pass
+
 
     def _disable_mpl_default_pan_zoom(self, toolbar):
         """解除 Matplotlib NavigationToolbar 的默认鼠标事件绑定。"""
@@ -2933,49 +3107,94 @@ class SViewGUI:
             # 5. 恢复各图表布局
             self.restore_plots_layout()
 
-    def restore_plots_layout(self):
-        # Place each param frame back into 2x2 grid
-        for i, (p, config) in enumerate(self.plot_configs.items()):
-            row = i // 2
-            col = i % 2
-            config["frame"].grid(row=row, column=col, padx=8, pady=8, sticky="nsew")
-            config["toolbar_frame"].pack_forget()
-            config["canvas_widget"].pack(side=tk.TOP, fill="both", expand=True)
-            # disconnect any per-plot custom cids
-            # 确保 'cid_rclick' 和拖动相关的 CID 已被添加到断开连接的列表中
-            for key in ('cid_click', 'cid_scroll', 'cid_mouse_move', 'cid_rclick', 'cid_drag_press', 'cid_drag_motion', 'cid_drag_release'): # <-- 增加拖动 CID
-                if key in config:
-                    try:
-                        config["fig"].canvas.mpl_disconnect(config[key])
-                    except:
-                        pass
-                    config.pop(key, None)
-            
-            # 重新绑定事件
-            
-            # --- Marker Dragging Bindings (NEW) ---
-            # 仅在 Marker Click Feature 关闭 (默认) 时，绑定拖动事件
-            if not self.marker_click_enabled.get():
-                cid_press = config["fig"].canvas.mpl_connect('button_press_event', self.on_marker_legend_press)
-                cid_motion = config["fig"].canvas.mpl_connect('motion_notify_event', self.on_marker_legend_motion)
-                cid_release = config["fig"].canvas.mpl_connect('button_release_event', self.on_marker_legend_release)
-                config['cid_drag_press'] = cid_press
-                config['cid_drag_motion'] = cid_motion
-                config['cid_drag_release'] = cid_release
-            # -------------------------------------
 
-            # 绑定左键点击添加 Marker 事件 (button=1)
-            cid_click = config["fig"].canvas.mpl_connect('button_press_event', lambda e, pp=p: self.add_marker_on_click_normal(e, pp))
-            config['cid_click'] = cid_click
+    def restore_plots_layout(self):
+        """
+        退出 Max 模式或加载数据后，将 Normal 模式图表恢复到其动态网格位置，并显示工具栏。
+        """
+        
+        # 1. 获取当前的动态布局配置
+        layout_config = self._determine_normal_layout()
+        
+        # 2. 遍历当前所有在 self.plot_configs 中的图表
+        # 注意：在 update_plots 中，self.plot_configs 已经被清空并只包含选中的图表配置
+        for param, config in self.plot_configs.items():
             
-            # 绑定右键点击删除 Marker 事件 (button=3)
-            cid_rclick = config["fig"].canvas.mpl_connect('button_press_event', lambda e, pp=p: self.delete_marker_on_right_click(e, pp))
-            config['cid_rclick'] = cid_rclick
-            
-            
+            # 确保当前参数在布局配置中（即仍然处于被选中状态）
+            if param in layout_config:
+                
+                # 获取动态布局配置
+                grid_config = layout_config[param]
+                
+                # 将图表的 LabelFrame 重新 grid 回去，并应用动态布局
+                config["frame"].grid(
+                    row=grid_config['row'], 
+                    column=grid_config['col'], 
+                    rowspan=grid_config['rowspan'], 
+                    columnspan=grid_config['colspan'], 
+                    padx=8, pady=8, sticky="nsew"
+                )
+                
+                # 恢复 Canvas Widget 的 pack 状态
+                # 确保 'canvas_widget' 存在 (假设您已在 update_plots 中将其加入 config)
+                if 'canvas_widget' in config and config['canvas_widget']:
+                    config["canvas_widget"].pack(side=tk.TOP, fill="both", expand=True)
+
+                # 恢复显示工具栏
+                # 之前 'toolbar_frame' 报错，这里确保它存在且被 pack 恢复显示
+                if 'toolbar_frame' in config and config['toolbar_frame']:
+                    # 注意：如果之前在 exit_max_mode 中调用了 pack_forget()，这里需要 pack() 恢复
+                    # 否则，如果 Max 模式中工具栏是隐藏的，这里应是 pack()
+                    # 由于 Max 模式不显示 Normal 模式的工具栏，我们假设这里需要重新 pack
+                    # 确保 toolbar_frame 的显示 (修复 KeyError 后，这里是逻辑恢复)
+                    config["toolbar_frame"].pack(side=tk.BOTTOM, fill=tk.X, padx=2, pady=2)
+                
+                # --- 断开并重新绑定 Matplotlib 事件 ---
+                # disconnect any per-plot custom cids
+                for key in ('cid_click', 'cid_scroll', 'cid_mouse_move', 'cid_rclick', 'cid_drag_press', 'cid_drag_motion', 'cid_drag_release'):
+                    if key in config and config[key] is not None:
+                        try:
+                            # 尝试断开连接，如果连接不存在则跳过
+                            config["fig"].canvas.mpl_disconnect(config[key])
+                        except:
+                            pass
+                        config.pop(key, None)
+                        
+                # 重新绑定事件
+                # Marker Dragging Bindings
+                if not self.marker_click_enabled.get():
+                    cid_press = config["fig"].canvas.mpl_connect('button_press_event', self.on_marker_legend_press)
+                    cid_motion = config["fig"].canvas.mpl_connect('motion_notify_event', self.on_marker_legend_motion)
+                    cid_release = config["fig"].canvas.mpl_connect('button_release_event', self.on_marker_legend_release)
+                    config['cid_drag_press'] = cid_press
+                    config['cid_drag_motion'] = cid_motion
+                    config['cid_drag_release'] = cid_release
+
+                # 绑定左键点击添加 Marker 事件 (button=1)
+                cid_click = config["fig"].canvas.mpl_connect('button_press_event', lambda e, pp=param: self.add_marker_on_click_normal(e, pp))
+                config['cid_click'] = cid_click
+                
+                # 绑定右键点击删除 Marker 事件 (button=3)
+                cid_rclick = config["fig"].canvas.mpl_connect('button_press_event', lambda e, pp=param: self.delete_marker_on_right_click(e, pp))
+                config['cid_rclick'] = cid_rclick
+
+            else:
+                # 理论上不会发生，因为 update_plots 已经清空了未选中的参数
+                # 但作为安全措施，确保未选中的图表被移除
+                if 'frame' in config:
+                    config['frame'].grid_forget()
+
+        # 确保 Max 模式相关组件被隐藏
+        if self.max_canvas and self.max_canvas.get_tk_widget().winfo_ismapped():
+            self.max_canvas.get_tk_widget().pack_forget()
+
         self.charts_frame.update_idletasks()
-        self.max_mode_active = False
-        self.update_plots()
+        self.max_mode_active = False # 假设 restore_plots_layout 意味着退出 Max 模式
+        
+        # 再次调用 update_plots 确保图表内容和轴限制被正确同步和绘制
+        # 这一步是必要的，因为布局改变后可能需要重新绘制数据
+        # 【移除】: 必须移除或注释掉此行，否则会导致第三次重绘和闪烁
+        #self.update_plots()
 
     def get_max_mode_color(self, data_id, param):
         """ 为 Max 模式生成基于 ID 和 param 的独特颜色 """
@@ -2983,23 +3202,111 @@ class SViewGUI:
         color_index = ((data_id - 1) * len(self.params) + param_index) % len(COLOR_CYCLE)
         return COLOR_CYCLE[color_index]
 
-                       
-    # ---------- Plot / draw logic ----------
+    #新增回调函数
+    def on_s_param_change(self, *args):
+        """
+        S 参数显示状态改变时的回调函数，触发图表刷新。
+        """
+        # 只有在 Normal 模式下，S 参数的勾选/取消才影响布局
+        if self.display_mode.get() == "Normal":
+            self.update_plots()
+
+    #Normal模式显示逻辑计算函数
+    def _determine_normal_layout(self):
+        """
+        根据 self.show_param_vars 的状态，决定 Normal 模式下的图表布局。
+        返回一个字典，键为 S 参数 (str)，值为其 grid 配置 (dict: row, col, rowspan, colspan)。
+        """
+        selected_params = [p for p in self.params if self.show_param_vars[p].get()]
+        layout = {}
+        num_selected = len(selected_params)
+        
+        if num_selected == 4:
+            # ✅ 2x2 标准布局
+            layout = {
+                "S11": {'row': 0, 'col': 0, 'rowspan': 1, 'colspan': 1},
+                "S21": {'row': 0, 'col': 1, 'rowspan': 1, 'colspan': 1},
+                "S12": {'row': 1, 'col': 0, 'rowspan': 1, 'colspan': 1},
+                "S22": {'row': 1, 'col': 1, 'rowspan': 1, 'colspan': 1},
+            }
+            
+        elif num_selected == 1:
+            # ✅ 2x2 独占布局
+            p = selected_params[0]
+            layout[p] = {'row': 0, 'col': 0, 'rowspan': 2, 'colspan': 2}
+            
+        elif num_selected == 3:
+            # 3个选中 (只取消了1个)
+            unselected = [p for p in self.params if not self.show_param_vars[p].get()][0]
+            
+            if unselected in ["S11", "S22"]:
+                # ✅ 只取消 S11 或 S22 (S21, S12 上部1x1; S22/S11 下部1x2)
+                p_lower_full = "S22" if unselected == "S11" else "S11"
+                
+                layout["S21"] = {'row': 0, 'col': 0, 'rowspan': 1, 'colspan': 1}
+                layout["S12"] = {'row': 0, 'col': 1, 'rowspan': 1, 'colspan': 1}
+                layout[p_lower_full] = {'row': 1, 'col': 0, 'rowspan': 1, 'colspan': 2}
+                
+            elif unselected in ["S21", "S12"]:
+                # ✅ 只取消 S21 或 S12 (S11, S22 上部1x1; S12/S21 下部1x2)
+                p_lower_full = "S12" if unselected == "S21" else "S21"
+                
+                layout["S11"] = {'row': 0, 'col': 0, 'rowspan': 1, 'colspan': 1}
+                layout["S22"] = {'row': 0, 'col': 1, 'rowspan': 1, 'colspan': 1}
+                layout[p_lower_full] = {'row': 1, 'col': 0, 'rowspan': 1, 'colspan': 2}
+                
+        elif num_selected == 2:
+            # ✅ 取消两个参数 (上部1x2 + 下部1x2，按优先级 S11 > S21 > S12 > S22)
+            priority_map = {'S11': 0, 'S21': 1, 'S12': 2, 'S22': 3}
+            # 按照优先级升序排列 (0最高)
+            selected_with_priority = sorted(
+                [(p, priority_map[p]) for p in selected_params], 
+                key=lambda x: x[1]
+            )
+            
+            p_upper_full = selected_with_priority[0][0] # 优先级最高的占上部
+            p_lower_full = selected_with_priority[1][0] # 优先级次高的占下部
+            
+            layout[p_upper_full] = {'row': 0, 'col': 0, 'rowspan': 1, 'colspan': 2}
+            layout[p_lower_full] = {'row': 1, 'col': 0, 'rowspan': 1, 'colspan': 2}
+
+        return layout
+  
+    # 更新plots---------- Plot / draw logic ----------
     def update_plots(self):
         self.status_var.set("Refreshing plots... Please wait")
-        self.root.update_idletasks()
+        
+        # --- 变量初始化 ---
+        layout_config = {}
+        selected_params = []  
+        mode = self.display_mode.get()
+        has_data = bool(self.datasets) # 检查是否有数据
+        
+        # 【核心修正 Bug 4】：安全获取频率范围，防止启动时崩溃
+        DEFAULT_MIN_FREQ = 1e6  # 1 MHz
+        DEFAULT_MAX_FREQ = 10e9 # 10 GHz
+        DEFAULT_MIN_Y = -40.0   # -40 dB
+        DEFAULT_MAX_Y = 0.0     # 0 dB
 
-        # Update legend frame
+        try:
+            min_f = self.min_freq.get()
+            max_f = self.max_freq.get()
+        except AttributeError:
+            # 变量未初始化时使用默认值 (首次启动时触发)
+            min_f = DEFAULT_MIN_FREQ
+            max_f = DEFAULT_MAX_FREQ
+        # ------------------
+
+        # Update legend frame (保持不变)
         for widget in self.legend_content.winfo_children():
             widget.destroy()
         legend_items = {}
+        # ... (此处是您更新 Legend 的代码，保持原样) ...
         if self.datasets:
             for dataset in self.datasets:
                 data_id = dataset['id']
                 color = COLOR_CYCLE[(data_id - 1) % len(COLOR_CYCLE)]
-                # ****** 修改点 1：获取 points 字段的值 ******
                 data_points = dataset['points']
-                # file_name_only = os.path.basename(dataset['name']) # 移除或注释掉                
                 display_name = self.custom_id_names.get(str(data_id), f"ID {data_id}")
                 legend_items[data_id] = {'label': f"{display_name} uses: {data_points} points", 'color': color}
 
@@ -3012,53 +3319,137 @@ class SViewGUI:
                 text_label = tk.Label(legend_row, text=item['label'], font=("sans-serif", 9), bg="#f0f2f5", anchor="w", fg="#333333")
                 text_label.pack(side="left", fill="x", expand=True)
 
-        if not self.datasets:
-            # clear all axes
-            for p in self.params:
-                cfg = self.plot_configs[p]
-                cfg["ax"].clear()
-                cfg["ax"].set_title(p)
-                cfg["ax"].text(0.5, 0.5, "No Data Loaded", transform=cfg["ax"].transAxes, ha='center', va='center', fontsize=12, color='gray')
-                cfg["canvas"].draw()
-            if self.max_ax:
-                self.max_ax.clear()
-                self.max_ax.text(0.5, 0.5, "No Data Loaded", transform=self.max_ax.transAxes, ha='center', va='center', fontsize=14, color='gray')
-                if self.max_canvas:
-                    self.max_canvas.draw()
-            self.status_var.set("No data loaded. Please load S2P file(s).")
-            return
+        # ----------------------------------------------------
+        # Normal 模式下的布局重建和绘制 (解决 Bug 1)
+        # ----------------------------------------------------
+        if mode == "Normal":
+            # 1. 清空旧的图表配置和 charts_frame 及其内容 (模式切换必须的步骤)
+            for widget in self.charts_frame.winfo_children():
+                if hasattr(self, 'max_frame') and widget is self.max_frame:
+                    if widget.winfo_ismapped(): 
+                        widget.grid_forget()
+                        widget.pack_forget() 
+                    continue
+                widget.destroy() 
+                
+            self.plot_configs = {} # 清空旧的配置
 
-        mode = self.display_mode.get()
-        if mode == "Max":
-            # plot combined
-            self.plot_combined()
-        else:
-            # plot each param normally
+            # 2. 配置 charts_frame 的 2x2 grid 权重
+            for i in range(2):
+                self.charts_frame.grid_columnconfigure(i, weight=1)
+                self.charts_frame.grid_rowconfigure(i, weight=1)
+
+            # 3. 获取动态布局配置并创建图表
+            layout_config = self._determine_normal_layout()  
+            selected_params = list(layout_config.keys())
             plot_type = self.plot_type.get()
-            saved_xlim = saved_ylim = None
-            if self.maximized_param:
-                cfg = self.plot_configs[self.maximized_param]
-                try:
-                    saved_xlim = cfg["ax"].get_xlim()
-                    saved_ylim = cfg["ax"].get_ylim()
-                except:
-                    pass
-            for param in self.params:
-                cfg = self.plot_configs[param]
-                self.plot_parameter(cfg["ax"], cfg["fig"], cfg["canvas"], param, plot_type)
-            if self.maximized_param and saved_xlim is not None and saved_ylim is not None:
-                cfg = self.plot_configs[self.maximized_param]
-                cfg["ax"].set_xlim(saved_xlim)
-                cfg["ax"].set_ylim(saved_ylim)
-            for p in self.params:
-                self.plot_configs[p]["canvas"].draw()
 
+            for param in selected_params:
+                config = layout_config[param]
+                
+                # ------ 图表创建逻辑（Figure, Axes, Canvas, Frame） ------
+                colors = {"S11": "blue", "S21": "green", "S12": "red", "S22": "purple"}
+                frame = tk.LabelFrame(
+                    self.charts_frame, 
+                    text=" ", 
+                    font=("sans-serif", 11, "bold"), 
+                    bg="#f0f2f5", 
+                    fg=colors.get(param, "black")
+                )
+                frame.grid(
+                    row=config['row'], 
+                    column=config['col'], 
+                    rowspan=config['rowspan'], 
+                    columnspan=config['colspan'], 
+                    padx=8, pady=8, sticky="nsew"
+                )
+                fig = plt.Figure(figsize=(4, 3), dpi=100)
+                ax = fig.add_subplot(111)
+                fig.tight_layout(pad=1.0)
+                canvas = FigureCanvasTkAgg(fig, master=frame)
+                canvas_widget = canvas.get_tk_widget()
+                canvas_widget.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+                toolbar = None # 保持变量名
+                toolbar_frame = None # 保持变量名
+
+                # 存储新的图表配置
+                self.plot_configs[param] = {
+                    'fig': fig, 'ax': ax, 'canvas': canvas, 
+                    'toolbar': toolbar, 'frame': frame,
+                    'toolbar_frame': toolbar_frame, 'canvas_widget': canvas_widget
+                }
+
+                # --- 事件绑定（保持不变） ---
+                canvas.mpl_connect('scroll_event', lambda event, p=param: self.on_scroll_zoom_normal(event, p))
+                canvas.mpl_connect('motion_notify_event', lambda event, p=param: self._on_mouse_move_cursor_normal(event))
+                canvas.mpl_connect('button_release_event', self.on_dual_button_pan_release)
+                canvas.mpl_connect('motion_notify_event', self.on_dual_button_pan_motion)
+                canvas.mpl_connect('button_press_event', lambda event, p=param: self.add_marker_on_click_normal(event, p))
+                
+                # 4. 绘制数据 OR "无数据"信息
+                if has_data:
+                    # 绘制数据
+                    self.plot_parameter(ax, fig, canvas, param, plot_type)
+                else:
+                    # 【Bug 1 修复】: 绘制“无数据”信息并强制设置轴限制
+                    ax.clear()
+                    ax.set_title(param)
+                    # 使用上面安全获取的 min_f, max_f
+                    ax.set_xlim(min_f, max_f) 
+                    ax.set_ylim(DEFAULT_MIN_Y, DEFAULT_MAX_Y)
+                    ax.text(0.5, 0.5, "No Data Loaded", transform=ax.transAxes, ha='center', va='center', fontsize=12, color='gray')
+
+                # 确保在绘制/更新后立即更新 Canvas
+                canvas.draw()
+                
+            # 清除所有未被选中的参数的配置，避免 Copy/Save 仍然引用
+            all_params_set = set(self.params)
+            selected_set = set(selected_params)
+            for p in all_params_set - selected_set:
+                if p in self.plot_configs:
+                    del self.plot_configs[p]
+
+        # ----------------------------------------------------
+        # Max 模式绘制 (解决 Bug 2: Max 模式空白)
+        # ----------------------------------------------------
+        elif mode == "Max":
+            # Max mode is entered/frame created in enter_max_mode()
+            
+            if has_data:
+                # 绘制合并数据
+                self.plot_combined() 
+                
+                # 【Bug 2 修复】: 强制自动缩放轴限制
+                if self.max_ax:
+                    self.max_ax.autoscale_view(True, True, True) # 强制 X, Y 轴自动缩放
+                    if self.max_canvas:
+                        self.max_canvas.draw()
+            else:
+                # 无数据: 在 Max 图表上绘制“无数据”信息
+                if hasattr(self, 'max_ax') and self.max_ax:
+                    self.max_ax.clear()
+                    self.max_ax.set_title("Combined S-Parameters (No Data Loaded)")
+                    # 【Bug 1 Max 修复】: 设置默认 limits
+                    # 使用上面安全获取的 min_f, max_f
+                    self.max_ax.set_xlim(min_f, max_f) 
+                    self.max_ax.set_ylim(DEFAULT_MIN_Y, DEFAULT_MAX_Y)
+                    self.max_ax.text(0.5, 0.5, "No Data Loaded", transform=self.max_ax.transAxes, ha='center', va='center', fontsize=14, color='gray')
+                    if self.max_canvas:
+                        self.max_canvas.draw()
+        
+        # 【最终刷新】：确保在所有图表逻辑执行完毕后，集中强制刷新布局。
+        self.charts_frame.update_idletasks()  
+        self.root.update_idletasks() 
+        
         self.status_var.set(f"Plots refreshed: {len(self.datasets)} dataset(s), {self.plot_type.get()}")
+        # ----------------------------------------
 
+        
     # Max模式配置
-    def plot_combined(self, redraw_full=True): 
-        # 1. 绘图环境和数据检查
-        if not self.max_ax or not self.max_canvas:
+    def plot_combined(self, redraw_full=True):
+        # 1. 确保绘图环境可用
+        if not getattr(self, "max_ax", None) or not getattr(self, "max_canvas", None):
             return
 
         ax = self.max_ax
@@ -4001,8 +4392,6 @@ class SViewGUI:
 
     # ---------- Optimized marker UI helpers with Display/Hide button (Removed all trace_add) ----------
     def _draw_marker_frame_and_bind(self, mark_data, plot_type, param, marker_list_frame, canvas):
-        import tkinter as tk
-        from tkinter import ttk 
         
         frame = tk.Frame(marker_list_frame, bg="#ffffff", relief="solid", bd=1)
         frame.pack(fill="x", pady=3, padx=5)
@@ -4431,7 +4820,7 @@ class SViewGUI:
             )
             self.update_file_list_ui()
             self.on_plot_type_change()
-            self.update_plots()
+            #self.update_plots() # 【移除】: 移除这个冗余的直接调用
             self.update_data_information_tab()
 
             if self.display_mode.get() == "Normal":
@@ -4466,25 +4855,28 @@ class SViewGUI:
 
     # ---------- Copy / Save 复制和保持图表----------
     def copy_all_charts(self):
+        # 确保 io 模块已导入
+        import io 
         self._handle_chart_output(copy=True)
 
     def save_chart(self):
+        # 确保 io 模块已导入
+        import io 
         self._handle_chart_output(copy=False)
 
     def _handle_chart_output(self, copy=False):
         try:
-            # ------------------- Max 模式 -------------------
+            # ------------------- Max 模式 (保持不变) -------------------
             if self.display_mode.get() == "Max" and self.max_fig:
                 # 您的 Max 模式代码保持不变（或使用之前推荐的 fig.tight_layout）：
                 # 双行标题（无彩色横线）
-                title_line1 = f"{""}"
-                # 删除第二行的data_id
-                self.max_fig.suptitle(f"{title_line1}",
-                                         fontsize=12, fontweight="bold", y=0.98)
+                title_line1 = f"{self.title_var.get()}"
+                
+                # 假设您已将 title_line1 变量放入 max_fig.suptitle()
+                self.max_fig.suptitle(title_line1, fontsize=12, fontweight="bold", y=0.98) 
 
                 if copy:
                     buf = io.BytesIO()
-                    # 确保使用 bbox_inches='tight' 和合适的 DPI
                     self.max_fig.savefig(buf, format='png', dpi=200, bbox_inches='tight')
                     buf.seek(0)
                     img = Image.open(buf)
@@ -4495,28 +4887,69 @@ class SViewGUI:
                     else:
                         messagebox.showwarning("Not supported", "Clipboard copy not supported on this platform.")
                 else:
-                    # >>> 优化开始 (Max 模式保存) <<<
-                    filename = self._generate_filename() # <--- 新增: 生成文件名
+                    filename = self._generate_filename()
                     f = filedialog.asksaveasfilename(defaultextension=".png",
                                                      filetypes=[("PNG Image", "*.png"), ("All Files", "*.*")],
-                                                     initialfile=filename) # <--- 修改: 传入 initialfile
+                                                     initialfile=filename)
                     if not f:
                         return
                     self.max_fig.savefig(f, dpi=200, bbox_inches='tight')
                     messagebox.showinfo("Saved", f"Max mode plot saved to {f}")
-                    # >>> 优化结束 <<<
 
-            # ------------------- Normal 模式 -------------------
-            else:
+            # ------------------- Normal 模式 (核心修改) -------------------
+            elif self.display_mode.get() == "Normal":
+                
+                # 1. 获取动态布局配置
+                layout_config = self._determine_normal_layout()
+                selected_params = list(layout_config.keys())
+                num_selected = len(selected_params)
+
+                if num_selected == 0:
+                    messagebox.showwarning("Warning", "No S-parameters are currently selected for plotting.")
+                    return
+                
+                # 2. 创建新的 Figure 和 GridSpec
+                # 最终输出的图表尺寸
                 out_fig = plt.Figure(figsize=(12, 8), dpi=150)
-                axs = out_fig.subplots(2, 2)
-                axs = axs.flatten()
+                gs = out_fig.add_gridspec(2, 2, 
+                                          left=0.08, right=0.96, top=0.90, 
+                                          bottom=0.08, wspace=0.28, hspace=0.32)
+                
+                plot_type = self.plot_type.get()
+                
+                # 存储 Axes 对象的映射 {param: Axes}
+                output_axs = {} 
+                
+                # 3. 根据布局配置创建 Axes 并同步数据
+                for param, config in layout_config.items():
+                    # 使用 GridSpec 创建具有正确 rowspan/colspan 的 Axes
+                    ax_new = out_fig.add_subplot(
+                        gs[config['row']:config['row'] + config['rowspan'], 
+                           config['col']:config['col'] + config['colspan']]
+                    )
+                    output_axs[param] = ax_new
+                    
+                    # 重新绘制数据到新的 Axes 对象
+                    # 假设 self.plot_parameter_output 是一个只绘制数据的函数
+                    self.plot_parameter_output(ax_new, out_fig, param, plot_type)
+                    
+                    # 从当前屏幕上显示的图表中获取缩放后的限制 (同步用户操作)
+                    if param in self.plot_configs:
+                        ax_current = self.plot_configs[param]["ax"]
+                        ax_new.set_xlim(ax_current.get_xlim())
+                        ax_new.set_ylim(ax_current.get_ylim())
+                    else:
+                        # 兜底：如果屏幕配置中找不到，尝试自动调整
+                        ax_new.relim()
+                        ax_new.autoscale_view()
 
+
+                # 4. 添加标题和图例 (保持原有逻辑，但需要调整 y 坐标适应紧凑布局)
+                
                 # ✅ 第一行标题
-                #最顶部的Plot title信息
                 title_line1 = f"{self.title_var.get()}"
                 out_fig.text(0.5, 0.975, title_line1, ha='center', va='top',
-                              fontsize=14, fontweight="bold")
+                                 fontsize=14, fontweight="bold")
 
                 # ✅ 第二行（ID + 彩色横线）
                 start_x = 0.25
@@ -4527,38 +4960,19 @@ class SViewGUI:
                     custom_name = self.custom_id_names.get(str(data_id), f"ID {data_id}")
                     color = COLOR_CYCLE[(data_id - 1) % len(COLOR_CYCLE)]
                     x_pos = start_x + i * spacing
+                    
                     # 绘制ID文字
-                    #自定义曲线示例名称从ID {data_id}改为{custom_name}
                     out_fig.text(x_pos - 0.02, y_pos, f"{custom_name}", ha='right', va='center',
-                                  fontsize=12, color='black', fontweight="bold")
+                                     fontsize=12, color='black', fontweight="bold")
                     # 绘制彩色横线
                     out_fig.text(x_pos, y_pos, "—", ha='left', va='center',
-                                  fontsize=16, color=color, fontweight="bold")
+                                     fontsize=16, color=color, fontweight="bold")
 
-                plot_type = self.plot_type.get()
-                
-                # --- 关键修改部分开始 ---
-                for i, p in enumerate(self.params):
-                    ax_new = axs[i]
-                    # 1. 重新绘制数据到新的 Axes 对象
-                    self.plot_parameter_output(ax_new, out_fig, p, plot_type)
-                    
-                    # 2. 从当前显示的 Normal 模式图表中获取缩放后的限制
-                    if p in self.plot_configs:
-                        ax_current = self.plot_configs[p]["ax"]
-                        
-                        # 3. 将当前 Axes 的 X/Y 限制同步到新的 Axes 对象
-                        # 这样 out_fig 上的图表就和用户屏幕上看到的一致了
-                        ax_new.set_xlim(ax_current.get_xlim())
-                        ax_new.set_ylim(ax_current.get_ylim())
-                # --- 关键修改部分结束 ---
-
-                out_fig.subplots_adjust(left=0.08, right=0.96, top=0.90,
-                                         bottom=0.08, wspace=0.28, hspace=0.32)
-
+                # 5. 执行复制或保存操作
                 if copy:
                     buf = io.BytesIO()
-                    out_fig.savefig(buf, format='png', dpi=200)
+                    # 使用 'tight' 确保所有元素（包括 Axes 标签）都被包含
+                    out_fig.savefig(buf, format='png', dpi=200, bbox_inches='tight') 
                     buf.seek(0)
                     img = Image.open(buf)
                     ok = copy_image_to_clipboard(img)
@@ -4568,16 +4982,14 @@ class SViewGUI:
                     else:
                         messagebox.showwarning("Not supported", "Clipboard copy not supported on this platform.")
                 else:
-                    # >>> 优化开始 (Normal 模式保存) <<<
-                    filename = self._generate_filename() # <--- 新增: 生成文件名
+                    filename = self._generate_filename()
                     f = filedialog.asksaveasfilename(defaultextension=".png",
                                                      filetypes=[("PNG Image", "*.png"), ("All Files", "*.*")],
-                                                     initialfile=filename) # <--- 修改: 传入 initialfile
+                                                     initialfile=filename)
                     if not f:
                         return
-                    out_fig.savefig(f, dpi=200)
+                    out_fig.savefig(f, dpi=200, bbox_inches='tight') # 使用 'tight' 确保完整
                     messagebox.showinfo("Saved", f"Normal mode plots saved to {f}")
-                    # >>> 优化结束 <<<
 
         except Exception as e:
             messagebox.showerror("Operation Failed", f"An error occurred: {e}")
@@ -4799,7 +5211,7 @@ class SViewGUI:
         except tk.TclError:
             # 如果 tab 尚未添加，上面的 add 语句已经处理，这里只是预防性检查
             pass
-        
+            
         # 2. 创建文件列表区域 (Loaded Files)
         if not hasattr(self, 'file_list_frame'):
             self.file_list_frame = tk.LabelFrame(self.data_information_tab, text="Loaded Files (ID - Name)",
@@ -4811,21 +5223,19 @@ class SViewGUI:
             self.file_list_content.pack(fill="x", padx=5, pady=5)
 
         # 3. 创建自定义 ID 名称区域 (Customize Files (ID - Name))
-        # 此区域被移到文件列表下方，总结内容上方
         if not hasattr(self, 'custom_id_outer'):
-            
             # 使用独立外层Frame保证独立成行并左对齐
             custom_id_outer = tk.Frame(self.data_information_tab, bg="#f0f2f5")
-            # 保持原始打包：占据顶部第二行，与 file_list_frame 对齐 (padx=15)
+            # 统一 pady 为 (10, 10) 以匹配第二个（或调整为一致值）
             custom_id_outer.pack(fill="x", side="top", anchor="w", padx=15, pady=(10, 10))
-            self.custom_id_outer = custom_id_outer # 保存引用
+            self.custom_id_outer = custom_id_outer  # 保存引用
             
             custom_id_frame = tk.LabelFrame(custom_id_outer, text="Customize Files (ID - Name)",
-                                             font=("sans-serif", 10), bg="#f0f2f5", labelanchor="nw")
+                                            font=("sans-serif", 10), bg="#f0f2f5", labelanchor="nw")
             custom_id_frame.pack(fill="x", anchor="w", padx=0, pady=0)
-
             input_frame = tk.Frame(custom_id_frame, bg="#f0f2f5")
-            input_frame.pack(fill="x", padx=10, pady=8, anchor="w")
+            # 统一 padx=5, pady=5 以匹配第二个
+            input_frame.pack(fill="x", padx=5, pady=5, anchor="w")  # 修改这里
 
             # 变量检查（虽然在 __init__ 中可能已创建，但为安全起见）
             if not hasattr(self, 'selected_data_id_var'):
@@ -4840,13 +5250,59 @@ class SViewGUI:
             tk.Label(input_frame, text="New Name:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
             tk.Entry(input_frame, textvariable=self.custom_name_var, width=22).pack(side="left", padx=5)
 
-            tk.Button(input_frame, text="Set Name", command=self.set_custom_id_name, width=10).pack(side="left", padx=(20, 0))
+            tk.Button(input_frame, text="Set Name", command=self.set_custom_id_name, width=10).pack(side="left", padx=(15, 5))
             # 新增：清空自定义名称按钮
             tk.Button(input_frame, text="Clear Names", bg="#e74c3c", fg="white", command=self.clear_custom_names).pack(side="left", padx=(15, 5))
 
             # 下拉事件绑定
             self.id_combo.bind("<<ComboboxSelected>>", self._on_id_selected_for_rename)
         # --- 自定义功能区结束 ---
+
+        # ----------------------------------------------------------------------
+        # [新增功能] Customize ID Color 区域 (位于 Customize Files (ID - Name) 下方)
+        # ----------------------------------------------------------------------
+        if not hasattr(self, 'customize_color_frame'):
+            # 使用独立的 LabelFrame 确保新行显示
+            self.customize_color_frame = tk.LabelFrame(self.data_information_tab, text="Customize ID Color", 
+                                                       font=("sans-serif", 10), bg="#f0f2f5", labelanchor="nw")
+            # 插入位置: 紧接在 self.custom_id_outer 之后， Summary Content 之前
+            self.customize_color_frame.pack(fill="x", side="top", anchor="w", padx=15, pady=(5, 10))
+
+            color_input_frame = tk.Frame(self.customize_color_frame, bg="#f0f2f5")
+            color_input_frame.pack(fill="x", padx=5, pady=5)
+            
+            # 变量初始化
+            if not hasattr(self, 'color_id_var'):
+                self.color_id_var = tk.StringVar()
+            
+            # 绑定选择变化事件，用于更新当前颜色显示
+            self.color_id_var.trace_add("write", self._update_color_ui_display)
+                
+            # 1. Label and Combobox for Select ID >>> Marker Legend
+            tk.Label(color_input_frame, text="Select ID:", bg="#f0f2f5").pack(side="left", padx=(0, 5))
+            
+            self.color_id_combo = ttk.Combobox(color_input_frame, textvariable=self.color_id_var, 
+                                               values=[], width=8, state="readonly")
+            self.color_id_combo.pack(side="left", padx=5)
+            
+            # 2. Current Color Display (用于显示和接收 colorchooser 结果)
+            tk.Label(color_input_frame, text="Current Color:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
+            self.current_color_display = tk.Label(color_input_frame, text="  ", bg="white", 
+                                                  relief="sunken", width=3, bd=1)
+            self.current_color_display.pack(side="left", padx=(0, 10))
+            
+            # 3. Color Picker Button
+            tk.Button(color_input_frame, text="Select Color", 
+                      command=self._open_color_picker).pack(side="left", padx=(7.5, 5))
+            
+            # 4. Apply & Clear Buttons
+            # 调整 Apply Color 按钮的 padx，增加左侧填充 (从 padx=5 改为 padx=(15, 5))
+            tk.Button(color_input_frame, text="Apply Color",
+                      command=self._apply_custom_color).pack(side="left", padx=(15, 5)) 
+            # Clear Colors 按钮的 padx 保持不变，它会跟在 Apply Color 按钮后面
+            tk.Button(color_input_frame, text="Clear Colors", bg="#e74c3c", fg="white",
+                      command=self._clear_custom_colors).pack(side="left", padx=(15, 5))
+        # ----------------------------------------------------------------------
 
         # 4. 创建可滚动的总结内容区域 (Summary Content)
         if not hasattr(self, 'summary_content_frame'):
@@ -4863,7 +5319,7 @@ class SViewGUI:
             # 使用 side="left" / "right" 让 canvas 和 scrollbar 占据剩余空间
             canvas.pack(side="left", fill="both", expand=True, padx=15, pady=15)
             scrollbar.pack(side="right", fill="y")
-        
+            
         # 5. 刷新文件列表 UI
         self.update_file_list_ui()
 
@@ -5017,36 +5473,73 @@ class SViewGUI:
     def update_data_information_tab(self):
         if not hasattr(self, 'summary_content_frame'):
             return
+
+        # ----------------------------------------------------------------------
+        # 清空 Treeview 所在的 summary_content_frame 的所有子控件
+        # ----------------------------------------------------------------------
         for w in self.summary_content_frame.winfo_children():
             w.destroy()
+
+        # ----------------------------------------------------------------------
+        # [优化] 更新 Customize ID Color 和 Customize Name 组合框的值 (同步 Data ID)
+        # ----------------------------------------------------------------------
+        data_id_list = [str(d['id']) for d in self.datasets]
+        
+        # 1. 更新 Customize ID Color Combo Box (self.color_id_combo)
+        if hasattr(self, "color_id_combo"):
+            self.color_id_combo["values"] = data_id_list
+            # 如果当前选中的 ID 不在列表中，则清空选中并更新颜色显示为默认白色
+            if self.color_id_var.get() not in data_id_list:
+                self.color_id_var.set("")
+                if hasattr(self, "current_color_display"):
+                    self.current_color_display.config(bg="white")
+
+        # 2. 更新 Customize Files (ID - Name) Combo Box (self.id_combo)
+        if hasattr(self, "id_combo"):
+            self.id_combo["values"] = data_id_list
+            # 如果当前选中的 ID 不在列表中，则清空选中和输入框
+            if self.selected_data_id_var.get() not in data_id_list:
+                self.selected_data_id_var.set("")
+                if hasattr(self, "custom_name_var"):
+                    self.custom_name_var.set("")
+        # ----------------------------------------------------------------------
+
         if not self.datasets:
             tk.Label(self.summary_content_frame, text="No S2P files loaded.", font=("sans-serif", 12), fg="gray", bg="#f0f2f5").pack(padx=20, pady=20)
             self.summary_content_frame.update_idletasks()
             return
+            
         columns = ("ID", "File Path", "Points", "Format", "Frequency Range")
         tree = ttk.Treeview(self.summary_content_frame, columns=columns, show="headings", height=8)
+        
         style = ttk.Style()
         # 增加 TNotebook.Tab 的水平内边距（[水平填充, 垂直填充]）。
         # 将水平填充从默认值（通常很小）增加到 15 像素。
         style.configure("LeftAligned.Treeview.Heading", font=("Microsoft YaHei", 10, "bold"), foreground="#1a1a1a")
         style.configure("LeftAligned.Treeview", font=("Microsoft YaHei", 9), rowheight=28, background="#ffffff", foreground="#2c3e50", fieldbackground="#ffffff")
         tree.configure(style="LeftAligned.Treeview")
+
         for col in columns:
             tree.heading(col, text=col, anchor="w")
             tree.column(col, anchor="w", stretch=True)
+
         tree.column("ID", width=60, minwidth=50)
         tree.column("File Path", width=500, minwidth=300)
         tree.column("Points", width=100, minwidth=80)
         tree.column("Format", width=100, minwidth=80)
         tree.column("Frequency Range", width=240, minwidth=180)
+
         v_scrollbar = ttk.Scrollbar(self.summary_content_frame, orient="vertical", command=tree.yview)
         h_scrollbar = ttk.Scrollbar(self.summary_content_frame, orient="horizontal", command=tree.xview)
         tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+
         tree.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
         v_scrollbar.grid(row=0, column=1, sticky="ns")
         h_scrollbar.grid(row=1, column=0, sticky="ew")
+
         self.summary_content_frame.grid_rowconfigure(0, weight=1)
         self.summary_content_frame.grid_columnconfigure(0, weight=1)
+
         for dataset in self.datasets:
             data_id = dataset['id']
             name = dataset['name']
@@ -5055,6 +5548,7 @@ class SViewGUI:
             freq = dataset['freq']
             min_f = freq.min()
             max_f = freq.max()
+            
             def format_freq(f_hz):
                 if f_hz >= 1e9:
                     return f"{f_hz / 1e9:.3f} GHz"
@@ -5064,8 +5558,11 @@ class SViewGUI:
                     return f"{f_hz / 1e3:.3f} KHz"
                 else:
                     return f"{f_hz:.3f} Hz"
+                    
             freq_range_str = f"{format_freq(min_f)} to {format_freq(max_f)}"
+            
             tree.insert("", "end", values=(str(data_id), name, str(points), s_format, freq_range_str))
+            
         def on_treeview_motion(event):
             item = tree.identify_row(event.y)
             if item:
@@ -5077,8 +5574,110 @@ class SViewGUI:
                     self.status_var.set("Loaded File Information")
             else:
                 self.status_var.set("Loaded File Information")
+                
         tree.bind("<Motion>", on_treeview_motion)
         self.summary_content_frame.update_idletasks()
+
+
+    # [新增功能] Customize ID Color 相关的辅助方法
+    # --------------------------------------------------------------------------
+    def _open_color_picker(self):
+        """
+        打开颜色选择器并更新颜色显示框。
+        """
+        import tkinter.colorchooser as colorchooser # 确保局部导入 colorchooser
+        color_code = colorchooser.askcolor(title="Choose ID Color")
+        if color_code and color_code[1]:
+            self.current_color_display.config(bg=color_code[1])
+
+    def _update_color_ui_display(self, *args):
+        """
+        当 Data ID 组合框选择变化时，更新颜色显示框。
+        """
+        selected_id_str = self.color_id_var.get()
+        if not selected_id_str:
+            self.current_color_display.config(bg="white")
+            return
+            
+        try:
+            id_int = int(selected_id_str)
+            # 检查是否有自定义颜色
+            color = self.custom_id_colors.get(id_int, "white")
+            self.current_color_display.config(bg=color)
+        except ValueError:
+            self.current_color_display.config(bg="white")
+
+    def _apply_custom_color(self):
+        """
+        将选定的颜色应用于选定的 Data ID 并保存。
+        """
+        selected_id = self.color_id_var.get()
+        new_color = self.current_color_display.cget("bg")
+        
+        if not selected_id:
+            messagebox.showerror("Error", "Please select a Data ID first.")
+            return
+            
+        # 默认背景色或未选择颜色时为白色 (依赖于 self.current_color_display 的默认设置)
+        if new_color == "white":
+            messagebox.showwarning("Warning", "Please select or re-select a color first.")
+            return
+            
+        # 保存颜色
+        try:
+            id_int = int(selected_id)
+            self.custom_id_colors[id_int] = new_color
+            self.status_var.set(f"Data ID {selected_id} custom color set to {new_color}.")
+            # self.update_plots() # 暂时注释，按要求不关联其他功能
+        except ValueError:
+            messagebox.showerror("Error", "Invalid Data ID selected.")
+
+    def _clear_custom_colors(self):
+        """
+        [优化] 强制清除所有 Data ID 的自定义颜色，并清空颜色下拉菜单的选中记录和当前颜色显示。
+        执行完成后弹出成功提示。
+        """
+        
+        # ----------------------------------------------------------------------
+        # 1. 强制清除所有自定义颜色
+        # ----------------------------------------------------------------------
+        if self.custom_id_colors:
+            self.custom_id_colors.clear()
+            self.status_var.set("Cleared custom colors for ALL Data IDs.")
+            was_cleared = True
+        else:
+            self.status_var.set("No custom colors were set.")
+            was_cleared = False
+            
+        # ----------------------------------------------------------------------
+        # 2. 清空所有相关的 UI 变量 (仅限颜色相关)
+        # ----------------------------------------------------------------------
+        
+        # 确保当前颜色显示重置为默认白色
+        if hasattr(self, 'current_color_display'):
+            self.current_color_display.config(bg="white")
+            
+        # 清空 UI 变量（初次清空）
+        self.color_id_var.set("") # 清空颜色自定义下拉菜单的选中记录
+
+        # ----------------------------------------------------------------------
+        # 3. 刷新 UI
+        # ----------------------------------------------------------------------
+        self.update_file_list_ui() 
+        
+        # 4. 再次清空变量，确保 Combobox 在 update_file_list_ui() 后显示为空
+        self.color_id_var.set("") 
+        
+        # ----------------------------------------------------------------------
+        # 5. 【修正】执行完成后弹出对话框告知结果
+        # ----------------------------------------------------------------------
+        if was_cleared:
+            messagebox.showinfo("Success", "All custom colors have been cleared successfully.")
+        else:
+            messagebox.showinfo("Completed", "No custom colors were set, but the UI has been reset.")
+            
+        # self.update_plots() # 暂时注释，按要求不关联其他功能
+            
 
 if __name__ == '__main__':
     root = tk.Tk()
