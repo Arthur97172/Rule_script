@@ -6182,10 +6182,10 @@ class SViewGUI:
             tk.Label(input_frame, text="Select ID:", bg="#f0f2f5").pack(side="left", padx=(0, 5))
             self.id_combo = ttk.Combobox(input_frame, textvariable=self.selected_data_id_var, state="readonly", width=10)
             self.id_combo.pack(side="left", padx=5)
-            tk.Label(input_frame, text="New Name:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
+            tk.Label(input_frame, text=" Custom ID:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
             tk.Entry(input_frame, textvariable=self.custom_name_var, width=12).pack(side="left", padx=5)
             tk.Button(input_frame, text="Apply", command=self.set_custom_id_name, width=10).pack(side="left", padx=(15, 5))
-            tk.Button(input_frame, text="Reset Name", bg="#e74c3c", fg="white", command=self.clear_custom_names, width=10).pack(side="left", padx=(15, 5))
+            tk.Button(input_frame, text="Reset ID", bg="#e74c3c", fg="white", command=self.clear_custom_names, width=10).pack(side="left", padx=(15, 5))
             self.id_combo.bind("<<ComboboxSelected>>", self._on_id_selected_for_rename)
         
         # 4. [新增] Marker Legend 自定义区域 (保持不变)
@@ -6436,7 +6436,7 @@ class SViewGUI:
         for id_str, name in self.custom_id_names.items():
             # 确保 id_str 是字符串类型进行比较
             if str(id_str) != selected_id and name == new_name:
-                messagebox.showerror("Error", f"The new name '{new_name}' is already used by Data ID {id_str}. Please choose a unique name.")
+                messagebox.showerror("Error", f"The Custom ID '{new_name}' is already used by Data ID {id_str}. Please choose a unique name.")
                 return
         # ------------------------------------------------------------------
 
