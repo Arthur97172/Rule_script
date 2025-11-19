@@ -3935,7 +3935,9 @@ class SViewGUI:
             else:
                 if hasattr(self, 'max_ax') and self.max_ax:
                     self.max_ax.clear()
-                    self.max_ax.set_title("All S-Parameters (S11, S21, S12, S22)")
+                    #移除Max模式顶部显示
+                    #self.max_ax.set_title("All S-Parameters (S11, S21, S12, S22)")
+                    self.max_ax.set_title("")
                     self.max_ax.set_xlim(min_f, max_f)  
                     self.max_ax.set_ylim(DEFAULT_MIN_Y, DEFAULT_MAX_Y)
                     self.max_ax.text(0.5, 0.5, "No Data Loaded", transform=self.max_ax.transAxes, ha='center', va='center', fontsize=12, color='gray')
