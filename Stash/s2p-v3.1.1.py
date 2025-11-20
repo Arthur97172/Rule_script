@@ -8,7 +8,7 @@ from tkinter import ttk, filedialog, messagebox, simpledialog, scrolledtext # �
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.ticker import MaxNLocator, MultipleLocator, AutoMinorLocator
+from matplotlib.ticker import MaxNLocator, MultipleLocator, AutoMinorLocator, ScalarFormatter
 import os
 import re
 import sys # 确保导入 sys
@@ -89,7 +89,8 @@ SMITH_AVAILABLE = False # 显式设置为 False
 #2.47.34 优化Limits & Marks的按钮大小
 #2.47.35 更改Clear Names名称为Rest Name并更改按钮大小
 #3.0 最终版
-#3.1 智能DPI
+#3.0.1 Max模式刻度不同
+#3.1.1 智能DPI
 
 # ----------------------------------------------------
 # [新增] PyInstaller 资源路径解析函数 (修复 onefile 模式路径问题)
@@ -413,7 +414,6 @@ def get_scaling_factor():
         return 1
 # ----------------------------------------------------
 
-
 # ----------------------------------------------------
 # 【全局常量】Peak Marker Search 类型选项
 # ----------------------------------------------------
@@ -461,7 +461,7 @@ def copy_image_to_clipboard(img):
 class SViewGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("S-View Created By Arthur Gu | V3.1")
+        self.root.title("S-View Created By Arthur Gu | V3.1.1")
         self.root.geometry("1450x980")
         self.root.resizable(True, True)
         self.root.minsize(1150, 780)
@@ -1848,6 +1848,14 @@ class SViewGUI:
         ax.set_xlim(new_xlim)
         ax.set_ylim(new_ylim)
 
+        # --- 【关键修复 2：在 Zoom 后重新应用 X 轴格式】 ---
+        # 强制禁用科学记数法和偏移量，以始终显示实际值。
+        import matplotlib.ticker as ticker
+        xfmt = ticker.ScalarFormatter(useOffset=False, useMathText=True)
+        xfmt.set_scientific(False) 
+        ax.xaxis.set_major_formatter(xfmt)
+        # -----------------------------------------------------
+
         # ------------------------------------------------------------------
         # --- [优化 1: 统一刻度优化，解决缩放不协调问题] ---
         # 确保 X/Y 轴刻度协调，nbins=15 (Max模式下刻度更多)
@@ -1867,6 +1875,7 @@ class SViewGUI:
         self._optimize_tick_labels_output(ax, self.max_fig)
         
         self.max_canvas.draw()
+    #-------------------------
 
     def _on_mouse_move_cursor_normal(self, event):
         """
@@ -3962,7 +3971,7 @@ class SViewGUI:
             else:
                 if hasattr(self, 'max_ax') and self.max_ax:
                     self.max_ax.clear()
-                    #移除Max模式顶部显
+                    #移除Max模式顶部显示
                     #self.max_ax.set_title("All S-Parameters (S11, S21, S12, S22)")
                     self.max_ax.set_title("")
                     self.max_ax.set_xlim(min_f, max_f)  
@@ -4059,7 +4068,7 @@ class SViewGUI:
                 y_min_custom = float(self.axis_configs["unified_y_min"].get())
                 y_max_custom = float(self.axis_configs["unified_y_max"].get())
                 ax.set_ylim(y_min_custom, y_max_custom)
-                ax.yaxis.set_major_locator(MaxNLocator(12))
+                ax.yaxis.set_major_locator(MaxNLocator(15))
                 is_custom_y = True
                 ax.yaxis.set_minor_locator(AutoMinorLocator(2))
                 ax.grid(True, which='minor', linestyle=':', linewidth=0.5, color='gray', alpha=0.5)
@@ -4076,6 +4085,13 @@ class SViewGUI:
                 ax.grid(True, which='minor', linestyle=':', linewidth=0.5, color='gray', alpha=0.5)
         # 7. X 轴设置
         ax.xaxis.set_major_locator(MaxNLocator(15))
+        # --- 【关键修复 1】：禁用 X 轴科学记数法和偏移量（保证初始绘制正确）---
+        # 导入 matplotlib.ticker (确保在文件头部已导入)
+        import matplotlib.ticker as ticker
+        xfmt = ticker.ScalarFormatter(useOffset=False, useMathText=True)
+        xfmt.set_scientific(False) 
+        ax.xaxis.set_major_formatter(xfmt)
+        # -----------------------------------------------------------        
         if self.axis_configs["x_mode"].get() == "Custom":
             try:
                 start_val = float(self.axis_configs["x_start"].get())
@@ -4985,7 +5001,7 @@ class SViewGUI:
                     decimals = 2
                 else:
                     decimals = 1
-                numticks = 10  # Max模式固定10
+                numticks = 12  # Max模式固定12
             else:
                 # Normal模式 → 基于布局的逻辑
                 if is_simple_layout:
@@ -5002,7 +5018,7 @@ class SViewGUI:
                         decimals = 2
                     else:
                         decimals = 1
-                    numticks = 15  # 全宽布局使用15
+                    numticks = 12  # 全宽布局使用12
             # 设置刻度与格式化器
             ax.xaxis.set_major_locator(ticker.LinearLocator(numticks=numticks))
             ax.xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: smart_x_formatter(x, pos, decimals)))
@@ -6222,7 +6238,7 @@ class SViewGUI:
             self.id_combo = ttk.Combobox(input_frame, textvariable=self.selected_data_id_var, state="readonly", width=10)
             self.id_combo.pack(side="left", padx=5)
             tk.Label(input_frame, text=" Custom ID:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
-            tk.Entry(input_frame, textvariable=self.custom_name_var, width=13).pack(side="left", padx=5)
+            tk.Entry(input_frame, textvariable=self.custom_name_var, width=12).pack(side="left", padx=5)
             tk.Button(input_frame, text="Apply", command=self.set_custom_id_name, width=10).pack(side="left", padx=(15, 5))
             tk.Button(input_frame, text="Reset ID", bg="#e74c3c", fg="white", command=self.clear_custom_names, width=10).pack(side="left", padx=(15, 5))
             self.id_combo.bind("<<ComboboxSelected>>", self._on_id_selected_for_rename)

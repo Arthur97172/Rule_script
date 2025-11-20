@@ -501,7 +501,7 @@ class SViewGUI:
 
         # 【新增修复】：Marker 点击处理锁，防止首次点击时事件双重触发
         self.is_processing_marker_click = False
-        
+      
         # 【必须新增】：用于 Blitting 机制，缓存需要快速重绘的前景 Artists (数据线、Marker等)
         self.pan_artists = []
         
@@ -546,7 +546,10 @@ class SViewGUI:
         self.disable_refresh_var = tk.BooleanVar(value=False)
 
         # [新增功能] Limits Check 控制变量 (默认为关闭)
-        self.limits_check_enabled = tk.BooleanVar(value=False) # <--- NEW: Limits Check
+        self.limits_check_enabled = tk.BooleanVar(value=False)
+
+        # 【新增】：Marker Legend颜色
+        self.auto_color_enabled = tk.BooleanVar(value=False)
  
         # --- Marker Dragging State (NEW) ---
         self.dragging_marker_legend = False
@@ -1332,6 +1335,15 @@ class SViewGUI:
                                   anchor='w',
                                   justify='left',
                                   command=self.update_plots).pack(anchor='w', padx=(5, 0), pady=0)
+
+        # 4. Auto Color: Enable Marker Auto Color
+        tk.Checkbutton(inner_combined_frame,
+                                text="Auto Color",
+                                variable=self.auto_color_enabled,
+                                bg="#f0f2f5",
+                                anchor='w',
+                                justify='left',
+                                command=self.update_plots).pack(anchor='w', padx=(5, 0), pady=0)
 
         # Chart ops
         chart_ops_group = tk.LabelFrame(control_stack_frame, text="Chart Output", font=("sans-serif", 10, "bold"), bg="#f0f2f5")
@@ -4847,7 +4859,38 @@ class SViewGUI:
                     pass
 
         # 绘制 legend（如果有）
+# 绘制 legend（如果有）
         if visible_marker_info_list:
+            
+            # 导入所需模块
+            import matplotlib.offsetbox as moffsetbox
+            
+            # 【修复点 1】：安全初始化 self.normal_legend_backgrounds
+            if not hasattr(self, 'normal_legend_backgrounds'):
+                self.normal_legend_backgrounds = {}
+            
+            # 1. 清理旧的 Legend Artists (强化清理逻辑)
+            # 集中清理 self.normal_marker_legend_artists 中的所有对象
+            if param in self.normal_marker_legend_artists and isinstance(self.normal_marker_legend_artists[param], list):
+                for artist in self.normal_marker_legend_artists[param]:
+                    try:
+                        artist.remove()
+                    except:
+                        pass
+                # 清空列表
+                self.normal_marker_legend_artists[param] = []
+            else:
+                self.normal_marker_legend_artists[param] = []
+
+            # 移除旧的手动背景框或 AnnotationBbox 
+            if param in self.normal_legend_backgrounds:
+                try:
+                    self.normal_legend_backgrounds[param].remove()
+                    del self.normal_legend_backgrounds[param]
+                except:
+                    pass
+            
+            # 2. 排序并准备数据 (保持不变)
             def normal_mode_sort_key(info):
                 marker_id_str, data_id_str, _ = info
                 try:
@@ -4858,13 +4901,13 @@ class SViewGUI:
                 return (data_id_int, marker_num)
 
             sorted_markers = sorted(visible_marker_info_list, key=normal_mode_sort_key)
-            marker_legend_text = [info[2] for info in sorted_markers]
-            txt = "\n".join(marker_legend_text)
-
+            
+            # 3. 确定 Legend 整体位置 (保持不变)
             pos_config = self.marker_pos_configs[plot_type][param]
             mode = pos_config["mode_var"].get()
             x_val, y_val = 0.98, 0.98
             h_align, v_align = 'right', 'top'
+            
             if mode == "Top Left":
                 x_val, y_val = 0.02, 0.98
                 h_align, v_align = 'left', 'top'
@@ -4892,15 +4935,161 @@ class SViewGUI:
                     x_val, y_val = 0.98, 0.98
                     h_align, v_align = 'right', 'top'
 
-            bbox_params = self._get_marker_legend_bbox_params()
-            legend_artist = ax.text(
-                x_val, y_val, txt, transform=ax.transAxes, fontsize=9,
-                verticalalignment=v_align, horizontalalignment=h_align,
-                multialignment='left', bbox=bbox_params, zorder=7
+            # --- 第一步：AnnotationBbox 用于计算尺寸 (背景) ---
+            box_children = []
+            auto_color_enabled = hasattr(self, 'auto_color_enabled') and self.auto_color_enabled.get()
+            text_align_map = {'left': 'left', 'center': 'center', 'right': 'right'}
+            
+            for info in sorted_markers:
+                _, data_id_str, full_legend_text = info
+                current_text_h_align = text_align_map.get(h_align, 'center')
+                
+                # 创建 TextArea，设置颜色为 'none' 以隐藏文本
+                text_area = moffsetbox.TextArea(
+                    full_legend_text, 
+                    textprops=dict(
+                        color='none',  
+                        fontsize=9,
+                        horizontalalignment=current_text_h_align 
+                    )
+                )
+                box_children.append(text_area)
+
+            # 5. 堆叠内容 (VPacker)
+            packer_align_map = {
+                'left': 'left', 'center': 'center', 'right': 'right', 
+                'top': 'center', 'bottom': 'center' 
+            }
+            packer_align = packer_align_map.get(h_align, 'center')
+            
+            packed_box = moffsetbox.VPacker(
+                children=box_children, 
+                align=packer_align, 
+                pad=0.0, 
+                sep=2.0 
             )
-            self.normal_marker_legend_artists[param] = legend_artist
+
+            # 6 & 7. BBox 参数和对齐方式
+            bbox_params = self._get_marker_legend_bbox_params()
+            box_align_x = 0.5
+            if h_align == 'right': box_align_x = 1.0
+            elif h_align == 'left': box_align_x = 0.0
+            box_align_y = 0.5
+            if v_align == 'top': box_align_y = 1.0
+            elif v_align == 'bottom': box_align_y = 0.0
+
+            # 8. 创建 AnnotationBbox (仅作为背景框)
+            ab = moffsetbox.AnnotationBbox(
+                packed_box, 
+                (x_val, y_val),
+                xycoords='axes fraction', 
+                boxcoords='axes fraction', 
+                frameon=True, 
+                bboxprops={
+                    'boxstyle': bbox_params.get('boxstyle', 'round,pad=0.3'), 
+                    'facecolor': bbox_params['facecolor'],
+                    'edgecolor': 'none', 
+                    'alpha': bbox_params['alpha']
+                },
+                box_alignment=(box_align_x, box_align_y),
+                pad=0.3, 
+                zorder=7 
+            )
+
+            # 9. 添加 AnnotationBbox 到 Axes (绘制背景)
+            ax.add_artist(ab)
+            # 将 AnnotationBbox 存储以备清理
+            self.normal_marker_legend_artists[param].append(ab)
+            self.normal_legend_backgrounds[param] = ab 
+            
+            
+            # --- 第二步：使用 ax.text 独立绘制彩色文本 ---
+            text_artists = []
+            num_lines = len(sorted_markers)
+            
+            # 最终优化行高，解决重叠
+            text_v_step = 0.045 
+            padding_y_offset = 0.015 
+
+            # 计算起始 Y 坐标
+            total_text_height = (num_lines - 1) * text_v_step
+            
+            if v_align == 'top':
+                y_start = y_val - padding_y_offset
+                y_step = -text_v_step
+            elif v_align == 'bottom':
+                y_start = y_val + padding_y_offset + total_text_height 
+                y_step = -text_v_step
+            elif v_align == 'center':
+                y_start = y_val + total_text_height / 2 
+                y_step = -text_v_step
+            else: 
+                y_start = y_val - padding_y_offset
+                y_step = -text_v_step
+
+            current_y = y_start
+            
+            for info in sorted_markers:
+                _, data_id_str, full_legend_text = info
+                
+                # --- 颜色计算逻辑 ---
+                line_color = 'black'
+                if auto_color_enabled:
+                    try:
+                        data_id = int(data_id_str)
+                        
+                        # 尝试访问 COLOR_CYCLE 变量
+                        color_list = None
+                        # 优先从类实例属性获取
+                        if hasattr(self, 'COLOR_CYCLE') and self.COLOR_CYCLE:
+                            color_list = self.COLOR_CYCLE
+                        # 其次从全局变量获取
+                        elif 'COLOR_CYCLE' in globals() and globals()['COLOR_CYCLE']:
+                            color_list = globals()['COLOR_CYCLE']
+
+                        if color_list:
+                            line_color = color_list[(data_id - 1) % len(color_list)]
+                        
+                    except Exception:
+                        line_color = 'black'
+                # ------------------------------------
+                
+                # 绘制彩色文本
+                txt = ax.text(
+                    x_val, 
+                    current_y, 
+                    full_legend_text, 
+                    transform=ax.transAxes, 
+                    color=line_color,       
+                    fontsize=9,
+                    horizontalalignment=h_align, 
+                    verticalalignment='center', 
+                    zorder=8 
+                )
+                text_artists.append(txt)
+                current_y += y_step 
+                
+            # 将彩色文本 Artist 添加到清理列表
+            self.normal_marker_legend_artists[param].extend(text_artists)
+            
         else:
-            self.normal_marker_legend_artists[param] = None
+            # --- 完整的清理逻辑 ---
+            if param in self.normal_marker_legend_artists and isinstance(self.normal_marker_legend_artists[param], list):
+                for artist in self.normal_marker_legend_artists[param]:
+                    try:
+                        artist.remove()
+                    except Exception:
+                        pass
+                self.normal_marker_legend_artists[param] = None 
+            
+            # 【修复点 2】：确保在清理时 normal_legend_backgrounds 存在
+            if hasattr(self, 'normal_legend_backgrounds') and param in self.normal_legend_backgrounds:
+                try:
+                    self.normal_legend_backgrounds[param].remove()
+                    del self.normal_legend_backgrounds[param]
+                except Exception:
+                    pass
+        #---------------------------------    
 
         # Limits check status (保持现有逻辑)
         if self.limits_check_enabled.get():
@@ -6222,7 +6411,7 @@ class SViewGUI:
             self.id_combo = ttk.Combobox(input_frame, textvariable=self.selected_data_id_var, state="readonly", width=10)
             self.id_combo.pack(side="left", padx=5)
             tk.Label(input_frame, text=" Custom ID:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
-            tk.Entry(input_frame, textvariable=self.custom_name_var, width=13).pack(side="left", padx=5)
+            tk.Entry(input_frame, textvariable=self.custom_name_var, width=12).pack(side="left", padx=5)
             tk.Button(input_frame, text="Apply", command=self.set_custom_id_name, width=10).pack(side="left", padx=(15, 5))
             tk.Button(input_frame, text="Reset ID", bg="#e74c3c", fg="white", command=self.clear_custom_names, width=10).pack(side="left", padx=(15, 5))
             self.id_combo.bind("<<ComboboxSelected>>", self._on_id_selected_for_rename)
@@ -6633,6 +6822,12 @@ class SViewGUI:
                 # 如果输入无效，回退到默认
                 alpha_val = 0.9
 
+        # --- [新增修复逻辑] ---
+        # 检查 Auto Color 状态。如果开启，则强制设置 alpha 为 0.0
+        if hasattr(self, 'auto_color_enabled') and self.auto_color_enabled.get():
+            alpha_val = 0.0
+        # --- [修复逻辑结束] ---
+        
         return dict(boxstyle=boxstyle_val, facecolor=facecolor_val, alpha=alpha_val)
     # ----------------------------------------------------
 

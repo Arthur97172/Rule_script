@@ -501,7 +501,7 @@ class SViewGUI:
 
         # 【新增修复】：Marker 点击处理锁，防止首次点击时事件双重触发
         self.is_processing_marker_click = False
-        
+      
         # 【必须新增】：用于 Blitting 机制，缓存需要快速重绘的前景 Artists (数据线、Marker等)
         self.pan_artists = []
         
@@ -546,7 +546,10 @@ class SViewGUI:
         self.disable_refresh_var = tk.BooleanVar(value=False)
 
         # [新增功能] Limits Check 控制变量 (默认为关闭)
-        self.limits_check_enabled = tk.BooleanVar(value=False) # <--- NEW: Limits Check
+        self.limits_check_enabled = tk.BooleanVar(value=False)
+
+        # 【新增】：Marker Legend颜色
+        self.auto_color_enabled = tk.BooleanVar(value=False)
  
         # --- Marker Dragging State (NEW) ---
         self.dragging_marker_legend = False
@@ -1332,6 +1335,15 @@ class SViewGUI:
                                   anchor='w',
                                   justify='left',
                                   command=self.update_plots).pack(anchor='w', padx=(5, 0), pady=0)
+
+        # 4. Auto Color: Enable Marker Auto Color
+        tk.Checkbutton(inner_combined_frame,
+                                text="Auto Color",
+                                variable=self.auto_color_enabled,
+                                bg="#f0f2f5",
+                                anchor='w',
+                                justify='left',
+                                command=self.update_plots).pack(anchor='w', padx=(5, 0), pady=0)
 
         # Chart ops
         chart_ops_group = tk.LabelFrame(control_stack_frame, text="Chart Output", font=("sans-serif", 10, "bold"), bg="#f0f2f5")
@@ -4847,7 +4859,25 @@ class SViewGUI:
                     pass
 
         # 绘制 legend（如果有）
+# 绘制 legend（如果有）
         if visible_marker_info_list:
+            
+            # 1. 清理旧的 Legend Artists
+            if param in self.normal_marker_legend_artists and isinstance(self.normal_marker_legend_artists[param], list):
+                for artist in self.normal_marker_legend_artists[param]:
+                    try:
+                        artist.remove()
+                    except:
+                        pass
+            
+            # 清理旧的背景框（如果有）
+            if param in self.normal_marker_legend_artists and isinstance(self.normal_marker_legend_artists[param], list) and self.normal_marker_legend_artists[param]:
+                # 假设背景框是列表中的第一个或最后一个元素
+                # 这里我们假设 Background Artist 是单独存储的
+                if hasattr(self, 'normal_legend_backgrounds') and param in self.normal_legend_backgrounds:
+                    self.normal_legend_backgrounds[param].remove()
+            
+            # 2. 排序并准备数据
             def normal_mode_sort_key(info):
                 marker_id_str, data_id_str, _ = info
                 try:
@@ -4858,9 +4888,8 @@ class SViewGUI:
                 return (data_id_int, marker_num)
 
             sorted_markers = sorted(visible_marker_info_list, key=normal_mode_sort_key)
-            marker_legend_text = [info[2] for info in sorted_markers]
-            txt = "\n".join(marker_legend_text)
-
+            
+            # 3. 确定 Legend 整体位置
             pos_config = self.marker_pos_configs[plot_type][param]
             mode = pos_config["mode_var"].get()
             x_val, y_val = 0.98, 0.98
@@ -4868,6 +4897,7 @@ class SViewGUI:
             if mode == "Top Left":
                 x_val, y_val = 0.02, 0.98
                 h_align, v_align = 'left', 'top'
+            # ... [省略位置计算，保持不变] ...
             elif mode == "Top Right":
                 x_val, y_val = 0.98, 0.98
                 h_align, v_align = 'right', 'top'
@@ -4879,7 +4909,7 @@ class SViewGUI:
                 h_align, v_align = 'right', 'bottom'
             elif mode == "Center":
                 x_val, y_val = 0.5, 0.5
-                h_align, v_align = 'center', 'center'
+                h_align, v_align = 'left', 'top' 
             elif mode == "Custom":
                 try:
                     x_val = float(pos_config["x_var"].get())
@@ -4892,15 +4922,129 @@ class SViewGUI:
                     x_val, y_val = 0.98, 0.98
                     h_align, v_align = 'right', 'top'
 
+            # 4. 绘制背景框
+            
+            # 调整行高因子 (略微增加以避免重叠)
+            line_height_factor = 0.045 
+            num_lines = len(sorted_markers)
+            
+            # 获取 bbox 参数
             bbox_params = self._get_marker_legend_bbox_params()
-            legend_artist = ax.text(
-                x_val, y_val, txt, transform=ax.transAxes, fontsize=9,
-                verticalalignment=v_align, horizontalalignment=h_align,
-                multialignment='left', bbox=bbox_params, zorder=7
+            
+            # 估算总高度和宽度（仅为近似，需根据实际文本宽度调整）
+            total_height = num_lines * line_height_factor + 0.005 # 额外的边距
+            
+            # 假设一个平均宽度（需要更复杂的计算才能精确）
+            # 0.15 只是一个示例值，可能需要根据您的文本长度调整
+            approx_width = 0.15 
+            
+            # 根据对齐方式计算背景框的起始 (x0, y0) 坐标
+            if h_align == 'right':
+                x0 = x_val - approx_width
+            elif h_align == 'center':
+                x0 = x_val - (approx_width / 2)
+            else: # 'left'
+                x0 = x_val
+            
+            if v_align == 'top':
+                y0 = y_val - total_height
+            elif v_align == 'center':
+                y0 = y_val - (total_height / 2)
+            else: # 'bottom'
+                y0 = y_val
+                
+            # 创建 Rectangle 对象作为背景
+            import matplotlib.patches as mpatches
+            background_rect = mpatches.Rectangle(
+                (x0, y0), 
+                approx_width, 
+                total_height,
+                transform=ax.transAxes,
+                facecolor=bbox_params['facecolor'],
+                alpha=bbox_params['alpha'],
+                edgecolor=bbox_params.get('edgecolor', 'none'),
+                linewidth=bbox_params.get('linewidth', 0),
+                zorder=6 # 确保背景在文本之下 (文本zorder=7)
             )
-            self.normal_marker_legend_artists[param] = legend_artist
+            ax.add_patch(background_rect)
+            
+            # 存储背景对象以便清理
+            if not hasattr(self, 'normal_legend_backgrounds'):
+                self.normal_legend_backgrounds = {}
+            self.normal_legend_backgrounds[param] = background_rect
+            
+            # 5. 逐行绘制 Legend Text
+            legend_line_artists = []
+            auto_color_enabled = hasattr(self, 'auto_color_enabled') and self.auto_color_enabled.get()
+            
+            # 调整 x_val/y_val 以包含边距（从背景框的内侧开始绘制）
+            padding_factor_x = 0.005
+            padding_factor_y = 0.005
+
+            if h_align == 'right':
+                x_start = x_val - padding_factor_x
+            elif h_align == 'left':
+                x_start = x_val + padding_factor_x
+            else: # 'center'
+                # 居中对齐时，x_start 保持不变，但文本对齐方式 h_align 必须保持一致
+                x_start = x_val
+
+            if v_align == 'top':
+                y_start = y_val - padding_factor_y
+            elif v_align == 'bottom':
+                y_start = y_val + padding_factor_y
+            else: # 'center'
+                # 重新计算 center 模式的起始 y 坐标
+                y_start = y_val + (total_height / 2) - line_height_factor / 2 - padding_factor_y
+                v_align = 'top' # 绘制时从上往下画
+
+            for i, info in enumerate(sorted_markers):
+                _, data_id_str, full_legend_text = info
+                
+                # 计算颜色
+                line_color = 'black'
+                if auto_color_enabled:
+                    try:
+                        data_id = int(data_id_str)
+                        line_color = COLOR_CYCLE[(data_id - 1) % len(COLOR_CYCLE)]
+                    except Exception:
+                        line_color = 'black'
+                
+                # 计算 Y 位置 (相对位置)
+                if v_align == 'top':
+                    current_y = y_start - (i * line_height_factor)
+                    current_v_align = 'top'
+                else: # bottom
+                    current_y = y_start + (i * line_height_factor)
+                    current_v_align = 'bottom'
+
+                # 绘制单个文本对象
+                line_artist = ax.text(
+                    x_start, current_y, full_legend_text, transform=ax.transAxes, fontsize=9,
+                    verticalalignment=current_v_align, horizontalalignment=h_align,
+                    color=line_color,
+                    zorder=7 # 确保文本在背景之上
+                )
+                legend_line_artists.append(line_artist)
+                
+            self.normal_marker_legend_artists[param] = legend_line_artists
+            
         else:
+            # 移除已有的 Legend Artist 列表
+            if param in self.normal_marker_legend_artists and isinstance(self.normal_marker_legend_artists[param], list):
+                for artist in self.normal_marker_legend_artists[param]:
+                    try:
+                        artist.remove()
+                    except Exception:
+                        pass
+            
+            # 移除背景框
+            if hasattr(self, 'normal_legend_backgrounds') and param in self.normal_legend_backgrounds:
+                self.normal_legend_backgrounds[param].remove()
+                del self.normal_legend_backgrounds[param]
+                
             self.normal_marker_legend_artists[param] = None
+        #---------------------------------    
 
         # Limits check status (保持现有逻辑)
         if self.limits_check_enabled.get():
@@ -6222,7 +6366,7 @@ class SViewGUI:
             self.id_combo = ttk.Combobox(input_frame, textvariable=self.selected_data_id_var, state="readonly", width=10)
             self.id_combo.pack(side="left", padx=5)
             tk.Label(input_frame, text=" Custom ID:", bg="#f0f2f5").pack(side="left", padx=(15, 5))
-            tk.Entry(input_frame, textvariable=self.custom_name_var, width=13).pack(side="left", padx=5)
+            tk.Entry(input_frame, textvariable=self.custom_name_var, width=12).pack(side="left", padx=5)
             tk.Button(input_frame, text="Apply", command=self.set_custom_id_name, width=10).pack(side="left", padx=(15, 5))
             tk.Button(input_frame, text="Reset ID", bg="#e74c3c", fg="white", command=self.clear_custom_names, width=10).pack(side="left", padx=(15, 5))
             self.id_combo.bind("<<ComboboxSelected>>", self._on_id_selected_for_rename)
@@ -6633,6 +6777,12 @@ class SViewGUI:
                 # 如果输入无效，回退到默认
                 alpha_val = 0.9
 
+        # --- [新增修复逻辑] ---
+        # 检查 Auto Color 状态。如果开启，则强制设置 alpha 为 0.0
+        if hasattr(self, 'auto_color_enabled') and self.auto_color_enabled.get():
+            alpha_val = 0.0
+        # --- [修复逻辑结束] ---
+        
         return dict(boxstyle=boxstyle_val, facecolor=facecolor_val, alpha=alpha_val)
     # ----------------------------------------------------
 
