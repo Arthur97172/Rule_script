@@ -1,0 +1,229 @@
+        # File Operations
+        file_ops_group = tk.LabelFrame(control_stack_frame, text="File Operations", font=("sans-serif", 10, "bold"), bg="#f0f2f5")
+        file_ops_group.pack(fill="x", padx=5, pady=2)
+        
+        # -------------------------------------------------------------
+        # ✅ 优化: 替换为通用 Load SnP File 按钮，直接绑定到新函数
+        # -------------------------------------------------------------
+        tk.Button(file_ops_group, text="Load SnP File", font=("sans-serif", 10, "bold"),
+                  bg="#4CAF50", fg="white", relief="flat", anchor="w",
+                  padx=left_margin, pady=6, command=self.load_snp)\
+        .pack(fill="x", padx=5, pady=2)
+        # -------------------------------------------------------------
+
+
+
+    def _generate_s_params(self, n_ports):
+        """根据端口数 N 生成 S 参名称列表 (e.g., S2P: s11, s21, s12, s22)。"""
+        params = []
+        # S 参索引顺序通常是 s[接收端口][发送端口]
+        # 常见文件顺序是 S11, S21, ..., SN1, S12, S22, ..., SN2, ..., SNN
+        for j in range(1, n_ports + 1):  # 发送端口 (第二位)
+            for i in range(1, n_ports + 1):  # 接收端口 (第一位)
+                params.append(f"s{i}{j}")
+        return params
+    # ------------------------------------------------------------------
+
+    # 加载snp文件，支持单文件/多文件/文件夹批量加载
+    def load_snp(self):
+        """
+        通用加载 SnP 文件 (S1P, S2P, S3P, S4P)，支持批量选择和文件夹加载。
+        函数将根据文件扩展名动态确定端口数 N。
+        """
+        # ------------------------------------------------------------
+        # 1. Ask User for Loading Method (调用私有方法)
+        # ------------------------------------------------------------
+        choice = self._show_load_dialog() # choice 将是 'files', 'folder', 或 None
+
+        if choice is None:
+            return # 用户选择了 Cancel
+
+        file_paths = []
+        
+        # 定义所有支持的文件扩展名和文件类型描述
+        all_snp_extensions = [".s1p", ".s2p", ".s3p", ".s4p"]
+        all_filetypes = [
+            ("All SnP files", "*.s?p"),
+            ("S1P files", "*.s1p"), 
+            ("S2P files", "*.s2p"), 
+            ("S3P files", "*.s3p"), 
+            ("S4P files", "*.s4p"), 
+            ("All files", "*.*")
+        ]
+
+        if choice == 'files': # Select File(s)
+            file_paths = filedialog.askopenfilenames(
+                title="Select S-Parameter File(s) (S1P-S4P)",
+                filetypes=all_filetypes
+            )
+        elif choice == 'folder': # Select Folder
+            directory_path = filedialog.askdirectory(title="Select Folder containing SnP Files")
+            if directory_path:
+                # 遍历文件夹，选择所有支持的 SnP 文件
+                file_paths = [
+                    os.path.join(directory_path, filename)
+                    for filename in os.listdir(directory_path)
+                    if any(filename.lower().endswith(ext) for ext in all_snp_extensions)
+                ]
+                
+                if not file_paths:
+                    messagebox.showinfo("Information", "No S1P, S2P, S3P, or S4P files found in the selected folder.")
+                    return
+        
+        if not file_paths:
+            return
+
+        # ------------------------------------------------------------
+        # 2. Batch Processing of File List (通用解析逻辑)
+        # ------------------------------------------------------------
+        loaded_count = 0
+        failed_files = []
+        
+        for file_path in file_paths:
+            try:
+                filename = os.path.basename(file_path).lower()
+                
+                # --- 动态确定 n_ports ---
+                n_ports = None
+                for ext in all_snp_extensions:
+                    if filename.endswith(ext):
+                        n_ports = int(ext[2]) # 从 ".sNp" 中提取 N
+                        break
+                
+                if n_ports is None:
+                    raise ValueError("File extension not recognized as S1P, S2P, S3P, or S4P.")
+
+                # 频率 + N^2 S-params * 2 (实虚部/幅角)
+                num_expected_columns = 1 + n_ports**2 * 2 
+                s_params = self._generate_s_params(n_ports) # 使用辅助方法生成 S 参名称
+                
+                # 以下的代码和您之前 load_snp 中的解析逻辑相同，只是不再依赖外部参数
+                # --- [文件头解析、数据提取、频率转换、S参数转换的通用逻辑] ---
+                
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()
+
+                freq_unit = "Hz"
+                s_format = None
+
+                # Parse header line
+                for line in lines:
+                    line = line.strip()
+                    if line.startswith('#'):
+                        parts = line.upper().split()
+                        if 'GHZ' in parts: freq_unit = "GHz"
+                        elif 'MHZ' in parts: freq_unit = "MHz"
+                        elif 'KHZ' in parts: freq_unit = "KHz"
+                        if 'DB' in parts: s_format = "DB"
+                        elif 'MA' in parts: s_format = "MA"
+                        elif 'RI' in parts: s_format = "RI"
+                        break
+
+                if s_format is None:
+                    raise ValueError("No # line or S-parameter format found")
+
+                # Extract data lines
+                data_lines = []
+                # ... (省略 data_lines 提取逻辑，与您提供的 load_snp 代码保持一致)
+                for line in lines:
+                    line = line.strip()
+                    if not line or line.startswith('!') or line.startswith('#'):
+                        continue
+                    numbers = re.findall(r'[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?', line)
+                    
+                    if len(numbers) >= num_expected_columns:
+                        try:
+                            data_lines.append([float(x) for x in numbers[:num_expected_columns]])
+                        except:
+                            continue
+
+                if not data_lines:
+                    raise ValueError("No valid data lines found")
+
+                data = np.array(data_lines)
+                freq = data[:, 0]
+                
+                if freq_unit == "GHz": freq *= 1e9
+                elif freq_unit == "MHz": freq *= 1e6
+                elif freq_unit == "KHz": freq *= 1e3
+
+                # 定义转换函数（确保这些函数在类中或 load_snp 作用域内）
+                def db_angle_to_complex(mag_db, angle_deg):
+                    mag = 10 ** (mag_db / 20.0)
+                    rad = np.deg2rad(angle_deg)
+                    return mag * (np.cos(rad) + 1j * np.sin(rad))
+                
+                def mag_angle_to_complex(mag_lin, angle_deg):
+                    rad = np.deg2rad(angle_deg)
+                    return mag_lin * (np.cos(rad) + 1j * np.sin(rad))
+                
+                # 通用 S-参数转换逻辑
+                s_data = {}
+                for i, param in enumerate(s_params):
+                    col_index = 1 + i * 2 
+                    
+                    if s_format == "RI":
+                        s_data[param] = data[:, col_index] + 1j * data[:, col_index + 1]
+                    elif s_format == "DB":
+                        s_data[param] = db_angle_to_complex(data[:, col_index], data[:, col_index + 1])
+                    elif s_format == "MA":
+                        s_data[param] = mag_angle_to_complex(data[:, col_index], data[:, col_index + 1])
+
+                # Create new dataset
+                new_dataset = {
+                    'id': self.next_dataset_id,
+                    'name': os.path.basename(file_path),
+                    'path': file_path,
+                    'freq': freq,
+                    's_data': s_data,
+                    'format': s_format,
+                    'points': len(freq),
+                    'n_ports': n_ports # 存储动态确定的端口数
+                }
+                self.datasets.append(new_dataset)
+                self.next_dataset_id += 1
+                loaded_count += 1
+
+            except Exception as e:
+                failed_files.append(f"{os.path.basename(file_path)}: {e}")
+
+        # ------------------------------------------------------------
+        # 3. Update UI (保持不变)
+        # ------------------------------------------------------------
+        if loaded_count > 0:
+            self.status_var.set(
+                f"Loaded {loaded_count} file(s) successfully | Total Files: {len(self.datasets)}"
+            )
+            self.update_file_list_ui()
+            self.on_plot_type_change()
+            self.update_data_information_tab()
+            
+            # ... (后续 UI 更新逻辑保持不变)
+            current_plot_type = self.plot_type.get()
+            
+            # 为了确保 UI 刷新逻辑正确，这里需要一个所有 S 参的集合
+            # 如果 self.params 存储了 S2P 参数，您可能需要更新它以包含当前加载文件的参数
+            # 这里的 s_params 来自当前循环，但 UI 刷新可能需要一个更通用的参数列表
+            # 暂时保持使用 s_params 刷新 UI，如果后续出现 S3P/S4P 标记 UI 错误，再优化这里
+            
+            if current_plot_type in self.data:
+                for param in s_params: 
+                    if self.data[current_plot_type]["marks"].get(param):
+                        self._reindex_markers_and_refresh_ui(current_plot_type, param)
+                        
+                        ui_refs_param = self.data[current_plot_type]["ui_refs"].get(param, {})
+                        if "search_marker_list_frame" in ui_refs_param:
+                            self._refresh_search_markers_ui(current_plot_type, param)
+
+                if self.display_mode.get() == "Normal":
+                    self.restore_plots_layout()
+
+                if hasattr(self, "id_combo"):
+                    self.id_combo["values"] = [str(d["id"]) for d in self.datasets]
+
+        if failed_files:
+            messagebox.showwarning(
+                "Partial Load Warning",
+                "Some files could not be loaded:\n\n" + "\n".join(failed_files)
+            )
+        #----------------------------------
