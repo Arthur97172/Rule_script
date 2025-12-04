@@ -1,0 +1,314 @@
+    #复位参数
+    def reset_application(self):
+        if not messagebox.askyesno("Reset Application", "Reset Application to initial state?"):
+            return
+
+        # ------------------------------------------------------------
+        # ⚠️ OPTIMIZATION START: 暂时禁用绘图更新 (self.update_plots)
+        # ------------------------------------------------------------
+        if hasattr(self, 'update_plots'):
+            self._original_update_plots = self.update_plots
+            def no_op_update_plots(*args, **kwargs):
+                pass
+            self.update_plots = no_op_update_plots
+
+        # ------------------------------------------------------------
+        # 0. Reset Core Data Structures
+        # ------------------------------------------------------------
+        self.datasets = []
+        self.next_dataset_id = 1
+        
+        # >>>>>>>>>> 添加这几行 <<<<<<<<<<
+        if hasattr(self, 'display_vars'):
+            self.display_vars.clear()  # 一行就够了！最简洁有效
+        # >>>>>>>>>> 结束 <<<<<<<<<<
+        
+        self.current_img = None
+        self.maximized_param = None
+        self.custom_id_names = {}
+
+        # Disable Add Tag (default)
+        if hasattr(self, 'marker_click_enabled'):
+            self.marker_click_enabled.set(False)
+
+        # Disable refresh (default)
+        if hasattr(self, 'freeze_refresh_var'):
+            self.freeze_refresh_var.set(False)
+
+        # Disable limits check (default)
+        if hasattr(self, 'limits_check_enabled'):
+            self.limits_check_enabled.set(False)
+
+        # Disable Marker Legend Color (default)
+        if hasattr(self, 'auto_font_color_enabled'):
+            self.auto_font_color_enabled.set(False)
+
+        # ------------------------------------------------------------
+        # 1. Clear limit lines, markers and UI references
+        # ------------------------------------------------------------
+        for plot_type in self.data:
+            for param in self.params:
+
+                # Remove limit lines
+                if "limit_lines" in self.data[plot_type]:
+                    self.data[plot_type]["limit_lines"][param] = []
+
+                # Remove all marker entries (Regular + Search + Avg)
+                if "marks" in self.data[plot_type]:
+                    self.data[plot_type]["marks"][param] = []
+
+                # ==== FIX: 清空 Average UI frame ====
+                if "ui_refs" in self.data[plot_type]:
+                    ui_refs = self.data[plot_type]["ui_refs"][param]
+                    if "avg_list_frame" in ui_refs:
+                        for w in ui_refs["avg_list_frame"].winfo_children():
+                            w.destroy()
+                # =====================================
+
+                # Finally remove ui_refs
+                if "ui_refs" in self.data[plot_type]:
+                    self.data[plot_type]["ui_refs"][param] = {}
+
+        # ------------------------------------------------------------
+        # 2. Reset UI: File Information Fields
+        # ------------------------------------------------------------
+        if hasattr(self, 'selected_data_id_var'):
+            self.selected_data_id_var.set("")
+        if hasattr(self, 'custom_name_var'):
+            self.custom_name_var.set("")
+        if hasattr(self, "id_combo"):
+            self.id_combo.set("")
+            self.id_combo["values"] = []
+
+        # ------------------------------------------------------------
+        # 3. Reset General Settings & Port Pair/S-Params (FIX)
+        # ------------------------------------------------------------
+
+        # 1. FIX: 暂时移除 on_port_pair_change 的监听，避免 display_mode 重置后 Port Pair 变量的设置导致二次 UI 重建
+        trace_id_to_remove = getattr(self, '_port_pair_change_trace_id', None)
+        if trace_id_to_remove:
+            try:
+                self.port_selection_var.trace_remove("write", trace_id_to_remove)
+            except tk.TclError:
+                pass
+
+        # 2. 强制设置 Port Pair 和 S 参数到默认值 (满足用户要求)
+        self.port_selection_var.set("1-2") # 确保 Port Pair 回到 1-2
+        self.normal_mode_ports = (1, 2)
+        self.default_params = ["S11", "S12", "S21", "S22"] # 确保 S 参数回到 S11, S12, S21, S22
+        self.params = self.default_params.copy()
+
+        # 3. 确保 S11, S12, S21, S22 的复选框状态是 True
+        for p in self.default_params:
+            if p not in self.show_param_vars:
+                self.show_param_vars[p] = tk.BooleanVar(value=True)
+            self.show_param_vars[p].set(True)
+
+        # 4. 重置核心模式变量 (此调用会触发 on_display_mode_change -> rebuild_show_params，完成单次 UI 重建)
+        self.title_var.set("SN-001")
+        self.plot_type.set("Magnitude (dB)")
+        self.display_mode.set("Normal")
+
+        SUPPORTED_PLOT_TYPES = ["Magnitude (dB)", "Phase (deg)", "Group Delay (ns)"]
+
+        # ------------------------------------------------------------
+        # 3. Reset Marker-Legend Positions (Normal & Max)
+        # =========================================================
+        DEFAULT_MODE = "Top Right"
+        DEFAULT_X = "0.5"
+        DEFAULT_Y = "0.5"
+
+        # 3a. normal mode per-param
+        if hasattr(self, "marker_pos_configs"):
+            for pt, param_dict in self.marker_pos_configs.items():
+                for param, cfg in param_dict.items():
+                    try:
+                        cfg["mode_var"].set(DEFAULT_MODE)
+                        cfg["x_var"].set(DEFAULT_X)
+                        cfg["y_var"].set(DEFAULT_Y)
+                    except:
+                        pass
+
+        # 3b. max mode global position
+        if hasattr(self, "max_marker_pos_configs"):
+            for pt, cfg in self.max_marker_pos_configs.items():
+                try:
+                    cfg["mode_var"].set(DEFAULT_MODE)
+                    cfg["x_var"].set(DEFAULT_X)
+                    cfg["y_var"].set(DEFAULT_Y)
+                except:
+                    pass
+
+        # Hide all Custom frames
+        if hasattr(self, "normal_position_controls"):
+            for param, ref in self.normal_position_controls.items():
+                cf = ref.get("custom_frame")
+                if cf:
+                    try:
+                        cf.pack_forget()
+                    except:
+                        pass
+
+        if hasattr(self, "max_position_controls") and self.max_position_controls.get("custom_frame"):
+            try:
+                self.max_position_controls["custom_frame"].pack_forget()
+            except:
+                pass
+
+        # =========================================================
+        # 4. Reset S-Legend Position (Matplotlib Legend)
+        # =========================================================
+        if hasattr(self, "max_loc_var"):
+            try:
+                self.max_loc_var.set("Lower Left")
+            except:
+                pass
+
+        if hasattr(self, "max_loc_custom_frame"):
+            try:
+                self.max_loc_custom_frame.pack_forget()
+            except:
+                pass
+
+        # =========================================================
+        # 5. Reset Parameter Visibility
+        # =========================================================
+        if hasattr(self, "show_param_vars"):
+            for p, v in self.show_param_vars.items():
+                try:
+                    v.set(True)
+                except:
+                    pass
+
+        # =========================================================
+        # 5. Reset Data Dictionaries (limit lines, markers, UI refs)
+        # ------------------------------------------------------------
+        for pt in SUPPORTED_PLOT_TYPES:
+            for p in self.params:
+                self.data[pt]["limit_lines"][p] = []
+                self.data[pt]["marks"][p] = []
+                self.data[pt]["ui_refs"][p] = {}
+
+        # ------------------------------------------------------------
+        # 6. Reset Show/Hide Parameters
+        # ------------------------------------------------------------
+        for p in self.params:
+            self.show_param_vars[p].set(True)
+
+        # ------------------------------------------------------------
+        # 7. Reset Axis Configurations
+        # ------------------------------------------------------------
+        self.axis_configs["x_mode"].set("Default")
+        self.axis_configs["x_start"].set("800")
+        self.axis_configs["x_stop"].set("1000")
+        self.axis_configs["x_unit"].set("MHz")
+
+        y_defaults = {
+            "Magnitude (dB)": {"min": "-50", "max": "0"},
+            "Phase (deg)": {"min": "-180", "max": "180"},
+            "Group Delay (ns)": {"min": "0", "max": "10"}
+        }
+
+        for pt in SUPPORTED_PLOT_TYPES:
+            for p in self.params:
+                self.y_configs[pt][p]["mode"].set("Default")
+                self.y_configs[pt][p]["min"].set(y_defaults[pt]["min"])
+                self.y_configs[pt][p]["max"].set(y_defaults[pt]["max"])
+
+        # ------------------------------------------------------------
+        # 8. Close Max Mode Window (if any)
+        # ------------------------------------------------------------
+        if hasattr(self, 'max_frame') and self.max_frame:
+            self.exit_max_mode()
+            self.max_frame.destroy()
+            self.max_frame = None
+            self.max_fig = None
+            self.max_ax = None
+            self.max_canvas = None
+            self.max_toolbar = None
+            self.max_cids = {}
+
+        # ------------------------------------------------------------
+        # 9. Recreate Dynamic Tabs (Limit & Axis tabs)
+        # ------------------------------------------------------------
+        if hasattr(self, 'limit_tabs'):
+            for t in list(self.limit_tabs.keys()):
+                try:
+                    w = self.limit_tabs.pop(t)
+                    self.notebook.forget(w)
+                    w.destroy()
+                except:
+                    pass
+
+        # 重新创建 Tabs
+        self.create_limit_mark_tab(self.plot_type.get())
+        self.create_data_information_tab()
+        self.create_axis_control_tab()
+
+        # ------------------------------------------------------------
+        # 10. Reset Marker Legend Customization (Key Fix)
+        # ------------------------------------------------------------
+        if hasattr(self, "marker_legend_configs"):
+            self.marker_legend_configs["boxstyle_var"].set("Default")
+            self.marker_legend_configs["facecolor_var"].set("Default")
+            self.marker_legend_configs["alpha_var"].set("Default")
+
+        # Font settings
+        if hasattr(self, "marker_font_color_var"):
+            self.marker_font_color_var.set("black")
+        if hasattr(self, "marker_font_size_var"):
+            self.marker_font_size_var.set("10")
+        if hasattr(self, "marker_bg_color_var"):
+            self.marker_bg_color_var.set("yellow")
+        if hasattr(self, "marker_show_var"):
+            self.marker_show_var.set(True)
+
+        # Refresh the legend UI (if supported)
+        if hasattr(self, "refresh_marker_legend_ui"):
+            try: self.refresh_marker_legend_ui()
+            except: pass
+
+        # Refresh legend on plot
+        if hasattr(self, "update_marker_legend_display"):
+            try: self.update_marker_legend_display()
+            except: pass
+            
+        # ------------------------------------------------------------
+        # 11. Reset Plot Logo
+        # ------------------------------------------------------------
+        if hasattr(self, '_clear_report_logo'):
+            self._clear_report_logo()
+        elif hasattr(self, 'report_logo_path'):
+            self.report_logo_path = ""
+
+        # ------------------------------------------------------------
+        # ⚠️ OPTIMIZATION END: 恢复绘图更新函数
+        # ------------------------------------------------------------
+        if hasattr(self, '_original_update_plots'):
+            self.update_plots = self._original_update_plots
+            del self._original_update_plots
+
+        # ------------------ 🔥 FIX: 重新添加 on_port_pair_change 的监听 🔥 ------------------
+        # 必须重新添加 trace，确保后续正常的 Port Pair 切换可以工作
+        # 使用新的 ID 覆盖旧 ID (即使 trace_remove 失败，重新添加也可以)
+        self._port_pair_change_trace_id = self.port_selection_var.trace_add("write", self.on_port_pair_change)
+        # ------------------------------------------------------------------------------------
+
+        # ------------------------------------------------------------
+        # 12. Final UI Refresh (并执行单次绘图更新)
+        # ------------------------------------------------------------
+        # 更新数据信息 Tab 中的动态内容（如 Treeview）
+        self.update_data_information_tab() 
+        if hasattr(self, 'chart_tab'):
+            self.notebook.select(self.chart_tab)
+
+        self.update_file_list_ui()
+        # ⚠️ 集中在此处执行最后一次绘图刷新，替代了之前多次的隐式调用
+        self.update_plots() 
+
+        # ------------------------------------------------------------
+        # 13. User Feedback
+        # ------------------------------------------------------------
+        self.status_var.set("Application reset to initial state.")
+        messagebox.showinfo("Reset Complete", "The application has been reset to its initial state.")
+	#--------------------------------------------------	
