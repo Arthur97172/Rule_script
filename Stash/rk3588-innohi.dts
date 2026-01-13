@@ -2579,6 +2579,7 @@
 		power-domains = <0x06 0x1f>;
 		status = "okay";
 		snps,dis_u2_susphy_quirk;
+		phy-supply = <0x78>;
 		phandle = <0x254>;
 	};
 
@@ -2592,6 +2593,8 @@
 		phy-names = "usb2-phy";
 		power-domains = <0x06 0x1f>;
 		status = "okay";
+		phy-supply = <0x78>;
+		snps,dis_u2_susphy_quirk;
 		phandle = <0x6d>;
 	};
 
@@ -2606,6 +2609,7 @@
 		phy-names = "usb2-phy";
 		power-domains = <0x06 0x1f>;
 		status = "okay";
+		phy-supply = <0x78>;
 		snps,dis_u2_susphy_quirk;
 		phandle = <0x255>;
 	};
@@ -2620,6 +2624,8 @@
 		phy-names = "usb2-phy";
 		power-domains = <0x06 0x1f>;
 		status = "okay";
+		phy-supply = <0x78>;
+		snps,dis_u2_susphy_quirk;
 		phandle = <0x70>;
 	};
 
@@ -5440,6 +5446,7 @@
 		phandle = <0x40>;
 	};
 
+	/* arthur */
 	pcie@fe180000 {
 		compatible = "rockchip,rk3588-pcie\0snps,dw-pcie";
 		#address-cells = <0x03>;
@@ -5472,6 +5479,8 @@
 		reset-gpios = <0xf9 0x02 0x00>;
 		pinctrl-names = "default";
 		pinctrl-0 = <0x116>;
+		vpcie3v3-supply = <0x1bd>;
+		startup-delay-us = <0x1388>;
 		phandle = <0x290>;
 
 		legacy-interrupt-controller {
@@ -11226,6 +11235,7 @@
 		};
 	};
 
+	/* arthur */
 	pcie@fe170000 {
 		compatible = "rockchip,rk3588-pcie\0snps,dw-pcie";
 		#address-cells = <0x03>;
@@ -11257,6 +11267,8 @@
 		status = "okay";
 		reset-gpios = <0xff 0x0c 0x00>;
 		rockchip,skip-scan-in-resume;
+		vpcie3v3-supply = <0x1bd>;
+		startup-delay-us = <0x1388>;
 		phandle = <0x48e>;
 
 		legacy-interrupt-controller {
@@ -11348,6 +11360,7 @@
 		phandle = <0x492>;
 	};
 
+	/* arthur */
 	phy@fed70000 {
 		compatible = "rockchip,rk3588-hdptx-phy";
 		reg = <0x00 0xfed70000 0x00 0x2000>;
@@ -11357,7 +11370,7 @@
 		reset-names = "apb\0init\0cmn\0lane";
 		rockchip,grf = <0x1c5>;
 		#phy-cells = <0x00>;
-		status = "disabled";
+		status = "okay";
 		phandle = <0x1b4>;
 	};
 
@@ -11425,6 +11438,7 @@
 		phandle = <0x1c0>;
 	};
 
+	/* arthur */
 	phy@fee80000 {
 		compatible = "rockchip,rk3588-pcie3-phy";
 		reg = <0x00 0xfee80000 0x00 0x20000>;
@@ -11435,7 +11449,7 @@
 		reset-names = "phy";
 		rockchip,pipe-grf = <0x79>;
 		rockchip,phy-grf = <0x1ca>;
-		status = "disabled";
+		status = "okay";
 		rockchip,pcie30-phymode = <0x04>;
 		phandle = <0x1bc>;
 	};
@@ -11782,9 +11796,12 @@
 		phandle = <0x4a8>;
 	};
 
+	/* arthur */
 	vcc3v3-pcie30 {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc3v3_pcie30";
+		regulator-boot-on;
+		regulator-always-on;
 		regulator-min-microvolt = <0x325aa0>;
 		regulator-max-microvolt = <0x325aa0>;
 		enable-active-high;
