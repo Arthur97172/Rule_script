@@ -1,4 +1,0 @@
-python -m pip show matplotlib
-python -m pip show numpy
-python -m pip show scikit-rf
-python -m pip install pywin32
