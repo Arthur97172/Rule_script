@@ -1,0 +1,12 @@
+verbosity=1
+bootlogo=false
+fdtfile=rockchip/rk3568-dg-nas-lite.dtb
+rootdev=UUID=c59890ca-5794-409b-a96d-916fe1d5c2a8
+rootfstype=ext4
+rootflags=rw,errors=remount-ro
+overlay_prefix=rk3568
+overlays=
+extraargs=
+extraboardargs=net.ifnames=0 max_loop=128
+docker_optimizations=on
+usbstoragequirks=0x2537:0x1066:u,0x2537:0x1068:u
